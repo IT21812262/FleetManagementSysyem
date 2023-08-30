@@ -28,12 +28,16 @@ connection.once("open",() => {
     console.log("Your MongoDB connection is sucess!!!!!");
 })
 
-const supplierRouter = require("./routes/supplier.js")//supplier.js
+// const supplierRouter = require("./routes/supplier.js")//supplier.js
 
 /*http://Localhost:8411/supplier*/
 
-app.use("/supplier", supplierRouter);
+//app.use("/supplier", supplierRouter);
 
-app.listen(PORT, () =>{
-    console.log(`Server is up and running on port number is: ${PORT}`)
-})
+//app.listen(PORT, () =>{
+ //   console.log(`Server is up and running on port number is: ${PORT}`)
+//})
+
+
+
+
