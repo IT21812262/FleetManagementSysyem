@@ -32,8 +32,12 @@ const supplierRouter = require("./routes/supplier.js")//supplier.js
 
 /*http://Localhost:8411/supplier*/
 
+app.use("/", supplierRouter);
 app.use("/supplier", supplierRouter);
+//anothe 8
 
 app.listen(PORT, () =>{
     console.log(`Server is up and running on port number is: ${PORT}`)
 })
+
+//npm install react-scripts -- save
