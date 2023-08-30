@@ -30,6 +30,7 @@ connection.once("open",() => {
 
 const dashboard = require("./routes/supplier")//dashbord
 const supplier = require("./routes/supplier.js")//supplier.js
+//const supplier = require("./routes/supplier.js")//supplier.js
 
 //another 8
 
