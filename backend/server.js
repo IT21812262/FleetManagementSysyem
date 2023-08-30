@@ -25,15 +25,23 @@ mongoose.connect(URL, {
 
 const connection = mongoose.connection;
 connection.once("open",() => {
-    console.log("Your MongoDB connection is sucess!!!!!");
+    console.log("Your MongoDB connection is success!!!!!");
 })
 
-const supplierRouter = require("./routes/supplier.js")//supplier.js
+const dashboard = require("./routes/supplier")//dashbord
+const supplier = require("./routes/supplier.js")//supplier.js
+
+//another 8
+
 
 /*http://Localhost:8411/supplier*/
 
-app.use("/supplier", supplierRouter);
+app.use("/", dashboard);
+app.use("/supplier", supplier);
+//anothe 8
 
 app.listen(PORT, () =>{
     console.log(`Server is up and running on port number is: ${PORT}`)
 })
+
+//npm install react-scripts -- save
