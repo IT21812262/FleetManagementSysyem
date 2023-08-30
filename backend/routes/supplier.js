@@ -73,7 +73,7 @@ router.route("/update/:id").put(async(req, res) => {
         supplier_name,
         supplier_NIC,
         phone_number,
-        //supplier_possition,
+        supplier_possition,
         //email,
         //size,
         company_name,
