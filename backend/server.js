@@ -37,3 +37,5 @@ app.use("/supplier", supplierRouter);
 app.listen(PORT, () =>{
     console.log(`Server is up and running on port number is: ${PORT}`)
 })
+
+// inventory management 
