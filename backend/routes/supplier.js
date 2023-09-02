@@ -4,7 +4,7 @@ let Supplier = require("../models/supplier/supplier")
 //ALL SUPPLIER CRUD OPERATION
 
 //CREATE PART
-/*http://Localhost8411/supplier/add*/
+/*http://Localhost:8411/supplier/add*/
 
 router.route("/add").post((req, res) => {
     
