@@ -135,7 +135,7 @@ router.route("/delete/:id").delete(async(req,res) =>{
 router.route("/get/:id").get(async(req,res) =>{
     let userId = req.params.id;
 
-    const user = await Supplier.findByIdAndDelete(userId)
+    const user = await Supplier.findByIdAndDelete(userId) 
     //const supplier = await Supplier.findById(userId) 
     .then((supplier) =>{
         res.status(200).send({status :"Supplier Data Successfully Fetched!!!!!!", supplier});
