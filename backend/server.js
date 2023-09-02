@@ -44,9 +44,3 @@ app.use("/supplier", supplier);
 app.listen(PORT, () =>{
     console.log(`Server is up and running on port number is: ${PORT}`)
 })
-
-<<<<<<< HEAD
-// inventory management 
-=======
-//npm install react-scripts -- save
->>>>>>> main
