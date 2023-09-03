@@ -1,5 +1,5 @@
-const router = require.resolve("express").Router();
-let Inventory = require("../models/inventory");
+const router = require("express").Router();
+let Inventory = require("../models/inventory/inventory");
 
 // create operation
 

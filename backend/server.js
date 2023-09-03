@@ -7,7 +7,7 @@ const app = express();
 require("dotenv").config();
 
 
-const PORT = process.env.PORT || 8411;
+const PORT = process.env.PORT || 8411;   // 8070
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -32,6 +32,11 @@ connection.once("open",() => {
 const supplier = require("./routes/supplier.js")//supplier.js
 //const supplier = require("./routes/supplier.js")//supplier.js
 
+
+// creating the route for the inventory_management system
+// http://localhost:8411/inventory
+const inventoryRouter = require("./routes/inventory.js");
+
 //another 8
 const rent = require("./routes/rent.js");
 
@@ -42,7 +47,9 @@ app.use("/supplier", supplier);
 //anothe 8
 app.use("/rent", rent);
 
-
+// creating the route for the inventory_management system
+// http://localhost:8411/inventory
+app.use("/inventory", inventoryRouter);
 
 
 
@@ -52,13 +59,7 @@ app.use("/rent", rent);
 
 
 
-// creating the route for the inventory_management system
 
-const inventoryRouter = require("./routes/inventory.js");
-
-// http://localhost:8070/inventory
-
-app.use("/inventory", inventoryRouter);
 
 
 
