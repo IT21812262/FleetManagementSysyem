@@ -59,4 +59,20 @@ router.route("/add").post((req, res) => {
 
 })
 
+
+
+// retrieve all operation 
+
+http://localhost:8070/inventory/
+
+router.route("/").get((req, res) => {
+
+    Inventory.find().then((inventory) => {
+        res.json("inventory")
+    }).catch((err) => {
+        console.log(err)
+    })
+
+})
+
 module.exports = router;    // expirt the module
