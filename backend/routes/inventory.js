@@ -147,6 +147,22 @@ router.route("/delete/:id").delete(async(req, res) => {
 
 
 
+// retrieve only single item operation
+
+http://localhost:8070/inventory/
+
+router.route("/get/:id").get(async (req, res) => {
+
+    let itemId = req.params.id;
+
+    const item = await Inventory.findById(itemId).then(() => {
+
+        res.status(200).send({status: "Item fetched...", user: item});
+    }).catch((err) => {
+        console.log("err.message");
+        res.status(500).send({status: "Error with get item...", error: err.message});
+    })
+})
 
 
 module.exports = router;    // export the module
