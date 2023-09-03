@@ -78,4 +78,31 @@ router.route("/update/:id").put(async(req, res) => {
     })       
 })
 
+//DELETE PART
+/*http://Localhost:8411/fuel/delete/id*/ 
+router.route("/delete/:id").delete(async(req,res) =>{
+    let vehicleId = req.params.id;
+
+    await FuelEntry.findByIdAndDelete(vehicleId)
+    .then(() =>{
+        res.status(200).send({status :"Fuel Data Deleted Successfully!!!!!!"});
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({status: "Not deleted. Error in the delete!!!!", error: err.message});
+    })
+})
+
+//UNIQUE FUEL DATA
+router.route("/get/:id").get(async(req,res) =>{
+    let vehicleId = req.params.id;
+
+    const vehicle = await FuelEntry.findByIdAndDelete(vehicleId) 
+    .then((fuel_entry) =>{
+        res.status(200).send({status :"Fuel Data Successfully Fetched!!!!!!", fuel_entry});
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({status: "Not Fetched. Error in the fuel data Fetched!!!!", error: err.message});
+    })
+})
+
 module.exports = router;
