@@ -7,7 +7,6 @@ const app = express();
 require("dotenv").config();
 
 
- inventory_management
 const PORT = process.env.PORT || 8411;   // 8070
 
 
