@@ -20,7 +20,7 @@ router.route("/add").post((req, res) => {
 
     const unit_price = Number(req.body.unit_price);
 
-    const size = Number(req.body.size);
+    const size = req.body.size;
 
     const voltage = Number(req.body.voltage);
 
@@ -75,4 +75,10 @@ router.route("/").get((req, res) => {
 
 })
 
-module.exports = router;    // expirt the module
+
+
+// update operation
+
+http://localhost:8070/inventory/update
+
+module.exports = router;    // export the module
