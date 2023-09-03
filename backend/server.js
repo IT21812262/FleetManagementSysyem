@@ -50,6 +50,18 @@ app.use("/rent", rent);
 
 
 
+
+
+// creating the route for the inventory_management system
+
+const inventoryRouter = require("./routes/inventory.js");
+
+// http://localhost:8070/inventory
+
+app.use("/inventory", inventoryRouter);
+
+
+
 app.listen(PORT, () =>{
     console.log(`Server is up and running on port number is: ${PORT}`)
 })
