@@ -1,4 +1,4 @@
-const router = require.resolve("express").Router();
+const router = require("express").Router();
 let Inventory = require("../models/inventory");
 
 // create operation
