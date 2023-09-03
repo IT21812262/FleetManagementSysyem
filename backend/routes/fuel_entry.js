@@ -34,4 +34,17 @@ router.route("/add").post((req, res) => {
    
 })
 
+//READ PART
+/*http://Localhost:8411/fuel*/
+
+router.route("/").get((req,res) => {
+    
+    FuelEntry.find().then((fuel_entries) => {
+        res.json(fuel_entries)
+    }).catch((err) => {
+        console.log(err)
+    })
+})
+
+
 module.exports = router;
