@@ -28,22 +28,27 @@ connection.once("open",() => {
     console.log("Your MongoDB connection is success!!!!!");
 })
 
-//const dashboard = require("./routes/supplier")//dashbord
-//const supplier = require("./routes/supplier.js")//supplier.js
-//const supplier = require("./routes/supplier.js")//supplier.js
+const dashboard = require("./routes/supplier")//dashbord
+const supplier = require("./routes/supplier.js")//supplier.js
+const supplier = require("./routes/supplier.js")//supplier.js
 
+//Fuel Management System - Start
 const fuel_entry = require("./routes/fuel_entry.js")
 const fuel_stock = require("./routes/fuel_stock.js")
+
+app.use("/fuel_entry", fuel_entry);
+app.use("/fuel_stock", fuel_stock);
+
+//Fuel Management System - End
 
 //another 8
 
 
 /*http://Localhost:8411/supplier*/
 
-//app.use("/", dashboard);
-//app.use("/supplier", supplier);
-app.use("/fuel_entry", fuel_entry);
-app.use("/fuel_stock", fuel_stock);
+app.use("/", dashboard);
+app.use("/supplier", supplier);
+
 //anothe 8
 
 app.listen(PORT, () =>{
