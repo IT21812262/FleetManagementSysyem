@@ -3,7 +3,7 @@ let Inventory = require("../models/inventory/inventory");
 
 // create operation
 
-http://localhost:8070/inventory/add
+http://localhost:8411/inventory/add
 
 router.route("/add").post((req, res) => {
 
@@ -52,7 +52,7 @@ router.route("/add").post((req, res) => {
     })
 
     newInventory.save().then(() => {    // pasing the Student object to the mongoDB database
-        res.json("Item added...")
+        res.json("Item added...", newInventory)
     }).catch((err) =>{
         console.log(err);
     })    
@@ -63,7 +63,7 @@ router.route("/add").post((req, res) => {
 
 // retrieve all operation 
 
-http://localhost:8070/inventory/
+http://localhost:8411/inventory/
 
 router.route("/").get((req, res) => {
 
@@ -79,7 +79,7 @@ router.route("/").get((req, res) => {
 
 // update operation
 
-http://localhost:8070/inventory/update
+http://localhost:8411/inventory/update
 
 router.route("/upodate/:id").put(async (req, res) => {
 
@@ -130,7 +130,7 @@ router.route("/upodate/:id").put(async (req, res) => {
 
 // delete operation
 
-http://localhost:8070/inventory/delete
+http://localhost:8411/inventory/delete
 
 router.route("/delete/:id").delete(async(req, res) => {
 
@@ -149,7 +149,7 @@ router.route("/delete/:id").delete(async(req, res) => {
 
 // retrieve only single item operation
 
-http://localhost:8070/inventory/
+http://localhost:8411/inventory/
 
 router.route("/get/:id").get(async (req, res) => {
 
