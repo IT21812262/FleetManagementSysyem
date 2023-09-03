@@ -92,4 +92,17 @@ router.route("/delete/:id").delete(async(req,res) =>{
     })
 })
 
+//UNIQUE FUEL DATA
+router.route("/get/:id").get(async(req,res) =>{
+    let vehicleId = req.params.id;
+
+    const vehicle = await FuelEntry.findByIdAndDelete(vehicleId) 
+    .then((fuel_entry) =>{
+        res.status(200).send({status :"Fuel Data Successfully Fetched!!!!!!", fuel_entry});
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({status: "Not Fetched. Error in the fuel data Fetched!!!!", error: err.message});
+    })
+})
+
 module.exports = router;
