@@ -47,4 +47,35 @@ router.route("/").get((req,res) => {
 })
 
 
+//UPDATE PART
+/*http://Localhost:8411/fuel/update/id*/ 
+router.route("/update/:id").put(async(req, res) => {
+    let vehicleId = req.params.id;
+    const { 
+        vehicle_id,
+        fuel_date,
+        fuel_type,
+        fuel_quantity,
+        fuel_cost,
+        vehicle_milage
+        } = req.body;
+    
+        const updateFuelEntry = {
+            vehicle_id,
+            fuel_date,
+            fuel_type,
+            fuel_quantity,
+            fuel_cost,
+            vehicle_milage
+        }
+
+        const update = await FuelEntry.findByIdAndUpdate(vehicleId, updateFuelEntry)
+        .then(() => {
+            res.status(200).send({status: "Fuel Data updated successfully!!!!!!!"});
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({status: "Not updated. Error in the Update!!!!", error: err.message});
+    })       
+})
+
 module.exports = router;
