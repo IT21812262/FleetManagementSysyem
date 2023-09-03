@@ -7,10 +7,12 @@ const app = express();
 require("dotenv").config();
 
 
+
 const PORT = process.env.PORT || 8411;
 
 app.use(cors());
 app.use(bodyParser.json());
+
 
 const URL = process.env.MONGODB_URL;
 
