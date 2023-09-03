@@ -29,7 +29,7 @@ const inventorySchema = new Schema({
         required: true
     },
     size : {
-        type: Number,
+        type: String,
         required: false
     },
     voltage : {
