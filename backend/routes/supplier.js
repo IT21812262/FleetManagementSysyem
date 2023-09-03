@@ -13,34 +13,38 @@ router.route("/add").post((req, res) => {
     const supplier_NIC = req.body.supplier_NIC;
     const phone_number = req.body.phone_number;
     const supplier_possition = req.body.supplier_possition;
+    const email = req.body.email;
     const company_name = req.body.company_name;
     const item_type = req.body.item_type;
+    const item_size = Number(req.body.item_size);
     const item_code = req.body.item_code;
+    const brand = req.body.brand;
     const quntity = Number(req.body.quntity);
     const unit_price = Number(req.body.unit_price);
     const total_price = Number(req.body.total_price);
-    const order_given_date = new Date(req.body.order_given_date);
+    const orderd_date = new Date(req.body.orderd_date);
     const manufatured_date = new Date(req.body.manufatured_date);
-    const expired_date = new Date(req.body.expired_date);
     const invoice_number = req.body.invoice_number;
 
     const newSupplier = new Supplier({
         
-        supplier_id,
-        supplier_name,
-        supplier_NIC,
-        phone_number,
-        supplier_possition,
-        company_name,
-        item_type,
-        item_code,
-        quntity,
-        unit_price,
-        total_price,
-        order_given_date,
-        manufatured_date,
-        expired_date,
-        invoice_number,
+            supplier_id,
+            supplier_name,
+            supplier_NIC,
+            phone_number,
+            supplier_possition,
+            email,
+            company_name,
+            item_type,
+            item_size,
+            item_code,
+            brand,
+            quntity,
+            unit_price,
+            total_price,
+            orderd_date,
+            manufatured_date,
+            invoice_number
 
     })
 
@@ -74,18 +78,17 @@ router.route("/update/:id").put(async(req, res) => {
         supplier_NIC,
         phone_number,
         supplier_possition,
-        //email,
-        //size,
+        email,
         company_name,
         item_type,
+        item_size,
         item_code,
+        brand,
         quntity,
         unit_price,
         total_price,
-        order_given_date,
+        orderd_date,
         manufatured_date,
-        expired_date,
-        //brand
         invoice_number,
         } = req.body;
     
@@ -95,16 +98,18 @@ router.route("/update/:id").put(async(req, res) => {
             supplier_NIC,
             phone_number,
             supplier_possition,
+            email,
             company_name,
             item_type,
+            item_size,
             item_code,
+            brand,
             quntity,
             unit_price,
             total_price,
-            order_given_date,
+            orderd_date,
             manufatured_date,
-            expired_date,
-            invoice_number
+            invoice_number    
         }
 
         const update = await Supplier.findByIdAndUpdate(userId, updateSupplier)
