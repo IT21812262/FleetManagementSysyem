@@ -81,4 +81,47 @@ router.route("/").get((req, res) => {
 
 http://localhost:8070/inventory/update
 
+router.route("/upodate/:id").put(async (req, res) => {
+
+    let itemId = req.params.id;     // fetch the id value which is coming in the parameter of request
+
+    // using destructure method
+
+    const {pid, type, name, brand, qty, unit_price, size, voltage, amp_hrs, man_date, exp_date, reorder_level } = req.body;
+
+    const updateInventory = {
+
+        pid,
+        type,
+        name,
+        brand,
+        qty,
+        unit_price,
+        size,
+        voltage,
+        amp_hrs,
+        man_date,
+        exp_date,
+        reorder_level
+
+    }
+
+
+    const update = await Inventory.findByIdAndUpdate(itemId, updateInventory).then(() => {       // waiting until promise come
+
+
+        res.status(200).send({status: "User updated...", user: update})  // updating and send the updated details into the frontend
+
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({status: "Error with updating data", error: err.message});
+    }) 
+    
+
+})
+
+// 404 - not found
+// 200 - success
+// 441 - unauthorized
+
 module.exports = router;    // export the module
