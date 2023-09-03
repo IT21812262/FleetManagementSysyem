@@ -58,3 +58,5 @@ const inventorySchema = new Schema({
 const Inventory = mongoose.model("Inventory", inventorySchema);
 
 module.exports = Inventory;  // exporting the schema
+
+// what is the name of the filke 
