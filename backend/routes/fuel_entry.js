@@ -78,4 +78,18 @@ router.route("/update/:id").put(async(req, res) => {
     })       
 })
 
+//DELETE PART
+/*http://Localhost:8411/fuel/delete/id*/ 
+router.route("/delete/:id").delete(async(req,res) =>{
+    let vehicleId = req.params.id;
+
+    await FuelEntry.findByIdAndDelete(vehicleId)
+    .then(() =>{
+        res.status(200).send({status :"Fuel Data Deleted Successfully!!!!!!"});
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({status: "Not deleted. Error in the delete!!!!", error: err.message});
+    })
+})
+
 module.exports = router;
