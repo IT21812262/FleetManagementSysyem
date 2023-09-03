@@ -165,4 +165,4 @@ router.route("/get/:id").get(async (req, res) => {
 })
 
 
-module.exports = router;    // export the module nma
+module.exports = router;    // export the module name
