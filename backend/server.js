@@ -28,18 +28,27 @@ connection.once("open",() => {
     console.log("Your MongoDB connection is success!!!!!");
 })
 
-const dashboard = require("./routes/supplier")//dashbord
+//const dashboard = require("./routes/supplier")//dashbord
 const supplier = require("./routes/supplier.js")//supplier.js
 //const supplier = require("./routes/supplier.js")//supplier.js
 
 //another 8
-
+const rent = require("./routes/rent.js");
 
 /*http://Localhost:8411/supplier*/
 
-app.use("/", dashboard);
+//app.use("/", dashboard);
 app.use("/supplier", supplier);
 //anothe 8
+app.use("/rent", rent);
+
+
+
+
+
+//app.use("/", dashboardRent);
+
+
 
 
 
