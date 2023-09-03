@@ -20,17 +20,17 @@ const fuelEntrySchema = new Schema({
     },
 
     fuel_quantity : {
-        type : number,
+        type : Number,
         required : true
     },
 
     fuel_cost : {
-        type : number,
+        type : Number,
         required : true
     },
 
     vehicle_milage : {
-        type : number,
+        type : Number,
         required : true
     }
 })
