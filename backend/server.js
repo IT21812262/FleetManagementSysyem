@@ -7,10 +7,13 @@ const app = express();
 require("dotenv").config();
 
 
+ inventory_management
 const PORT = process.env.PORT || 8411;   // 8070
+
 
 app.use(cors());
 app.use(bodyParser.json());
+
 
 const URL = process.env.MONGODB_URL;
 
@@ -30,7 +33,16 @@ connection.once("open",() => {
 
 //const dashboard = require("./routes/supplier")//dashbord
 const supplier = require("./routes/supplier.js")//supplier.js
-//const supplier = require("./routes/supplier.js")//supplier.js
+const supplier = require("./routes/supplier.js")//supplier.js
+
+//Fuel Management System - Start
+const fuel_entry = require("./routes/fuel_entry.js")
+const fuel_stock = require("./routes/fuel_stock.js")
+
+app.use("/fuel_entry", fuel_entry);
+app.use("/fuel_stock", fuel_stock);
+
+//Fuel Management System - End
 
 
 // creating the route for the inventory_management system
@@ -44,6 +56,7 @@ const rent = require("./routes/rent.js");
 
 //app.use("/", dashboard);
 app.use("/supplier", supplier);
+
 //anothe 8
 app.use("/rent", rent);
 

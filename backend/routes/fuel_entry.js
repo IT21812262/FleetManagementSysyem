@@ -27,7 +27,7 @@ router.route("/add").post((req, res) => {
     })
 
     newFuelEntry.save().then(() => {
-        res.json("New Fuel details are successfully added ",newFuelEntry)
+        res.json("New Fuel details are successfully added ")
     }).catch((err) => {
         console.log(err)
     })
