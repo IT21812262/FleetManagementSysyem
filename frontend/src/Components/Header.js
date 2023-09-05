@@ -14,9 +14,42 @@ function Header(){
       <li className="nav-item active">
         <a className="nav-link" href="#">Home <span className="sr-only">(current)</span></a>
       </li>
+
       <li className="nav-item">
-        <a className="nav-link" href="#">Create Supplier</a>
+        <a className="nav-link" href="/addSupplier">Create Supplier</a>
       </li>
+      
+{/* only added to your own href path only.Dont' do any chnages in the code . its only example*/}
+
+
+      <li className="nav-item">
+        <a className="nav-link" href="/addSupplier">Create Trip</a>
+      </li>
+
+      <li className="nav-item">
+        <a className="nav-link" href="/addSupplier">Create Inventory</a>
+      </li>
+
+      <li className="nav-item">
+        <a className="nav-link" href="/addSupplier">Create Employee</a>
+      </li>
+
+      <li className="nav-item">
+        <a className="nav-link" href="/addSupplier">Create Vehicle</a>
+      </li>
+
+      <li className="nav-item">
+        <a className="nav-link" href="/addSupplier">Create Rent</a>
+      </li>
+
+      <li className="nav-item">
+        <a className="nav-link" href="/addSupplier">Create Fuel</a>
+      </li>
+
+      <li className="nav-item">
+        <a className="nav-link" href="/addSupplier">Create Maintenance</a>
+      </li>
+
       
     </ul>
   </div>
