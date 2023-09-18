@@ -28,11 +28,11 @@ const rentSchema = new Schema({
         type: String,
         required: true
     },
-    borrow_date : {
+    receive_date : {
         type: Date,
-        required: true
+        required: false
     },
-    dropoff_date: {
+    return_date: {
         type: Date,
         required: false
     },
@@ -48,7 +48,7 @@ const rentSchema = new Schema({
         type: String,
         required: true
     },
-    cost_per_month_in_Rs : {
+    rental : {
         type : Number,
         required : false
     }
