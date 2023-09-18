@@ -7,19 +7,33 @@ let Rent = require("../models/rent/rent");
 router.route("/add").post((req,res)=>{
 
     const vehicle_no = req.body.vehicle_no;
+    const brand = req.body.brand;
+    const vehicle_model = req.body.vehicle_model;
     const milage = Number(req.body.milage);
     const capacity = req.body.capacity;
+    const description = req.body.description;
     const borrow_date = new Date(req.body.borrow_date);
-    const owner_details = req.body.owner_details;
+    const dropoff_date = new Date(req.body.dropoff_date);
+    const owner_name = req.body.owner_name;
+    const owner_phone = Number(req.body.owner_phone);
+    const owner_email = req.body.owner_email;
+    const cost_per_month_in_Rs = Number(req.body.cost_per_month_in_Rs); 
 
 
     const newRent = new Rent({
 
         vehicle_no,
+        brand,
+        vehicle_model,
         milage,
         capacity,
+        description,
         borrow_date,
-        owner_details
+        dropoff_date,
+        owner_name,
+        owner_phone,
+        owner_email,
+        cost_per_month_in_Rs
     })
 
     newRent.save().then(()=>{
@@ -44,15 +58,36 @@ router.route("/").get((req,res)=>{
 
 router.route("/update/:id").put(async (req, res)=>{
     let userID = req.params.id;
-    //const vehicle_no = req.body.vehicle_no;
-    const {vehicle_no, milage, capacity, borrow_date, owner_details }= req.body;
+    
+    const {
+        vehicle_no,
+        brand,
+        vehicle_model,
+        milage,
+        capacity,
+        description,
+        borrow_date,
+        dropoff_date,
+        owner_name,
+        owner_phone,
+        owner_email,
+        cost_per_month_in_Rs
+        
+        }= req.body;
 
     const updateRent = {
         vehicle_no,
+        brand,
+        vehicle_model,
         milage,
         capacity,
+        description,
         borrow_date,
-        owner_details
+        dropoff_date,
+        owner_name,
+        owner_phone,
+        owner_email,
+        cost_per_month_in_Rs
     }
 
     const update = await Rent.findByIdAndUpdate(userID, updateRent)
