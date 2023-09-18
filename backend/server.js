@@ -35,6 +35,7 @@ const fuel_stock = require("./routes/fuel_stock.js")
 const inventoryRouter = require("./routes/inventory.js");
 const rent = require("./routes/rent.js");
 const supplier = require("./routes/supplier.js")
+const trip = require("./routes/trip.js");
 
 /*http://Localhost:8411/supplier*/
 
@@ -44,6 +45,7 @@ app.use("/fuel_stock", fuel_stock);
 app.use("/supplier", supplier);
 app.use("/rent", rent);
 app.use("/inventory", inventoryRouter);
+app.use("/trip", trip);
 
 app.listen(PORT, () =>{
     console.log(`Server is up and running on port number is: ${PORT}`)
