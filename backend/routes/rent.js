@@ -12,12 +12,12 @@ router.route("/add").post((req,res)=>{
     const milage = Number(req.body.milage);
     const capacity = req.body.capacity;
     const description = req.body.description;
-    const borrow_date = new Date(req.body.borrow_date);
-    const dropoff_date = new Date(req.body.dropoff_date);
+    const receive_date = new Date(req.body.receive_date);
+    const return_date = new Date(req.body.return_date);
     const owner_name = req.body.owner_name;
     const owner_phone = Number(req.body.owner_phone);
     const owner_email = req.body.owner_email;
-    const cost_per_month_in_Rs = Number(req.body.cost_per_month_in_Rs); 
+    const rental = Number(req.body.rental); 
 
 
     const newRent = new Rent({
@@ -28,17 +28,17 @@ router.route("/add").post((req,res)=>{
         milage,
         capacity,
         description,
-        borrow_date,
-        dropoff_date,
+        receive_date,
+        return_date,
         owner_name,
         owner_phone,
         owner_email,
-        cost_per_month_in_Rs
+        rental
     })
 
     newRent.save().then(()=>{
         res.json("Rent Vehicle Added")
-    }).catch(()=>{
+    }).catch((err)=>{
         console.log(err);
     })
 })
@@ -66,12 +66,12 @@ router.route("/update/:id").put(async (req, res)=>{
         milage,
         capacity,
         description,
-        borrow_date,
-        dropoff_date,
+        receive_date,
+        return_date,
         owner_name,
         owner_phone,
         owner_email,
-        cost_per_month_in_Rs
+        rental
         
         }= req.body;
 
@@ -82,12 +82,12 @@ router.route("/update/:id").put(async (req, res)=>{
         milage,
         capacity,
         description,
-        borrow_date,
-        dropoff_date,
+        receive_date,
+        return_date,
         owner_name,
         owner_phone,
         owner_email,
-        cost_per_month_in_Rs
+        rental
     }
 
     const update = await Rent.findByIdAndUpdate(userID, updateRent)
