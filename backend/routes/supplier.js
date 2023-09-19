@@ -6,7 +6,8 @@ let Supplier = require("../models/supplier/supplier")
 //CREATE PART
 /*http://Localhost:8411/supplier/add*/
 
-router.route("/add").post((req, res) => {
+ router.route("/add").post((req, res) => {
+ //app.post("supplier/add", (req,res) => {
     
     const supplier_id = req.body.supplier_id;
     const supplier_name = req.body.supplier_name;
@@ -49,11 +50,11 @@ router.route("/add").post((req, res) => {
     })
 
     newSupplier.save().then(() => {
-        res.json("Supplier details are successfully added ",newSupplier)
+        //res.json("Supplier details are successfully added ",newSupplier)
+        res.status(200).json({message : "Supplier details are successfully added "});
     }).catch((err) => {
         console.log(err)
     })
-   
 })
 
 //READ PART
@@ -64,7 +65,8 @@ router.route("/").get((req,res) => {
     Supplier.find().then((suppliers) => {
         res.json(suppliers)
     }).catch((err) => {
-        console.log(err)
+        console.log(err);
+        res.status(500).json({ error: err.message });
     })
 })
 
