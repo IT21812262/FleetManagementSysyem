@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const preventiveSchema = new Schema({
+const correctiveSchema = new Schema({
     DID : {
         type : String,
         required : true 
@@ -29,16 +29,16 @@ const preventiveSchema = new Schema({
 
     parts_used : {
         type : String,
-        required : true
+        required : false
     },
 
     Date_complete :{
         type : Date,
-        required : true
+        required : false
     }
 
 })
 
-const preventiveMaintence = mongoose.model("preventiveMaintence",preventiveSchema);
+const correctiveMaintence = mongoose.model("correctiveMaintence",correctiveSchema);
 
-module.exports = preventiveMaintence;
+module.exports = correctiveMaintence;
