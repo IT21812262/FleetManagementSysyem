@@ -13,6 +13,13 @@ const Supplier = () => {
         <li>
           <Link to="/supplier/allSuppliers">View Supplier</Link>
         </li>
+        <li>
+          <Link to="/supplier/updateSupplier">Update Supplier</Link>
+        </li>
+        <li>
+          <Link to="/supplier/uniqueSupplier">Unique Supplier</Link>
+        </li>
+        
       </ul>
     </div>
   );

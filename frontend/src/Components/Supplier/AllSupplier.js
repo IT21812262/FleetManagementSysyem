@@ -28,7 +28,7 @@ export default function AllSuppliers(){
                 Supplier Name: {supplier.supplier_name}<br />
                 Supplier NIC: {supplier.supplier_NIC}<br />
                 Phone Number: {supplier.phone_number}<br/>
-                Supplier Possition: {supplier.supplier_position}<br/>
+                Supplier Possition: {supplier.supplier_possition}<br/>
                 Email: {supplier.email}<br />
                 Company Name: {supplier.company_name}<br/>
                 Item Type: {supplier.item_type}<br />
