@@ -65,15 +65,19 @@ router.route("/add").post((req, res) => {
 
 http://localhost:8411/inventory/
 
+
 router.route("/").get((req, res) => {
 
     Inventory.find().then((inventory) => {
-        res.json("inventory")
+        res.json(inventory)
     }).catch((err) => {
         console.log(err)
     })
 
 })
+
+
+
 
 
 
@@ -155,9 +159,9 @@ router.route("/get/:id").get(async (req, res) => {
 
     let itemId = req.params.id;
 
-    const item = await Inventory.findById(itemId).then(() => {
+    const item = await Inventory.findByIdAndDelete(itemId).then((inventory) => {
 
-        res.status(200).send({status: "Item fetched...", user: item});
+        res.status(200).send({status: "Item fetched...", inventory});
     }).catch((err) => {
         console.log("err.message");
         res.status(500).send({status: "Error with get item...", error: err.message});
