@@ -7,24 +7,38 @@ let Rent = require("../models/rent/rent");
 router.route("/add").post((req,res)=>{
 
     const vehicle_no = req.body.vehicle_no;
+    const brand = req.body.brand;
+    const vehicle_model = req.body.vehicle_model;
     const milage = Number(req.body.milage);
     const capacity = req.body.capacity;
-    const borrow_date = new Date(req.body.borrow_date);
-    const owner_details = req.body.owner_details;
+    const description = req.body.description;
+    const receive_date = new Date(req.body.receive_date);
+    const return_date = new Date(req.body.return_date);
+    const owner_name = req.body.owner_name;
+    const owner_phone = Number(req.body.owner_phone);
+    const owner_email = req.body.owner_email;
+    const rental = Number(req.body.rental); 
 
 
     const newRent = new Rent({
 
         vehicle_no,
+        brand,
+        vehicle_model,
         milage,
         capacity,
-        borrow_date,
-        owner_details
+        description,
+        receive_date,
+        return_date,
+        owner_name,
+        owner_phone,
+        owner_email,
+        rental
     })
 
     newRent.save().then(()=>{
         res.json("Rent Vehicle Added")
-    }).catch(()=>{
+    }).catch((err)=>{
         console.log(err);
     })
 })
@@ -44,15 +58,36 @@ router.route("/").get((req,res)=>{
 
 router.route("/update/:id").put(async (req, res)=>{
     let userID = req.params.id;
-    //const vehicle_no = req.body.vehicle_no;
-    const {vehicle_no, milage, capacity, borrow_date, owner_details }= req.body;
+    
+    const {
+        vehicle_no,
+        brand,
+        vehicle_model,
+        milage,
+        capacity,
+        description,
+        receive_date,
+        return_date,
+        owner_name,
+        owner_phone,
+        owner_email,
+        rental
+        
+        }= req.body;
 
     const updateRent = {
         vehicle_no,
+        brand,
+        vehicle_model,
         milage,
         capacity,
-        borrow_date,
-        owner_details
+        description,
+        receive_date,
+        return_date,
+        owner_name,
+        owner_phone,
+        owner_email,
+        rental
     }
 
     const update = await Rent.findByIdAndUpdate(userID, updateRent)

@@ -8,21 +8,49 @@ const rentSchema = new Schema({
         type : String,
         required: true
     },
+    brand : {
+        type : String,
+        required: true
+    },
+    vehicle_model : {
+        type :String,
+        required :true
+    },
     milage : {
         type: Number,
         required: true
     },
     capacity : {
         type: String,
-        required: true
+        required: false
     },
-    borrow_date : {
-        type: Date,
-        required: true
-    },
-    owner_details : {
+    description : {
         type: String,
         required: true
+    },
+    receive_date : {
+        type: Date,
+        required: false
+    },
+    return_date: {
+        type: Date,
+        required: false
+    },
+    owner_name : {
+        type: String,
+        required: true
+    },
+    owner_phone : {
+        type: Number,
+        required: true
+    },
+    owner_email : {
+        type: String,
+        required: true
+    },
+    rental : {
+        type : Number,
+        required : false
     }
 
 })
