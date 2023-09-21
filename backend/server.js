@@ -9,6 +9,30 @@ require("dotenv").config();
 
 const PORT = process.env.PORT || 8411;   
 
+/* app.use(express.json())
+app.use(express.urlencoded({extended : true}))
+app.use(cors())
+
+app.get("/", cors() , (req,res) => {
+
+})
+ 
+app.post("/", async(req,res) => {
+    const {email , password} = req.body
+    try {
+            const check = await collection.findOne({email:email})
+
+            if(check){
+                res.json("exit")
+            }else{
+                res.json("notexit")
+            }
+    }
+    catch{
+        res.json("notexit")
+    }
+}) */
+
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -38,8 +62,6 @@ const supplier = require("./routes/supplier.js")
 const trip = require("./routes/trip.js");
 const corrective_m = require("./routes/maintenance.js");
 
-/*http://Localhost:8411/supplier*/
-
 
 app.use("/fuel_entry", fuel_entry);
 app.use("/fuel_stock", fuel_stock);
@@ -52,3 +74,4 @@ app.use("/corrective",corrective_m);
 app.listen(PORT, () =>{
     console.log(`Server is up and running on port number is: ${PORT}`)
 })
+

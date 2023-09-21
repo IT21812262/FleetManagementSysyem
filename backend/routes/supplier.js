@@ -114,7 +114,8 @@ router.route("/update/:id").put(async(req, res) => {
             invoice_number    
         }
 
-        const update = await Supplier.findByIdAndUpdate(userId, updateSupplier)
+        //const update = await Supplier.findByIdAndUpdate(userId, updateSupplier)
+        const update = await Supplier.findOneAndUpdate({supplier_id : userId}, updateSupplier)
         .then(() => {
             res.status(200).send({status: "Supplier updated successfully!!!!!!!"});
     }).catch((err) => {
@@ -128,7 +129,7 @@ router.route("/update/:id").put(async(req, res) => {
 router.route("/delete/:id").delete(async(req,res) =>{
     let userId = req.params.id;
 
-    await Supplier.findByIdAndDelete(userId)
+    await Supplier.findOneAndDelete({supplier_id : userId})
     .then(() =>{
         res.status(200).send({status :"Supplier Deleted Successfully!!!!!!"});
     }).catch((err) => {
@@ -142,7 +143,7 @@ router.route("/delete/:id").delete(async(req,res) =>{
 router.route("/get/:id").get(async(req,res) =>{
     let userId = req.params.id;
 
-    const user = await Supplier.findByIdAndDelete(userId) 
+    const update = await Supplier.findOne({supplier_id : userId})
     //const supplier = await Supplier.findById(userId) 
     .then((supplier) =>{
         res.status(200).send({status :"Supplier Data Successfully Fetched!!!!!!", supplier});
