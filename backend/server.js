@@ -36,6 +36,7 @@ const inventoryRouter = require("./routes/inventory.js");
 const rent = require("./routes/rent.js");
 const supplier = require("./routes/supplier.js")
 const trip = require("./routes/trip.js");
+const corrective_m = require("./routes/maintenance.js");
 
 /*http://Localhost:8411/supplier*/
 
@@ -46,6 +47,7 @@ app.use("/supplier", supplier);
 app.use("/rent", rent);
 app.use("/inventory", inventoryRouter);
 app.use("/trip", trip);
+app.use("/corrective",corrective_m);
 
 app.listen(PORT, () =>{
     console.log(`Server is up and running on port number is: ${PORT}`)
