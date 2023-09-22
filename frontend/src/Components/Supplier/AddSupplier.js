@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./AddSupplier.css";
 
 export default function AddSupplier() {
   const[supplier_id, setSupplier_ID] = useState ("");

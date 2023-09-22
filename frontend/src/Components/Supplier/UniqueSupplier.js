@@ -1,18 +1,33 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-
+import { useParams } from "react-router-dom";
+//import "./UniqueSupplier.css"; 
 
 export default function UniqueSupplier() {
-
+  const { id } = useParams();
   const [supplier, setSupplier] = useState(null);
   const [searchQ, setSearchQ] = useState("");
+
+  useEffect(() => {
+    const fetchSupplierData = async () => {
+      try {
+        if (id) {
+          const response = await axios.get(`http://localhost:8411/supplier/get/${id}`);
+          setSupplier(response.data.supplier);
+        }
+      } catch (error) {
+        alert('Error fetching supplier:', error.message);
+      }
+    };
+
+    fetchSupplierData();
+  }, [id]);
 
   const handleSearchQ = (e) => {
     setSearchQ(e.target.value);
   };
 
-  const fetchSupplierData = async () => {
+  const fetchSupplierDataBySearch = async () => {
     try {
       if (searchQ) {
         const response = await axios.get(`http://localhost:8411/supplier/get/${searchQ}`);
@@ -32,10 +47,9 @@ export default function UniqueSupplier() {
     }
   };
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetchSupplierData();
+    fetchSupplierDataBySearch();
   };
 
   return (
@@ -43,13 +57,13 @@ export default function UniqueSupplier() {
       <h1>Unique Supplier</h1>
 
       <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={searchQ}
-        onChange={handleSearchQ}
-        placeholder="Enter Supplier ID"
-      />
-      <button type="submit">Fetch Supplier Data</button>
+        <input
+          type="text"
+          value={searchQ}
+          onChange={handleSearchQ}
+          placeholder="Enter Supplier ID"
+        />
+        <button type="submit">Fetch Supplier Data</button>
       </form>
 
       {supplier ? (
@@ -70,7 +84,7 @@ export default function UniqueSupplier() {
             Unit Price: {supplier.unit_price}<br />
             Total Price: {supplier.total_price}<br />
             Ordered Date: {supplier.orderd_date}<br />
-            Manufactured Date: {supplier. manufatured_date}<br />
+            Manufactured Date: {supplier.manufatured_date}<br />
             Invoice Number: {supplier.invoice_number}<br />
             <button onClick={() => handleDelete(supplier.supplier_id)}>Delete Supplier</button>
           </li>
@@ -78,7 +92,7 @@ export default function UniqueSupplier() {
       ) : (
         <p>No supplier found with the specified ID.</p>
       )}
+
     </div>
   );
-
 }
