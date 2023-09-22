@@ -6,6 +6,8 @@ import Root from './Root'
 import Supplier from './Components/Supplier/Supplier';
 import AddSupplier from './Components/Supplier/AddSupplier';
 import AllSuppliers from './Components/Supplier/AllSupplier';
+import UniqueSupplier from './Components/Supplier/UniqueSupplier';
+import UpdateSupplier from './Components/Supplier/UpdateSupplier';
 
 
 
@@ -30,6 +32,15 @@ const router = createBrowserRouter([
           path: "allSuppliers",
           element: <AllSuppliers />
         },
+        {
+          path: "uniqueSupplier",
+          element: <UniqueSupplier />
+        },
+        {
+          path: "updateSupplier",
+          element: <UpdateSupplier />
+        },
+        
       ]
     },],
   },
