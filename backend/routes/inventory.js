@@ -30,6 +30,10 @@ router.route("/add").post((req, res) => {
 
     const exp_date = new Date(req.body.exp_date);
 
+    const vehicle_brand_and_model = req.body.vehicle_brand_and_model;
+
+    const vehicle_man_year = Number(req.body.vehicle_man_year);
+
     const reorder_level = Number(req.body.reorder_level);
 
 
@@ -47,6 +51,8 @@ router.route("/add").post((req, res) => {
         amp_hrs,
         man_date,
         exp_date,
+        vehicle_brand_and_model,
+        vehicle_man_year,
         reorder_level
 
     })
@@ -91,7 +97,7 @@ router.route("/upodate/:id").put(async (req, res) => {
 
     // using destructure method
 
-    const {pid, type, name, brand, qty, unit_price, size, voltage, amp_hrs, man_date, exp_date, reorder_level } = req.body;
+    const {pid, type, name, brand, qty, unit_price, size, voltage, amp_hrs, man_date, exp_date,vehicle_brand_and_model, vehicle_man_year, reorder_level } = req.body;
 
     const updateInventory = {
 
@@ -106,6 +112,8 @@ router.route("/upodate/:id").put(async (req, res) => {
         amp_hrs,
         man_date,
         exp_date,
+        vehicle_brand_and_model,
+        vehicle_man_year,
         reorder_level
 
     }
