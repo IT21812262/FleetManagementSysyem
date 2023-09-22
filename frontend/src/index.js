@@ -6,8 +6,8 @@ import Root from './Root'
 import Supplier from './Components/Supplier/Supplier';
 import AddSupplier from './Components/Supplier/AddSupplier';
 import AllSuppliers from './Components/Supplier/AllSupplier';
-
-
+import UniqueSupplier from './Components/Supplier/UniqueSupplier';
+import UpdateSupplier from './Components/Supplier/UpdateSupplier';
 
 const router = createBrowserRouter([
   {
@@ -30,12 +30,26 @@ const router = createBrowserRouter([
           path: "allSuppliers",
           element: <AllSuppliers />
         },
+        {
+          path: "uniqueSupplier",
+          element: <UniqueSupplier />
+        },
+        {
+          path: "updateSupplier",
+          element: <UpdateSupplier />
+        },
+        {
+          path: "/supplier/updateSupplier/:id",
+          element: <UpdateSupplier />
+        },
+        {
+          path: "/supplier/uniqueSupplier/:id",
+          element: <UniqueSupplier />
+        },
       ]
     },],
   },
 ])
-
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
