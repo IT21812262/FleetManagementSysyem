@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-//import "./UniqueSupplier.css"; 
+import { useParams, Link } from "react-router-dom";
 
 export default function UniqueSupplier() {
   const { id } = useParams();
@@ -42,6 +41,8 @@ export default function UniqueSupplier() {
     try {
       await axios.delete(`http://localhost:8411/supplier/delete/${supplierId}`);
       alert('Supplier deleted successfully.');
+      // Navigate to All Suppliers page
+      window.location.href = "/supplier/allSuppliers";
     } catch (error) {
       alert('Error deleting supplier:', error.message);
     }
@@ -64,6 +65,9 @@ export default function UniqueSupplier() {
           placeholder="Enter Supplier ID"
         />
         <button type="submit">Fetch Supplier Data</button>
+        <Link to="/supplier/allSuppliers">
+          <button type="button">Cancel</button>
+        </Link>
       </form>
 
       {supplier ? (
@@ -93,6 +97,8 @@ export default function UniqueSupplier() {
         <p>No supplier found with the specified ID.</p>
       )}
 
+      {/* Link to All Suppliers page */}
+     <Link to="/supplier/allSuppliers">All Suppliers</Link>
     </div>
   );
 }
