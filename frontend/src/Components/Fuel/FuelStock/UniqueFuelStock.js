@@ -1,87 +1,87 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-//import "./UniqueFuelEntry.css"; 
+//import "./UniqueFuelStock.css"; 
 
-export default function UniqueFuelEntry() {
+export default function UniqueFuelStock() {
   const { id } = useParams();
-  const [fuel_entry, setFuel_Entry] = useState(null);
+  const [fuel_stock, setFuelStock] = useState(null);
   const [searchQ, setSearchQ] = useState("");
 
   useEffect(() => {
-    const fetchFuelEntryData = async () => {
+    const fetchFuelStockData = async () => {
       try {
         if (id) {
-          const response = await axios.get(`http://localhost:8411/fuel/fuel_entry/get/${id}`);
-          setFuel_Entry(response.data.fuel_entry);
+          const response = await axios.get(`http://localhost:8411/fuel/fuel_stock/get/${id}`);
+          setFuelStock(response.data.fuel_stock);
         }
       } catch (error) {
-        alert('Error fetching fuel entry:', error.message);
+        alert('Error fetching fuel stock:', error.message);
       }
     };
 
-    fetchFuelEntryData();
+    fetchFuelStockData();
   }, [id]);
 
   const handleSearchQ = (e) => {
     setSearchQ(e.target.value);
   };
 
-  const fetchFuelEntryDataBySearch = async () => {
+  const fetchFuelStockDataBySearch = async () => {
     try {
       if (searchQ) {
-        const response = await axios.get(`http://localhost:8411/fuel/fuel_entry/get/${searchQ}`);
-        setFuel_Entry(response.data.fuel_entry);
+        const response = await axios.get(`http://localhost:8411/fuel/fuel_stock/get/${searchQ}`);
+        setFuelStock(response.data.fuel_stock);
       }
     } catch (error) {
-      alert('Error fetching fuel entry:', error.message);
+      alert('Error fetching fuel stock:', error.message);
     }
   };
 
-  const handleDelete = async (vehicle_id) => {
+  const handleDelete = async (invoice_no) => {
     try {
-      await axios.delete(`http://localhost:8411/fuel/fuel_entry/delete/${vehicle_id}`);
-      alert('Fuel entry deleted successfully.');
+      await axios.delete(`http://localhost:8411/fuel/fuel_stock/delete/${invoice_no}`);
+      alert('Fuel stock deleted successfully.');
     } catch (error) {
-      alert('Error deleting fuel entry:', error.message);
+      alert('Error deleting fuel stock:', error.message);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetchFuelEntryDataBySearch();
+    fetchFuelStockDataBySearch();
   };
 
   return (
     <div className="container">
-      <h1>Unique FuelEntry</h1>
+      <h1>Unique FuelStock</h1>
 
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={searchQ}
           onChange={handleSearchQ}
-          placeholder="Enter Vehicle ID"
+          placeholder="Enter Invoice No"
         />
-        <button type="submit">Fetch Fuel Entry Data</button>
+        <button type="submit">Fetch Fuel Stock Data</button>
       </form>
 
-      {fuel_entry ? (
+      {fuel_stock ? (
         <ul>
-          <li key={supplier.id}>
+          <li key={fuel_stock.id}>
 
-            Vehicle ID: {fuel_entry.vehicle_id}<br />
-            Fuel Date: {fuel_entry.fuel_date}<br />
-            Fuel Type: {fuel_entry.fuel_type}<br />
-            Fuel Quantity: {fuel_entry.fuel_quantity}<br />
-            Fuel Cost: {fuel_entry.fuel_cost}<br />
-            Vehicle Milage: {fuel_entry.vehicle_milage}<br />
+            Invoice NO: {fuel_stock.invoice_no}<br />
+            Stocked Fuel Type: {fuel_stock.stocked_fuel_type}<br />
+            Stocked Fuel Quantity: {fuel_stock.stocked_fuel_quantity}<br />
+            Per Leter Cost: {fuel_entry.per_leter_cost}<br />
+            Total Cost: {fuel_stock.total_cost}<br />
+            Stocked Fuel Date: {fuel_stock.stocked_fuel_date}<br />
 
-            <button onClick={() => handleDelete(fuel_entry.vehicle_id)}>Delete FuelEntry</button>
+            <button onClick={() => handleDelete(fuel_stock.invoice_no)}>Delete Fuel Stock</button>
           </li>
         </ul>
       ) : (
-        <p>No fuel entry found with the specified ID.</p>
+        <p>No fuel stock found with the specified ID.</p>
       )}
 
     </div>
