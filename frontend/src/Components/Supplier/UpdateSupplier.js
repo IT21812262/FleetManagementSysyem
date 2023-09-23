@@ -1,51 +1,62 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { /*Link*/ useLocation } from "react-router-dom";
-import "./UpdateSupplier.css"
+import { useLocation } from "react-router-dom";
+import "./UpdateSupplier.css";
 
 export default function UpdateSupplier() {
 
     const location = useLocation();
-    // Set supplierData based on location state or default values
-    const initialSupplierData = location.state?.supplierData || {
-      supplier_id: "",
-      supplier_name: "",
-      supplier_NIC: "",
-      phone_number: "",
-      supplier_possition: "",
-      email: "",
-      company_name: "",
-      item_type: "",
-      item_size: "",
-      item_code: "",
-      brand: "",
-      quntity: "",
-      unit_price: "",
-      total_price: "",
-      orderd_date: "",
-      manufatured_date: "",
-      invoice_number: "",
-    };
   
-    const [supplierData, setSupplierData] = useState(initialSupplierData);
+    const [supplierData, setSupplierData] = useState(
+      location.state?.supplierData || {
+        supplier_id: "",
+        supplier_name: "",
+        supplier_NIC: "",
+        phone_number: "",
+        supplier_possition: "",
+        email: "",
+        company_name: "",
+        item_type: "",
+        item_size: "",
+        item_code: "",
+        brand: "",
+        quntity: "",
+        unit_price: "",
+        total_price: "",
+        orderd_date: "",
+        manufatured_date: "",
+        invoice_number: "",
+      }
+    );
+  
   const [errors, setErrors] = useState({});
   const [searchQ, setSearchQ] = useState("");
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setSupplierData({ ...supplierData, [id]: value });
-    validateInput(id, value);
+    let newValue = value;
+  
+    if (id === "unit_price" || id === "quntity") {
+      const unitPrice = parseFloat(value);
+      const quantity = parseFloat(supplierData.quntity);
+      const totalPrice = isNaN(unitPrice) || isNaN(quantity) ? "" : (unitPrice * quantity).toFixed(2);
+      newValue = totalPrice;
+    }
+  
+    setSupplierData((prevData) => ({
+      ...prevData,
+      [id]: newValue,
+    }));
+  
+    validateInput(id, newValue);
   };
-
+  
   const validateInput = (id, value) => {
     let error = "";
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const numberRegex = /^[0-9]*$/;
     const itemCodeRegex = /^[A-Za-z]{2}\d{4}$/;
-    const isValidFloat = (value) => {
-        return !isNaN(value) && parseFloat(value) >= 0; // Check if it's a valid float value
-      };
     
     switch (id) {
 
@@ -58,10 +69,11 @@ export default function UpdateSupplier() {
         break;
 
     case "phone_number":
-         error = value.length !== 10 ? "Phone Number must be exactly 10 digits" : "";
-        break;
+        const phoneNumberRegex = /^[0-9]{10}$/;
+          error = !phoneNumberRegex.test(value) ? "Phone Number must be exactly 10 digits" : "";
+          break;
 
-    case "supplier_Position":
+    case "supplier_possition":
         error = value.trim() === "" ? "Supplier Position is required" : "";
         break;
 
@@ -95,17 +107,12 @@ export default function UpdateSupplier() {
             error = value.trim() === "" ? "Brand is required" : "";
             break;                            
                                                               
-    case "quantity":
-        error = isNaN(value) ? "Quantity should contain only numbers" : "";
-        break;
-
-    case "unit_price":
-        error = !isValidFloat(value) ? "Unit Price should be a valid float value" : "";
-        break;
-
-    case "total_price":
-      error = !isValidFloat(value) ? "Total Price should be a valid float value" : "";
-      break;
+          case "quntity":
+              error = isNaN(value) ? "Quantity should contain only numbers" : "";
+              break;
+        case "unit_price":
+          error = !/^\d+(\.\d+)?$/.test(value) ? "Unit Price should be a valid float value" : "";
+          break;    
 
       case "orderd_date":
         if (!value) {
@@ -118,7 +125,7 @@ export default function UpdateSupplier() {
         }
         break;
 
-        case "manufactured_date":
+        case "manufatured_date":
             if (!value) {
               error = "Manufactured Date is required";
             } else {
@@ -141,7 +148,6 @@ export default function UpdateSupplier() {
       default:
         break;
     }
-
     setErrors((prevErrors) => ({ ...prevErrors, [id]: error }));
   };
 
@@ -167,6 +173,23 @@ export default function UpdateSupplier() {
   if (hasErrors) {
     alert("Please correct the errors before updating.");
     return; // Stop the form submission
+  }
+
+  const newSupplier = { ...supplierData };
+
+  if (newSupplier.supplier_id) {
+    axios
+      .put(`http://localhost:8411/supplier/update/${newSupplier.supplier_id}`, newSupplier)
+      .then((response) => {
+        resetForm();
+        //alert("Supplier successfully updated.");
+        window.location.href = "/supplier/allSuppliers";
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  } else {
+    alert("Supplier ID is required.");
   }
     //alert("Insert");
     const { supplier_id, 
@@ -213,6 +236,7 @@ export default function UpdateSupplier() {
         .then((response) => {
           resetForm();
           alert("Supplier successfully updated.");
+          window.location.href = "/supplier/allSuppliers"; 
         })
         .catch((err) => {
           alert(err);
@@ -261,8 +285,6 @@ export default function UpdateSupplier() {
         orderd_date:"",
         manufatured_date:"",
         invoice_number:"" 
-            
-      // ... reset other fields as needed
     });
     setErrors({});
   };
@@ -322,7 +344,7 @@ export default function UpdateSupplier() {
 <div className="form-group">
   <label htmlFor="phone_number">Phone Number</label>
   <input
-    type="number"
+    type="text"
     value={supplierData.phone_number}
     className={`form-control ${errors.phone_number ? "is-invalid" : ""}`}
     id="phone_number"
@@ -335,17 +357,17 @@ export default function UpdateSupplier() {
 </div>
 
 <div className="form-group">
-  <label htmlFor="supplier_Position">Supplier Position</label>
+  <label htmlFor="supplier_possition">Supplier Position</label>
   <input
     type="text"
-    value={supplierData.supplier_Position}
-    className={`form-control ${errors.supplier_Position ? "is-invalid" : ""}`}
-    id="supplier_Position"
+    value={supplierData.supplier_possition}
+    className={`form-control ${errors.supplier_possition ? "is-invalid" : ""}`}
+    id="supplier_possition"
     placeholder="Enter Supplier Position"
-    onChange={(e) => handleInputChange(e, "supplier_Position")}
+    onChange={(e) => handleInputChange(e, "supplier_possition")}
   />
-  {errors.supplier_Position && (
-    <div className="invalid-feedback">{errors.supplier_Position}</div>
+  {errors.supplier_possition && (
+    <div className="invalid-feedback">{errors.supplier_possition}</div>
   )}
 </div>
 
@@ -440,30 +462,31 @@ export default function UpdateSupplier() {
 </div>
 
 <div className="form-group">
-  <label htmlFor="quantity">Quantity</label>
+  <label htmlFor="quntity">Quantity</label>
   <input
     type="number"
-    value={supplierData.quantity}
-    className={`form-control ${errors.quantity ? "is-invalid" : ""}`}
-    id="quantity"
+    value={supplierData.quntity}
+    className={`form-control ${errors.quntity ? "is-invalid" : ""}`}
+    id="quntity"
     placeholder="Enter Quantity"
-    onChange={(e) => handleInputChange(e, "quantity")}
+    onChange={handleInputChange}
   />
-  {errors.quantity && (
-    <div className="invalid-feedback">{errors.quantity}</div>
+  {errors.quntity && (
+    <div className="invalid-feedback">{errors.quntity}</div>
   )}
 </div>
 
 <div className="form-group">
   <label htmlFor="unit_price">Unit Price</label>
   <input
-    type="number"
-    value={supplierData.unit_price}
-    className={`form-control ${errors.unit_price ? "is-invalid" : ""}`}
-    id="unit_price"
-    placeholder="Enter Unit Price"
-    onChange={(e) => handleInputChange(e, "unit_price")}
-  />
+  type="number"
+  step="0.01"
+  value={supplierData.unit_price}
+  className={`form-control ${errors.unit_price ? "is-invalid" : ""}`}
+  id="unit_price"
+  placeholder="Enter Unit Price"
+  onChange={(e) => handleInputChange(e)}
+/>
   {errors.unit_price && (
     <div className="invalid-feedback">{errors.unit_price}</div>
   )}
@@ -476,8 +499,8 @@ export default function UpdateSupplier() {
     value={supplierData.total_price}
     className={`form-control ${errors.total_price ? "is-invalid" : ""}`}
     id="total_price"
-    placeholder="Enter Total Price"
-    onChange={(e) => handleInputChange(e, "total_price")}
+    placeholder="Total Price"
+    disabled // Disable editing of total_price
   />
   {errors.total_price && (
     <div className="invalid-feedback">{errors.total_price}</div>
@@ -499,16 +522,16 @@ export default function UpdateSupplier() {
 </div>
 
 <div className="form-group">
-  <label htmlFor="manufactured_date">Manufactured Date</label>
+  <label htmlFor="manufatured_date">Manufactured Date</label>
   <input
     type="date"
-    value={supplierData.manufactured_date}
-    className={`form-control ${errors.manufactured_date ? "is-invalid" : ""}`}
-    id="manufactured_date"
-    onChange={(e) => handleInputChange(e, "manufactured_date")}
+    value={supplierData.manufatured_date}
+    className={`form-control ${errors.manufatured_date ? "is-invalid" : ""}`}
+    id="manufatured_date"
+    onChange={(e) => handleInputChange(e, "manufatured_date")}
   />
-  {errors.manufactured_date && (
-    <div className="invalid-feedback">{errors.manufactured_date}</div>
+  {errors.manufatured_date && (
+    <div className="invalid-feedback">{errors.manufatured_date}</div>
   )}
 </div>
 
@@ -527,7 +550,6 @@ export default function UpdateSupplier() {
   )}
 </div>
 
-        {/* Add more input fields and validation as needed */}
         <button type="submit" className="btn btn-primary">
           Update
         </button>
