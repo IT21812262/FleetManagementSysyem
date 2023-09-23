@@ -1,43 +1,43 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import "./AllFuelEntry.css";
+import "./AllFuelStock.css";
 
 
-export default function AllFuelEntry() {
+export default function AllFuelStock() {
 
-  const [fuel_entries, setFuel_Entries] = useState([]);
+  const [fuel_stocks, setFuelStocks] = useState([]);
 
   useEffect(() => {
-    const getFuel_Entries = async () => {
+    const getFuelStocks = async () => {
       try {
-        const response = await axios.get('http://localhost:8411/fuel_entry/');
-        setFuel_Entries(response.data);
+        const response = await axios.get('http://localhost:8411/fuel/fuel_stock');
+        setFuelStock(response.data);
       } catch (error) {
-        alert('Error fetching fuel entries:', error.message);
+        alert('Error fetching fuel stocks:', error.message);
       }
     };
 
-    getFuel_Entries();
+    getFuelStocks();
   }, []);
 
   return (
     <div className="container">
-      <h1>All Fuel Entries</h1>
+      <h1>All Fuel Stocks</h1>
       
       <ul>
-        {fuel_entries.map((fuel_entry) => (
-          <li key={fuel_entry.id}>
-            Vehicle ID: {fuel_entry.vehicle_id}<br />
-            Fuel Date: {fuel_entry.fuel_date}<br />
-            Fuel Type: {fuel_entry.fuel_type}<br />
-            Fuel Quantity: {fuel_entry.fuel_quantity}<br />
-            Fuel Cost: {fuel_entry.fuel_cost}<br />
-            Vehicle Milage: {fuel_entry.vehicle_milage}<br />
-            <Link to={`/fuel_entry/updateFuelEntry/${fuel_entry.vehicle_id}`} state={{ fuel_entryData: fuel_entry }}>
+        {fuel_stocks.map((fuel_stock) => (
+          <li key={fuel_stock.id}>
+            Invoice NO: {fuel_stock.invoice_no}<br />
+            Stocked Fuel Type: {fuel_stock.stocked_fuel_type}<br />
+            Stocked Fuel Quantity: {fuel_stock.stocked_fuel_quantity}<br />
+            Per Leter Cost: {fuel_entry.per_leter_cost}<br />
+            Total Cost: {fuel_stock.total_cost}<br />
+            Stocked Fuel Date: {fuel_stock.stocked_fuel_date}<br />
+            <Link to={`/fuel_stock/updateFuelStock/${fuel_stock.invoice_no}`} state={{ fuel_stockData: fuel_stock }}>
               <button>Update</button>
             </Link>
-            <Link to={`/fuel_entry/uniqueFuel_Entry/${fuel_entry.vehicle_id}`} state={{ fuel_entryData: fuel_entry }}>
+            <Link to={`/fuel_stock/uniqueFuelStock/${fuel_stock.invoice_no}`} state={{ fuel_stockData: fuel_stock }}>
               <button>View</button>
             </Link>
           </li>
