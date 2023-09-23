@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { /*Link*/ useLocation } from "react-router-dom";
-import "./UpdateFuelEntry.css"
+import "./UpdateFuelStock.css"
 
-export default function UpdateFuelEntry() {
+export default function UpdateFuelStock() {
 
     const location = useLocation();
-    // Set fuelEntryData based on location state or default values
-    const initialFuelEntryData = location.state?.fuelEntryData || {
-      vehicle_id: "",
-      fuel_date: "",
-      fuel_type: "",
-      fuel_quantity: "",
-      fuel_cost: "",
-      vehicle_milage: "",
+    // Set fuelStockData based on location state or default values
+    const initialFuelStockData = location.state?.fuelStockData || {
+      invoice_no: "",
+      stocked_fuel_type: "",
+      stocked_fuel_quantity: "",
+      per_leter_cost: "",
+      total_cost: "",
+      stocked_fuel_date: "",
       
     };
   
-    const [fuelEntryData, setFuelEntryData] = useState(initialFuelEntryData);
+    const [fuelStockData, setFuelStockData] = useState(initialFuelStockData);
   const [errors, setErrors] = useState({});
   const [searchQ, setSearchQ] = useState("");
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFuelEntryData({ ...fuelEntryData, [id]: value });
+    setFuelStockData({ ...fuelStockData, [id]: value });
     validateInput(id, value);
   };
 
@@ -39,13 +39,29 @@ export default function UpdateFuelEntry() {
     
     switch (id) {
 
-    case "vehicle_id":
-        error = value.length !== 6 ? "Vehicle ID must be 6 characters" : "";
+    case "invoice_no":
+        error = value.length !== 6 ? "Invoice No must be 6 characters" : "";
         break;
 
-    case "fuel_date":
+    case "stocked_fuel_type":
+        error = value.trim() === "" ? "Stocked Fuel Type is required" : "";
+        break;
+
+    case "stocked_fuel_quantity":
+        error = isNaN(value) ? "Stocked Fuel Quantity should contain only numbers" : "";
+        break;
+      
+    case "per_leter_cost":
+        error = !isValidFloat(value) ? "Fuel per leter cost should be a valid float value" : "";
+        break;
+
+    case "total_cost":
+        error = !isValidFloat(value) ? "Total cost should be a valid float value" : "";
+        break;
+
+    case "stocked_fuel_date":
         if (!value) {
-            error = "Fuel Date is required";
+            error = "Stocked Fuel Date is required";
         } else {
             const date = new Date(value);
             if (isNaN(date.getTime())) {
@@ -54,38 +70,22 @@ export default function UpdateFuelEntry() {
         }
         break;
 
-    case "fuel_type":
-        error = value.trim() === "" ? "Fuel Type is required" : "";
-        break;
-
-    case "fuel_quantity":
-        error = isNaN(value) ? "Fuel Quantity should contain only numbers" : "";
-        break;
-      
-    case "fuel_cost":
-        error = !isValidFloat(value) ? "Total fuel cost should be a valid float value" : "";
-        break;
-
-    case "vehicle_milage":
-        error = !isValidFloat(value) ? "Vehicle milage should be a valid float value" : "";
-        break;
-
     }
 
     setErrors((prevErrors) => ({ ...prevErrors, [id]: error }));
   };
 
-  const fetchFuelEntry = async () => {
+  const fetchFuelStock= async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8411/fuel/fuel_entry/get/${fuelEntryData.vehicle_id}`
+        `http://localhost:8411/fuel/fuel_stock/get/${fuelStockData.invoice_no}`
       );
 
-      const fetchedFuelEntry = response.data.fuel_entry;
+      const fetchedFuelStock = response.data.fuel_stock;
 
-      setFuelEntryData(fetchedFuelEntry);
+      setFuelStockData(fetchedFuelStock);
     } catch (error) {
-      alert("Error fetching fuel entry: " + error.message);
+      alert("Error fetching fuel stock: " + error.message);
     }
   };
 
@@ -100,66 +100,66 @@ export default function UpdateFuelEntry() {
   }
     //alert("Insert");
     const { 
-        vehicle_id, 
-        fuel_date,
-        fuel_type,
-        fuel_quantity,
-        fuel_cost,
-        vehicle_milage 
-    } = fuelEntryData;
+        invoice_no,
+        stocked_fuel_type,
+        stocked_fuel_quantity,
+        per_leter_cost,
+        total_cost,
+        stocked_fuel_date 
+    } = fuelStockData;
 
-    if (fuelEntryData.vehicle_id) {
-      const newFuelEntry = {
-        vehicle_id,
-        fuel_date,
-        fuel_type,
-        fuel_quantity,
-        fuel_cost,
-        vehicle_milage
+    if (fuelStockData.invoice_no) {
+      const newFuelStock = {
+        invoice_no,
+        stocked_fuel_type,
+        stocked_fuel_quantity,
+        per_leter_cost,
+        total_cost,
+        stocked_fuel_date
       };
 
       axios
-        .put(`http://localhost:8411/fuel/fuel_entry/update/${vehicle_id}`, newFuelEntry)
+        .put(`http://localhost:8411/fuel/fuel_stock/update/${invoice_no}`, newFuelStock)
         .then((response) => {
           resetForm();
-          alert("Fuel Entry successfully updated.");
+          alert("Fuel Stock successfully updated.");
         })
         .catch((err) => {
           alert(err);
         });
     } else {
-      alert("Vehicle ID is required.");
+      alert("Invoice No is required.");
     }
   };
 
   useEffect(() => {
-    const fetchFuelData = async () => {
+    const fetchFuelStockData = async () => {
       try {
         if (searchQ) {
           const response = await axios.get(
-            `http://localhost:8411/fuel/fuel_entry/get/${searchQ}`
+            `http://localhost:8411/fuel/fuel_stock/get/${searchQ}`
           );
 
-          if (response.data.fuel_entry) {
-            setFuelEntryData(response.data.fuel_entry);
+          if (response.data.fuel_stock) {
+            setFuelStockData(response.data.fuel_stock);
           }
         }
       } catch (error) {
-        alert("Error fetching fuel entry: " + error.message);
+        alert("Error fetching fuel stock: " + error.message);
       }
     };
 
-    fetchFuelEntryData();
+    fetchFuelStockData();
   }, [searchQ]);
 
   const resetForm = () => {
     setFuelEntryData({
-        vehicle_id: "",
-        fuel_date: "",
-        fuel_type: "",
-        fuel_quantity:"",
-        fuel_cost:"",
-        vehicle_milage:""
+        invoice_no: "",
+        stocked_fuel_type: "",
+        stocked_fuel_quantity: "",
+        per_leter_cost:"",
+        total_cost:"",
+        stocked_fuel_date:""
             
       // ... reset other fields as needed
     });
@@ -173,96 +173,96 @@ export default function UpdateFuelEntry() {
           type="text"
           value={searchQ}
           onChange={(e) => setSearchQ(e.target.value)}
-          placeholder="Enter Vehicle ID"
+          placeholder="Enter Invoice No"
         />
         <div className="form-group">
-          <label htmlFor="vehicle_id">Vehicle ID</label>
+          <label htmlFor="invoice_no">Invoice No</label>
           <input
             type="text"
-            className={`form-control ${errors.vehicle_id ? "is-invalid" : ""}`}
-            id="vehicle_id"
-            placeholder="Enter Vehicle ID"
-            value={fuelEntryData.vehicle_id}
+            className={`form-control ${errors.invoice_no ? "is-invalid" : ""}`}
+            id="invoice_no"
+            placeholder="Enter Invoice No"
+            value={fuelStockData.invoice_no}
             onChange={handleInputChange}
-            onBlur={fetchFuelEntry}
+            onBlur={fetchFuelStock}
           />
-          {errors.vehicle_id && (
-            <div className="invalid-feedback">{errors.vehicle_id}</div>
+          {errors.invoice_no && (
+            <div className="invalid-feedback">{errors.invoice_no}</div>
           )}
         </div>
 
         <div className="form-group">
-            <label htmlFor="fuel_date">Fuel Date</label>
-            <input
-                type="date"
-                value={fuelEntryData.fuel_date}
-                className={`form-control ${errors.fuel_date ? "is-invalid" : ""}`}
-                id="fuel_date"
-                onChange={(e) => handleInputChange(e, "fuel_date")}
-         />
-            {errors.fuel_date && (
-            <div className="invalid-feedback">{errors.fuel_date}</div>
-         )}
-        </div>
-
-        <div className="form-group">
-            <label htmlFor="fuel_type">Fuel Type</label>
+            <label htmlFor="stocked_fuel_type">Stocked Fuel Type</label>
             <input
                 type="text"
-                value={fuelEntryData.fuel_type}
-                className={`form-control ${errors.fuel_type ? "is-invalid" : ""}`}
-                id="fuel_type"
-                placeholder="Enter Fuel Type"
-                onChange={(e) => handleInputChange(e, "fuel_type")}
+                value={fuelStockData.stocked_fuel_type}
+                className={`form-control ${errors.stocked_fuel_type ? "is-invalid" : ""}`}
+                id="stocked_fuel_type"
+                placeholder="Enter Stocked Fuel Type"
+                onChange={(e) => handleInputChange(e, "stocked_fuel_type")}
             />
-            {errors.item_type && (
-            <div className="invalid-feedback">{errors.fuel_type}</div>
+            {errors.stocked_fuel_type && (
+            <div className="invalid-feedback">{errors.stocked_fuel_type}</div>
         )}
         </div>
 
         <div className="form-group">
-            <label htmlFor="fuel_quantity">Fuel Quantity</label>
+            <label htmlFor="stocked_fuel_quantity">Stocked Fuel Quantity</label>
             <input
                 type="number"
-                value={fuelEntryData.fuel_quantity}
-                className={`form-control ${errors.fuel_quantity ? "is-invalid" : ""}`}
-                id="fuel_quantity"
-                placeholder="Enter Fuel Quantity"
-                onChange={(e) => handleInputChange(e, "fuel_quantity")}
+                value={fuelStockData.stocked_fuel_quantity}
+                className={`form-control ${errors.stocked_fuel_quantity ? "is-invalid" : ""}`}
+                id="stocked_fuel_quantity"
+                placeholder="Enter Stocked Fuel Quantity"
+                onChange={(e) => handleInputChange(e, "stocked_fuel_quantity")}
             />
-            {errors.fuel_quantity && (
-            <div className="invalid-feedback">{errors.fuel_quantity}</div>
+            {errors.stocked_fuel_quantity && (
+            <div className="invalid-feedback">{errors.stocked_fuel_quantity}</div>
         )}
         </div>
 
         <div className="form-group">
-            <label htmlFor="fuel_cost">Fuel Cost</label>
+            <label htmlFor="per_leter_cost">Per Leter Cost</label>
             <input
                 type="number"
-                value={fuelEntryData.fuel_cost}
-                className={`form-control ${errors.fuel_cost ? "is-invalid" : ""}`}
-                id="fuel_cost"
-                placeholder="Enter Fuel Cost"
-                onChange={(e) => handleInputChange(e, "fuel_cost")}
+                value={fuelStockData.per_leter_cost}
+                className={`form-control ${errors.per_leter_cost ? "is-invalid" : ""}`}
+                id="per_leter_cost"
+                placeholder="Enter Per Cost"
+                onChange={(e) => handleInputChange(e, "per_leter_cost")}
             />
-            {errors.fuel_cost && (
-            <div className="invalid-feedback">{errors.fuel_cost}</div>
+            {errors.per_leter_cost && (
+            <div className="invalid-feedback">{errors.per_leter_cost}</div>
         )}
         </div>
 
         <div className="form-group">
-            <label htmlFor="vehicle_milage">Vehicle Milage</label>
+            <label htmlFor="total_cost">Total Cost</label>
             <input
                 type="number"
-                value={fuelEntryData.vehicle_milage}
-                className={`form-control ${errors.vehicle_milage ? "is-invalid" : ""}`}
-                id="vehicle_milage"
-                placeholder="Enter Vehicle Milage"
-                onChange={(e) => handleInputChange(e, "vehicle_milage")}
+                value={fuelStockData.total_cost}
+                className={`form-control ${errors.total_cost ? "is-invalid" : ""}`}
+                id="total_cost"
+                placeholder="Enter Total Cost"
+                onChange={(e) => handleInputChange(e, "total_cost")}
             />
-            {errors.vehicle_milage && (
-            <div className="invalid-feedback">{errors.vehicle_milage}</div>
+            {errors.per_leter_cost && (
+            <div className="invalid-feedback">{errors.total_cost}</div>
         )}
+        </div>
+
+        <div className="form-group">
+            <label htmlFor="stocked_fuel_date">Stocked Fuel Date</label>
+            <input
+                type="date"
+                value={fuelStockData.stocked_fuel_date}
+                className={`form-control ${errors.stocked_fuel_date ? "is-invalid" : ""}`}
+                id="stocked_fuel_date"
+                onChange={(e) => handleInputChange(e, "stocked_fuel_date")}
+         />
+            {errors.stocked_fuel_date && (
+            <div className="invalid-feedback">{errors.stocked_fuel_date}</div>
+         )}
         </div>
 
 
