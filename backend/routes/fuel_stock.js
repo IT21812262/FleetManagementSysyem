@@ -6,7 +6,7 @@ let FuelStock = require("../models/fuel/fuel_stock");
 //CREATE PART
 /*http://Localhost:8411/fuel/add*/
 
-router.route("/add").post((req, res) => {
+router.route("/fuel_stock/add").post((req, res) => {
     
     const invoice_no = req.body.invoice_no;
     const stocked_fuel_type = req.body.stocked_fuel_type;
@@ -37,7 +37,7 @@ router.route("/add").post((req, res) => {
 //READ PART
 /*http://Localhost:8411/fuel*/
 
-router.route("/").get((req,res) => {
+router.route("/fuel_stock").get((req,res) => {
     
     FuelStock.find().then((fuel_stocks) => {
         res.json(fuel_stocks)
@@ -49,7 +49,7 @@ router.route("/").get((req,res) => {
 
 //UPDATE PART
 /*http://Localhost:8411/fuel/update/id*/ 
-router.route("/update/:id").put(async(req, res) => {
+router.route("/fuel_stock/update/:id").put(async(req, res) => {
     let invoiceNo = req.params.id;
     const { 
         invoice_no,
@@ -80,7 +80,7 @@ router.route("/update/:id").put(async(req, res) => {
 
 //DELETE PART
 /*http://Localhost:8411/fuel/delete/id*/ 
-router.route("/delete/:id").delete(async(req,res) =>{
+router.route("/fuel_stock/delete/:id").delete(async(req,res) =>{
     let invoiceNo = req.params.id;
 
     await FuelStock.findByIdAndDelete(invoiceNo)
@@ -93,7 +93,7 @@ router.route("/delete/:id").delete(async(req,res) =>{
 })
 
 //UNIQUE FUEL DATA
-router.route("/get/:id").get(async(req,res) =>{
+router.route("/fuel_stock/get/:id").get(async(req,res) =>{
     let invoiceNo = req.params.id;
 
     const fuelstock = await FuelStock.findByIdAndDelete(invoiceNo) 

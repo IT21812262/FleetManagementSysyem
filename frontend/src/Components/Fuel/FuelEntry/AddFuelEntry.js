@@ -3,14 +3,6 @@ import axios from "axios";
 
 export default function AddFuelEntry(){
 
-
-    vehicle_id,
-    fuel_date,
-    fuel_type,
-    fuel_quantity,
-    fuel_cost,
-    vehicle_milage
-
     const[vehicle_id, setVehicle_ID] = useState ("");
     const[fuel_date, setFuel_Date] = useState ("");
     const[fuel_type, setFuel_Type] = useState ("");
@@ -33,7 +25,7 @@ export default function AddFuelEntry(){
 
      // console.log(newFuelEntry); output show in the console
 
-     axios.post("http://localhost:8411/fuel/addFuelEntry", newFuelEntry).then((response) =>{
+     axios.post("http://localhost:8411/fuel/fuel_entry/add", newFuelEntry).then((response) =>{
       alert(response.data.message);
       /*alert("New Fuel Entry Successfully added");*/
         setVehicle_ID('');

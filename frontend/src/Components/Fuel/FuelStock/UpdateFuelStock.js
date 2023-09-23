@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { /*Link*/ useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./UpdateFuelStock.css"
 
 export default function UpdateFuelStock() {
 
     const location = useLocation();
-    // Set fuelStockData based on location state or default values
-    const initialFuelStockData = location.state?.fuelStockData || {
+    // Set fuel_stockData based on location state or default values
+    const initialFuelStockData = location.state?.fuel_stockData || {
       invoice_no: "",
       stocked_fuel_type: "",
       stocked_fuel_quantity: "",
@@ -17,13 +17,13 @@ export default function UpdateFuelStock() {
       
     };
   
-    const [fuelStockData, setFuelStockData] = useState(initialFuelStockData);
+  const [fuel_stockData, setFuelStockData] = useState(initialFuelStockData);
   const [errors, setErrors] = useState({});
   const [searchQ, setSearchQ] = useState("");
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFuelStockData({ ...fuelStockData, [id]: value });
+    setFuelStockData({ ...fuel_stockData, [id]: value });
     validateInput(id, value);
   };
 
@@ -78,7 +78,7 @@ export default function UpdateFuelStock() {
   const fetchFuelStock= async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8411/fuel/fuel_stock/get/${fuelStockData.invoice_no}`
+        `http://localhost:8411/fuel/fuel_stock/get/${fuel_stockData.invoice_no}`
       );
 
       const fetchedFuelStock = response.data.fuel_stock;
@@ -106,9 +106,9 @@ export default function UpdateFuelStock() {
         per_leter_cost,
         total_cost,
         stocked_fuel_date 
-    } = fuelStockData;
+    } = fuel_stockData;
 
-    if (fuelStockData.invoice_no) {
+    if (fuel_stockData.invoice_no) {
       const newFuelStock = {
         invoice_no,
         stocked_fuel_type,
@@ -153,7 +153,7 @@ export default function UpdateFuelStock() {
   }, [searchQ]);
 
   const resetForm = () => {
-    setFuelEntryData({
+    setFuelStockData({
         invoice_no: "",
         stocked_fuel_type: "",
         stocked_fuel_quantity: "",
@@ -182,7 +182,7 @@ export default function UpdateFuelStock() {
             className={`form-control ${errors.invoice_no ? "is-invalid" : ""}`}
             id="invoice_no"
             placeholder="Enter Invoice No"
-            value={fuelStockData.invoice_no}
+            value={fuel_stockData.invoice_no}
             onChange={handleInputChange}
             onBlur={fetchFuelStock}
           />
@@ -195,7 +195,7 @@ export default function UpdateFuelStock() {
             <label htmlFor="stocked_fuel_type">Stocked Fuel Type</label>
             <input
                 type="text"
-                value={fuelStockData.stocked_fuel_type}
+                value={fuel_stockData.stocked_fuel_type}
                 className={`form-control ${errors.stocked_fuel_type ? "is-invalid" : ""}`}
                 id="stocked_fuel_type"
                 placeholder="Enter Stocked Fuel Type"
@@ -210,7 +210,7 @@ export default function UpdateFuelStock() {
             <label htmlFor="stocked_fuel_quantity">Stocked Fuel Quantity</label>
             <input
                 type="number"
-                value={fuelStockData.stocked_fuel_quantity}
+                value={fuel_stockData.stocked_fuel_quantity}
                 className={`form-control ${errors.stocked_fuel_quantity ? "is-invalid" : ""}`}
                 id="stocked_fuel_quantity"
                 placeholder="Enter Stocked Fuel Quantity"
@@ -225,7 +225,7 @@ export default function UpdateFuelStock() {
             <label htmlFor="per_leter_cost">Per Leter Cost</label>
             <input
                 type="number"
-                value={fuelStockData.per_leter_cost}
+                value={fuel_stockData.per_leter_cost}
                 className={`form-control ${errors.per_leter_cost ? "is-invalid" : ""}`}
                 id="per_leter_cost"
                 placeholder="Enter Per Cost"
@@ -240,7 +240,7 @@ export default function UpdateFuelStock() {
             <label htmlFor="total_cost">Total Cost</label>
             <input
                 type="number"
-                value={fuelStockData.total_cost}
+                value={fuel_stockData.total_cost}
                 className={`form-control ${errors.total_cost ? "is-invalid" : ""}`}
                 id="total_cost"
                 placeholder="Enter Total Cost"
@@ -255,7 +255,7 @@ export default function UpdateFuelStock() {
             <label htmlFor="stocked_fuel_date">Stocked Fuel Date</label>
             <input
                 type="date"
-                value={fuelStockData.stocked_fuel_date}
+                value={fuel_stockData.stocked_fuel_date}
                 className={`form-control ${errors.stocked_fuel_date ? "is-invalid" : ""}`}
                 id="stocked_fuel_date"
                 onChange={(e) => handleInputChange(e, "stocked_fuel_date")}

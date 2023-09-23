@@ -3,14 +3,6 @@ import axios from "axios";
 
 export default function AddFuelStock(){
 
-
-    invoice_no,
-    stocked_fuel_type,
-    stocked_fuel_quantity,
-    per_leter_cost,
-    total_cost,
-    stocked_fuel_date
-
     const[invoice_no, setInvoice_NO] = useState ("");
     const[stocked_fuel_type, setStocked_Fuel_Type] = useState ("");
     const[stocked_fuel_quantity, setStocked_Fuel_Quantity] = useState ("");
@@ -33,7 +25,7 @@ export default function AddFuelStock(){
 
      // console.log(newFuelStock); output show in the console
 
-     axios.post("http://localhost:8411/fuel/fuel_stock/addFuelStock", newFuelStock).then((response) =>{
+     axios.post("http://localhost:8411/fuel/fuel_stock/add", newFuelStock).then((response) =>{
       alert(response.data.message);
       /*alert("New Fuel Stock Successfully added");*/
         setInvoice_NO('');

@@ -6,19 +6,19 @@ import "./AllFuelEntry.css";
 
 export default function AllFuelEntry() {
 
-  const [fuel_entries, setFuel_Entries] = useState([]);
+  const [fuel_entry, setFuelEntry] = useState([]);
 
   useEffect(() => {
-    const getFuel_Entries = async () => {
+    const getFuelEntry = async () => {
       try {
-        const response = await axios.get('http://localhost:8411/fuel_entry/');
-        setFuel_Entries(response.data);
+        const response = await axios.get('http://localhost:8411/fuel/fuel_entry');
+        setFuelEntry(response.data);
       } catch (error) {
-        alert('Error fetching fuel entries:', error.message);
+        alert('Error fetching fuel entry:', error.message);
       }
     };
 
-    getFuel_Entries();
+    getFuelEntry();
   }, []);
 
   return (
@@ -26,7 +26,7 @@ export default function AllFuelEntry() {
       <h1>All Fuel Entries</h1>
       
       <ul>
-        {fuel_entries.map((fuel_entry) => (
+        {fuel_entry.map((fuel_entry) => (
           <li key={fuel_entry.id}>
             Vehicle ID: {fuel_entry.vehicle_id}<br />
             Fuel Date: {fuel_entry.fuel_date}<br />
@@ -34,10 +34,10 @@ export default function AllFuelEntry() {
             Fuel Quantity: {fuel_entry.fuel_quantity}<br />
             Fuel Cost: {fuel_entry.fuel_cost}<br />
             Vehicle Milage: {fuel_entry.vehicle_milage}<br />
-            <Link to={`/fuel_entry/updateFuelEntry/${fuel_entry.vehicle_id}`} state={{ fuel_entryData: fuel_entry }}>
+            <Link to={`/updateFuelEntry/${fuel_entry.vehicle_id}`} state={{ fuel_entryData: fuel_entry }}>
               <button>Update</button>
             </Link>
-            <Link to={`/fuel_entry/uniqueFuel_Entry/${fuel_entry.vehicle_id}`} state={{ fuel_entryData: fuel_entry }}>
+            <Link to={`/uniqueFuelEntry/${fuel_entry.vehicle_id}`} state={{ fuel_entryData: fuel_entry }}>
               <button>View</button>
             </Link>
           </li>

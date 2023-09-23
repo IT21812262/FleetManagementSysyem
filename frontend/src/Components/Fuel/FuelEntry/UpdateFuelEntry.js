@@ -17,7 +17,7 @@ export default function UpdateFuelEntry() {
       
     };
   
-    const [fuelEntryData, setFuelEntryData] = useState(initialFuelEntryData);
+  const [fuelEntryData, setFuelEntryData] = useState(initialFuelEntryData);
   const [errors, setErrors] = useState({});
   const [searchQ, setSearchQ] = useState("");
 
@@ -133,7 +133,7 @@ export default function UpdateFuelEntry() {
   };
 
   useEffect(() => {
-    const fetchFuelData = async () => {
+    const fetchFuelEntryData = async () => {
       try {
         if (searchQ) {
           const response = await axios.get(

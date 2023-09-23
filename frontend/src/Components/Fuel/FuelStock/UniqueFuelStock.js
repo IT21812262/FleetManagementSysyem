@@ -73,7 +73,7 @@ export default function UniqueFuelStock() {
             Invoice NO: {fuel_stock.invoice_no}<br />
             Stocked Fuel Type: {fuel_stock.stocked_fuel_type}<br />
             Stocked Fuel Quantity: {fuel_stock.stocked_fuel_quantity}<br />
-            Per Leter Cost: {fuel_entry.per_leter_cost}<br />
+            Per Leter Cost: {fuel_stock.per_leter_cost}<br />
             Total Cost: {fuel_stock.total_cost}<br />
             Stocked Fuel Date: {fuel_stock.stocked_fuel_date}<br />
 

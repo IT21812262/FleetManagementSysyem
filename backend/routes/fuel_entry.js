@@ -4,9 +4,9 @@ let FuelEntry = require("../models/fuel/fuel_entry");
 //ALL FUEL ENTRY CRUD OPERATION
 
 //CREATE PART
-/*http://Localhost:8411/fuel/add*/
+/*http://Localhost:8411/fuel/fuel_entry/add*/
 
-router.route("/add").post((req, res) => {
+router.route("/fuel_entry/add").post((req, res) => {
     
     const vehicle_id = req.body.vehicle_id;
     const fuel_date = new Date(req.body.fuel_date);
@@ -35,9 +35,9 @@ router.route("/add").post((req, res) => {
 })
 
 //READ PART
-/*http://Localhost:8411/fuel*/
+/*http://Localhost:8411/fuel/fuel_entry*/
 
-router.route("/").get((req,res) => {
+router.route("/fuel_entry").get((req,res) => {
     
     FuelEntry.find().then((fuel_entries) => {
         res.json(fuel_entries)
@@ -49,7 +49,7 @@ router.route("/").get((req,res) => {
 
 //UPDATE PART
 /*http://Localhost:8411/fuel/update/id*/ 
-router.route("/update/:id").put(async(req, res) => {
+router.route("/fuel_entry/update/:id").put(async(req, res) => {
     let vehicleId = req.params.id;
     const { 
         vehicle_id,
@@ -80,7 +80,7 @@ router.route("/update/:id").put(async(req, res) => {
 
 //DELETE PART
 /*http://Localhost:8411/fuel/delete/id*/ 
-router.route("/delete/:id").delete(async(req,res) =>{
+router.route("fuel_entry/delete/:id").delete(async(req,res) =>{
     let vehicleId = req.params.id;
 
     await FuelEntry.findByIdAndDelete(vehicleId)
@@ -93,7 +93,7 @@ router.route("/delete/:id").delete(async(req,res) =>{
 })
 
 //UNIQUE FUEL DATA
-router.route("/get/:id").get(async(req,res) =>{
+router.route("fuel_entry/get/:id").get(async(req,res) =>{
     let vehicleId = req.params.id;
 
     const vehicle = await FuelEntry.findByIdAndDelete(vehicleId) 

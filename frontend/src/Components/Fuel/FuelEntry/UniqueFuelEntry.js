@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 export default function UniqueFuelEntry() {
   const { id } = useParams();
-  const [fuel_entry, setFuel_Entry] = useState(null);
+  const [fuel_entry, setFuelEntry] = useState(null);
   const [searchQ, setSearchQ] = useState("");
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export default function UniqueFuelEntry() {
       try {
         if (id) {
           const response = await axios.get(`http://localhost:8411/fuel/fuel_entry/get/${id}`);
-          setFuel_Entry(response.data.fuel_entry);
+          setFuelEntry(response.data.fuel_entry);
         }
       } catch (error) {
         alert('Error fetching fuel entry:', error.message);
@@ -31,7 +31,7 @@ export default function UniqueFuelEntry() {
     try {
       if (searchQ) {
         const response = await axios.get(`http://localhost:8411/fuel/fuel_entry/get/${searchQ}`);
-        setFuel_Entry(response.data.fuel_entry);
+        setFuelEntry(response.data.fuel_entry);
       }
     } catch (error) {
       alert('Error fetching fuel entry:', error.message);
@@ -68,7 +68,7 @@ export default function UniqueFuelEntry() {
 
       {fuel_entry ? (
         <ul>
-          <li key={supplier.id}>
+          <li key={fuel_entry.id}>
 
             Vehicle ID: {fuel_entry.vehicle_id}<br />
             Fuel Date: {fuel_entry.fuel_date}<br />

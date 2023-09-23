@@ -6,10 +6,10 @@ import "./AllFuelStock.css";
 
 export default function AllFuelStock() {
 
-  const [fuel_stocks, setFuelStocks] = useState([]);
+  const [fuel_stock, setFuelStock] = useState([]);
 
   useEffect(() => {
-    const getFuelStocks = async () => {
+    const getFuelStock = async () => {
       try {
         const response = await axios.get('http://localhost:8411/fuel/fuel_stock');
         setFuelStock(response.data);
@@ -18,7 +18,7 @@ export default function AllFuelStock() {
       }
     };
 
-    getFuelStocks();
+    getFuelStock();
   }, []);
 
   return (
@@ -26,12 +26,12 @@ export default function AllFuelStock() {
       <h1>All Fuel Stocks</h1>
       
       <ul>
-        {fuel_stocks.map((fuel_stock) => (
+        {fuel_stock.map((fuel_stock) => (
           <li key={fuel_stock.id}>
             Invoice NO: {fuel_stock.invoice_no}<br />
             Stocked Fuel Type: {fuel_stock.stocked_fuel_type}<br />
             Stocked Fuel Quantity: {fuel_stock.stocked_fuel_quantity}<br />
-            Per Leter Cost: {fuel_entry.per_leter_cost}<br />
+            Per Leter Cost: {fuel_stock.per_leter_cost}<br />
             Total Cost: {fuel_stock.total_cost}<br />
             Stocked Fuel Date: {fuel_stock.stocked_fuel_date}<br />
             <Link to={`/fuel_stock/updateFuelStock/${fuel_stock.invoice_no}`} state={{ fuel_stockData: fuel_stock }}>
