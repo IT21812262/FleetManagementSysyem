@@ -54,8 +54,8 @@ connection.once("open",() => {
     console.log("Your MongoDB connection is success!!!!!");
 })
 
-const fuel_entry = require("./routes/fuel_entry.js")
-const fuel_stock = require("./routes/fuel_stock.js")
+const fuelentry = require("./routes/fuelentry.js")
+const fuelstock = require("./routes/fuelstock.js")
 const inventoryRouter = require("./routes/inventory.js");
 const rent = require("./routes/rent.js");
 const supplier = require("./routes/supplier.js")
@@ -63,8 +63,8 @@ const trip = require("./routes/trip.js");
 const corrective_m = require("./routes/maintenance.js");
 
 
-app.use("/fuel_entry", fuel_entry);
-app.use("/fuel_stock", fuel_stock);
+app.use("/fuelentry", fuelentry);
+app.use("/fuelstock", fuelstock);
 app.use("/supplier", supplier);
 app.use("/rent", rent);
 app.use("/inventory", inventoryRouter);
