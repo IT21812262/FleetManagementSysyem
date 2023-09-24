@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-//import "./UpdateRent.css";
-
-
+import { useParams, Link ,useNavigate} from "react-router-dom";
 
 export default function UniqueRent() {
   const { id } = useParams();
@@ -17,7 +13,7 @@ export default function UniqueRent() {
       try {
         if (id) {
           const response = await axios.get(`http://localhost:8411/rent/get/${id}`);
-          setRent(response.data);
+          setRent(response.data.rent);
         }
       } catch (error) {
         alert('Error fetching rent:', error.message);
@@ -42,15 +38,6 @@ export default function UniqueRent() {
     }
   };
 
-  /* const handleDelete = async (vehicle_no) => {
-    try {
-      await axios.delete(`http://localhost:8411/rent/delete/${rent.vehicle_no}`);
-      alert('Rent record deleted successfully.');
-    } catch (error) {
-      alert('Error deleting rent record:', error.message);
-    }
-  }; */
-
   const handleDelete = async (vehicle_no) => {
     const confirmation = window.prompt("To confirm deletion, type 'CONFIRM' (case-sensitive):");
   
@@ -68,7 +55,6 @@ export default function UniqueRent() {
       alert('Deletion cancelled. No changes were made.');
     }
   };
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -95,6 +81,9 @@ export default function UniqueRent() {
           placeholder="Enter Vehicle Number"
         />
         <button type="submit">Fetch Rent Data</button>
+        <Link to="/rent/allRent">
+          <button type="button">Cancel</button>
+        </Link>
       </form>
 
       {rent ? (
@@ -119,6 +108,8 @@ export default function UniqueRent() {
         <p>No rent record found with the specified Vehicle Number.</p>
       )}
 
+      {/* Link to All Rent page */}
+      <Link to="/rent/allRent">All Rent</Link>
     </div>
   );
 }
