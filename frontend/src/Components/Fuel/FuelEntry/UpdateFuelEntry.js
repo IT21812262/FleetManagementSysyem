@@ -80,7 +80,7 @@ export default function UpdateFuelentry() {
   const fetchFuelentry = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8411/fuel/get/${fuelentryData.invoice_no}`
+        `http://localhost:8411/fuelentry/get/${fuelentryData.invoice_no}`
       );
 
       const fetchedFuelentry = response.data.fuelentry;
@@ -105,7 +105,7 @@ export default function UpdateFuelentry() {
 
   if (newFuelentry.vehicle_id) {
     axios
-      .put(`http://localhost:8411/fuel/update/${newFuelentry.vehicle_id}`, newFuelentry)
+      .put(`http://localhost:8411/fuelentry/update/${newFuelentry.vehicle_id}`, newFuelentry)
       .then((response) => {
         resetForm();
         //alert("Fuel entry successfully updated.");
@@ -139,7 +139,7 @@ export default function UpdateFuelentry() {
       };
 
       axios
-        .put(`http://localhost:8411/fuel/update/${vehicle_id}`, newFuelentry)
+        .put(`http://localhost:8411/fuelentry/update/${vehicle_id}`, newFuelentry)
         .then((response) => {
           resetForm();
           alert("Fuel entry successfully updated.");
@@ -158,7 +158,7 @@ export default function UpdateFuelentry() {
       try {
         if (searchQ) {
           const response = await axios.get(
-            `http://localhost:8411/fuel/get/${searchQ}`
+            `http://localhost:8411/fuelentry/get/${searchQ}`
           );
 
           if (response.data.fuelentry) {

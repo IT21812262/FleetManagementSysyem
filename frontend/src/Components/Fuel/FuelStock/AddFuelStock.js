@@ -89,7 +89,7 @@ export default function AddSupplier() {
       };
 
       axios
-        .post("http://localhost:8411/fuel/add", newFuelstock)
+        .post("http://localhost:8411/fuelstock/add", newFuelstock)
         .then((response) => {
           alert(response.data.message);
           alert("Fuel Stock Successfully added");

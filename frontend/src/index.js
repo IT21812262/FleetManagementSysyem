@@ -153,11 +153,11 @@ const router = createBrowserRouter([
                 element: <UpdateFuelstock />,
               },
               {
-                path: 'updateFuelstock/:id',
+                path: '/fuel/fuelstock/updateFuelstock/:id',
                 element: <UpdateFuelstock />,
               },
               {
-                path: 'uniqueFuelstock/:id',
+                path: '/fuel/fuelstock/uniqueFuelstock/:id',
                 element: <UniqueFuelstock />,
               },
 
@@ -190,11 +190,11 @@ const router = createBrowserRouter([
                 element: <UpdateFuelentry />,
               },
               {
-                path: 'updateFuelentry/:id',
+                path: '/fuel/fuelentry/updateFuelentry/:id',
                 element: <UpdateFuelentry />,
               },
               {
-                path: 'uniqueFuelentry/:id',
+                path: '/fuel/fuelentry/uniqueFuelentry/:id',
                 element: <UniqueFuelentry />,
               },
               

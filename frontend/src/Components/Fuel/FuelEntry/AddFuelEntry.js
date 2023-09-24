@@ -86,9 +86,9 @@ export default function AddFuelentry() {
       };
 
       axios
-        .post("http://localhost:8411/fuel/add", newFuelentry)
+        .post("http://localhost:8411/fuelentry/add", newFuelentry)
         .then((response) => {
-          alert(response.data.message);
+          //alert(response.data.message);
           alert("Fuel Entry Successfully added");
           // ... rest of the code to reset form fields
 

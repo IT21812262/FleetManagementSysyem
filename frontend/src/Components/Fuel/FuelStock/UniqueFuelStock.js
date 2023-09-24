@@ -11,7 +11,7 @@ export default function UniqueFuelstock() {
     const fetchFuelstockData = async () => {
       try {
         if (id) {
-          const response = await axios.get(`http://localhost:8411/fuel/get/${id}`);
+          const response = await axios.get(`http://localhost:8411/fuelstock/get/${id}`);
           setFuelstock(response.data.fuelstock);
         }
       } catch (error) {
@@ -29,7 +29,7 @@ export default function UniqueFuelstock() {
   const fetchFuelstockDataBySearch = async () => {
     try {
       if (searchQ) {
-        const response = await axios.get(`http://localhost:8411/fuel/get/${searchQ}`);
+        const response = await axios.get(`http://localhost:8411/fuelstock/get/${searchQ}`);
         setFuelstock(response.data.fuelstock);
       }
     } catch (error) {
@@ -39,7 +39,7 @@ export default function UniqueFuelstock() {
 
   const handleDelete = async (invoiceNo) => {
     try {
-      await axios.delete(`http://localhost:8411/fuel/delete/${invoiceNo}`);
+      await axios.delete(`http://localhost:8411/fuelstock/delete/${invoiceNo}`);
       alert('Fuel stock deleted successfully.');
       // Navigate to All Fuel stock page
       window.location.href = "/fuel/allFuelstock";
@@ -89,7 +89,7 @@ export default function UniqueFuelstock() {
       )}
 
       {/* Link to All Fuel Stock page */}
-     <Link to="/fuel/allfuelstocks">All Fuel Stoc</Link>
+     <Link to="/fuel/fuelstock/allfuelstocks">All Fuel Stock</Link>
     </div>
   );
 }
