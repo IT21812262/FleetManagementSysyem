@@ -1,47 +1,48 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-//import "./UniqueFuelStock.css"; 
+import { useParams, Link } from "react-router-dom";
 
-export default function UniqueFuelStock() {
+export default function UniqueFuelstock() {
   const { id } = useParams();
-  const [fuel_stock, setFuelStock] = useState(null);
+  const [fuelstock, setFuelstock] = useState(null);
   const [searchQ, setSearchQ] = useState("");
 
   useEffect(() => {
-    const fetchFuelStockData = async () => {
+    const fetchFuelstockData = async () => {
       try {
         if (id) {
-          const response = await axios.get(`http://localhost:8411/fuel/fuel_stock/get/${id}`);
-          setFuelStock(response.data.fuel_stock);
+          const response = await axios.get(`http://localhost:8411/fuel/get/${id}`);
+          setFuelstock(response.data.fuelstock);
         }
       } catch (error) {
         alert('Error fetching fuel stock:', error.message);
       }
     };
 
-    fetchFuelStockData();
+    fetchFuelstockData();
   }, [id]);
 
   const handleSearchQ = (e) => {
     setSearchQ(e.target.value);
   };
 
-  const fetchFuelStockDataBySearch = async () => {
+  const fetchFuelstockDataBySearch = async () => {
     try {
       if (searchQ) {
-        const response = await axios.get(`http://localhost:8411/fuel/fuel_stock/get/${searchQ}`);
-        setFuelStock(response.data.fuel_stock);
+        const response = await axios.get(`http://localhost:8411/fuel/get/${searchQ}`);
+        setFuelstock(response.data.fuelstock);
       }
     } catch (error) {
       alert('Error fetching fuel stock:', error.message);
     }
   };
 
-  const handleDelete = async (invoice_no) => {
+  const handleDelete = async (invoiceNo) => {
     try {
-      await axios.delete(`http://localhost:8411/fuel/fuel_stock/delete/${invoice_no}`);
+      await axios.delete(`http://localhost:8411/fuel/delete/${invoiceNo}`);
       alert('Fuel stock deleted successfully.');
+      // Navigate to All Fuel stock page
+      window.location.href = "/fuel/allFuelstock";
     } catch (error) {
       alert('Error deleting fuel stock:', error.message);
     }
@@ -49,12 +50,12 @@ export default function UniqueFuelStock() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetchFuelStockDataBySearch();
+    fetchFuelstockDataBySearch();
   };
 
   return (
     <div className="container">
-      <h1>Unique FuelStock</h1>
+      <h1>Unique Fuel Stock</h1>
 
       <form onSubmit={handleSubmit}>
         <input
@@ -64,26 +65,31 @@ export default function UniqueFuelStock() {
           placeholder="Enter Invoice No"
         />
         <button type="submit">Fetch Fuel Stock Data</button>
+        <Link to="/fuel/allFuelstocks">
+          <button type="button">Cancel</button>
+        </Link>
       </form>
 
-      {fuel_stock ? (
+      {fuelstock ? (
         <ul>
-          <li key={fuel_stock.id}>
+          <li key={fuelstock.id}>
 
-            Invoice NO: {fuel_stock.invoice_no}<br />
-            Stocked Fuel Type: {fuel_stock.stocked_fuel_type}<br />
-            Stocked Fuel Quantity: {fuel_stock.stocked_fuel_quantity}<br />
-            Per Leter Cost: {fuel_entry.per_leter_cost}<br />
-            Total Cost: {fuel_stock.total_cost}<br />
-            Stocked Fuel Date: {fuel_stock.stocked_fuel_date}<br />
+            Invoice No: {fuelstock.invoice_no}<br />
+            Stocked Fuel Type: {fuelstock.stocked_fuel_type}<br />
+            Stocked Fuel Quantity: {fuelstock.stocked_fuel_quantity}<br />
+            Per Leter Cost: {fuelstock.per_leter_cost}<br />
+            Total Cost: {fuelstock.total_cost}<br />
+            Stocked Fuel Date: {fuelstock.stocked_fuel_date}<br />
 
-            <button onClick={() => handleDelete(fuel_stock.invoice_no)}>Delete Fuel Stock</button>
+            <button onClick={() => handleDelete(fuelstock.invoice_no)}>Delete Fuel Stock</button>
           </li>
         </ul>
       ) : (
-        <p>No fuel stock found with the specified ID.</p>
+        <p>No fuel stock found with the specified Invoice No.</p>
       )}
 
+      {/* Link to All Fuel Stock page */}
+     <Link to="/fuel/allfuelstocks">All Fuel Stoc</Link>
     </div>
   );
 }

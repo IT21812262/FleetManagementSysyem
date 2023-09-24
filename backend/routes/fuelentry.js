@@ -1,5 +1,5 @@
 const router = require("express").Router();
-let FuelEntry = require("../models/fuel/fuel_entry");
+let Fuelentry = require("../models/fuel/fuelentry");
 
 //ALL FUEL ENTRY CRUD OPERATION
 
@@ -16,7 +16,7 @@ router.route("/add").post((req, res) => {
     const vehicle_milage = new Number(req.body.vehicle_milage);
     
 
-    const newFuelEntry = new FuelEntry({
+    const newFuelentry = new Fuelentry({
         
         vehicle_id,
         fuel_date,
@@ -26,7 +26,7 @@ router.route("/add").post((req, res) => {
         vehicle_milage
     })
 
-    newFuelEntry.save().then(() => {
+    newFuelentry.save().then(() => {
         res.json("New Fuel details are successfully added ")
     }).catch((err) => {
         console.log(err)
@@ -39,8 +39,8 @@ router.route("/add").post((req, res) => {
 
 router.route("/").get((req,res) => {
     
-    FuelEntry.find().then((fuel_entries) => {
-        res.json(fuel_entries)
+    Fuelentry.find().then((fuelentries) => {
+        res.json(fuelentries)
     }).catch((err) => {
         console.log(err)
     })
@@ -50,7 +50,7 @@ router.route("/").get((req,res) => {
 //UPDATE PART
 /*http://Localhost:8411/fuel/update/id*/ 
 router.route("/update/:id").put(async(req, res) => {
-    let vehicleId = req.params.id;
+    let entryId = req.params.id;
     const { 
         vehicle_id,
         fuel_date,
@@ -60,7 +60,7 @@ router.route("/update/:id").put(async(req, res) => {
         vehicle_milage
         } = req.body;
     
-        const updateFuelEntry = {
+        const updateFuelentry = {
             vehicle_id,
             fuel_date,
             fuel_type,
@@ -69,7 +69,7 @@ router.route("/update/:id").put(async(req, res) => {
             vehicle_milage
         }
 
-        const update = await FuelEntry.findByIdAndUpdate(vehicleId, updateFuelEntry)
+        const update = await Fuelentry.findByIdAndUpdate(entryId, updateFuelentry)
         .then(() => {
             res.status(200).send({status: "Fuel Data updated successfully!!!!!!!"});
     }).catch((err) => {
@@ -81,9 +81,9 @@ router.route("/update/:id").put(async(req, res) => {
 //DELETE PART
 /*http://Localhost:8411/fuel/delete/id*/ 
 router.route("/delete/:id").delete(async(req,res) =>{
-    let vehicleId = req.params.id;
+    let entryId = req.params.id;
 
-    await FuelEntry.findByIdAndDelete(vehicleId)
+    await Fuelentry.findByIdAndDelete(entryId)
     .then(() =>{
         res.status(200).send({status :"Fuel Data Deleted Successfully!!!!!!"});
     }).catch((err) => {
@@ -94,11 +94,11 @@ router.route("/delete/:id").delete(async(req,res) =>{
 
 //UNIQUE FUEL DATA
 router.route("/get/:id").get(async(req,res) =>{
-    let vehicleId = req.params.id;
+    let entryId = req.params.id;
 
-    const vehicle = await FuelEntry.findByIdAndDelete(vehicleId) 
-    .then((fuel_entry) =>{
-        res.status(200).send({status :"Fuel Data Successfully Fetched!!!!!!", fuel_entry});
+    const update = await Fuelentry.findByIdAndDelete(entryId) 
+    .then((fuelentry) =>{
+        res.status(200).send({status :"Fuel Data Successfully Fetched!!!!!!", fuelentry});
     }).catch((err) => {
         console.log(err);
         res.status(500).send({status: "Not Fetched. Error in the fuel data Fetched!!!!", error: err.message});

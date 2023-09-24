@@ -1,43 +1,44 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import "./AllFuelEntry.css";
+import "./AllFuelentry.css";
 
 
-export default function AllFuelEntry() {
+export default function AllFuelentry() {
 
-  const [fuel_entries, setFuel_Entries] = useState([]);
+  const [fuelentries, setFuelentries] = useState([]);
 
   useEffect(() => {
-    const getFuel_Entries = async () => {
+    const getFuelentries = async () => {
       try {
-        const response = await axios.get('http://localhost:8411/fuel_entry/');
-        setFuel_Entries(response.data);
+        const response = await axios.get('http://localhost:8411/fuel/');
+        setFuelentries(response.data);
       } catch (error) {
         alert('Error fetching fuel entries:', error.message);
       }
     };
 
-    getFuel_Entries();
+    getFuelentries();
   }, []);
 
   return (
     <div className="container">
       <h1>All Fuel Entries</h1>
-      
+    
       <ul>
-        {fuel_entries.map((fuel_entry) => (
-          <li key={fuel_entry.id}>
-            Vehicle ID: {fuel_entry.vehicle_id}<br />
-            Fuel Date: {fuel_entry.fuel_date}<br />
-            Fuel Type: {fuel_entry.fuel_type}<br />
-            Fuel Quantity: {fuel_entry.fuel_quantity}<br />
-            Fuel Cost: {fuel_entry.fuel_cost}<br />
-            Vehicle Milage: {fuel_entry.vehicle_milage}<br />
-            <Link to={`/fuel_entry/updateFuelEntry/${fuel_entry.vehicle_id}`} state={{ fuel_entryData: fuel_entry }}>
+        {fuelentries.map((fuelentry) => (
+          <li key={fuelentry.id}>
+            Vehicle ID: {fuelentry.vehicle_id}<br />
+            Fuel Date: {fuelentry.fuel_date}<br />
+            Fuel Type: {fuelentry.fuel_type}<br />
+            Fuel Quantity: {fuelentry.fuel_quantity}<br />
+            Fuel Cost: {fuelentry.fuel_cost}<br />
+            Vehicle Milage: {fuelentry.vehicle_milage}<br />
+
+            <Link to={`/fuel/updateFuelentry/${fuelentry.vehicle_id}`} state={{ fuelentryData: fuelentry }}>
               <button>Update</button>
             </Link>
-            <Link to={`/fuel_entry/uniqueFuel_Entry/${fuel_entry.vehicle_id}`} state={{ fuel_entryData: fuel_entry }}>
+            <Link to={`/fuel/uniqueFuelentry/${fuelentry.vehicle_id}`} state={{ fuelentryData: fuelentry }}>
               <button>View</button>
             </Link>
           </li>

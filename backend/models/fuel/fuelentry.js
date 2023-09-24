@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const fuelEntrySchema = new Schema({
+const fuelentrySchema = new Schema({
     
     vehicle_id : {
         type : String,
@@ -35,6 +35,6 @@ const fuelEntrySchema = new Schema({
     }
 })
 
-const FuelEntry = mongoose.model("FuelEntry", fuelEntrySchema);
+const Fuelentry = mongoose.model("Fuelentry", fuelentrySchema);
 
-module.exports = FuelEntry;
+module.exports = Fuelentry;

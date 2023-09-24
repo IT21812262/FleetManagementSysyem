@@ -1,47 +1,48 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-//import "./UniqueFuelEntry.css"; 
+import { useParams, Link } from "react-router-dom";
 
-export default function UniqueFuelEntry() {
+export default function UniqueFuelentry() {
   const { id } = useParams();
-  const [fuel_entry, setFuel_Entry] = useState(null);
+  const [fuelentry, setFuelentry] = useState(null);
   const [searchQ, setSearchQ] = useState("");
 
   useEffect(() => {
-    const fetchFuelEntryData = async () => {
+    const fetchFuelentryData = async () => {
       try {
         if (id) {
-          const response = await axios.get(`http://localhost:8411/fuel/fuel_entry/get/${id}`);
-          setFuel_Entry(response.data.fuel_entry);
+          const response = await axios.get(`http://localhost:8411/fuel/get/${id}`);
+          setFuelentry(response.data.fuelentry);
         }
       } catch (error) {
         alert('Error fetching fuel entry:', error.message);
       }
     };
 
-    fetchFuelEntryData();
+    fetchFuelentryData();
   }, [id]);
 
   const handleSearchQ = (e) => {
     setSearchQ(e.target.value);
   };
 
-  const fetchFuelEntryDataBySearch = async () => {
+  const fetchFuelentryDataBySearch = async () => {
     try {
       if (searchQ) {
-        const response = await axios.get(`http://localhost:8411/fuel/fuel_entry/get/${searchQ}`);
-        setFuel_Entry(response.data.fuel_entry);
+        const response = await axios.get(`http://localhost:8411/fuel/get/${searchQ}`);
+        setFuelentry(response.data.fuelentry);
       }
     } catch (error) {
       alert('Error fetching fuel entry:', error.message);
     }
   };
 
-  const handleDelete = async (vehicle_id) => {
+  const handleDelete = async (vehicleId) => {
     try {
-      await axios.delete(`http://localhost:8411/fuel/fuel_entry/delete/${vehicle_id}`);
+      await axios.delete(`http://localhost:8411/fuel/delete/${vehicleId}`);
       alert('Fuel entry deleted successfully.');
+      // Navigate to All Fuel entry page
+      window.location.href = "/fuel/allFuelentry";
     } catch (error) {
       alert('Error deleting fuel entry:', error.message);
     }
@@ -49,41 +50,46 @@ export default function UniqueFuelEntry() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetchFuelEntryDataBySearch();
+    fetchFuelentryDataBySearch();
   };
 
   return (
     <div className="container">
-      <h1>Unique FuelEntry</h1>
+      <h1>Unique Fuel Entry</h1>
 
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={searchQ}
           onChange={handleSearchQ}
-          placeholder="Enter Vehicle ID"
+          placeholder="Enter Vehicle Id"
         />
         <button type="submit">Fetch Fuel Entry Data</button>
+        <Link to="/fuel/allFuelentries">
+          <button type="button">Cancel</button>
+        </Link>
       </form>
 
-      {fuel_entry ? (
+      {fuelentry ? (
         <ul>
-          <li key={supplier.id}>
+          <li key={fuelentry.id}>
 
-            Vehicle ID: {fuel_entry.vehicle_id}<br />
-            Fuel Date: {fuel_entry.fuel_date}<br />
-            Fuel Type: {fuel_entry.fuel_type}<br />
-            Fuel Quantity: {fuel_entry.fuel_quantity}<br />
-            Fuel Cost: {fuel_entry.fuel_cost}<br />
-            Vehicle Milage: {fuel_entry.vehicle_milage}<br />
+            Vehicle ID: {fuelentry.vehicle_id}<br />
+            Fuel Date: {fuelentry.fuel_date}<br />
+            Fuel Type: {fuelentry.fuel_type}<br />
+            Fuel Quantity: {fuelentry.fuel_quantity}<br />
+            Fuel Cost: {fuelentry.fuel_cost}<br />
+            Vehicle Milage: {fuelentry.vehicle_milage}<br />
 
-            <button onClick={() => handleDelete(fuel_entry.vehicle_id)}>Delete FuelEntry</button>
+            <button onClick={() => handleDelete(fuelentry.vehicle_id)}>Delete Fuel Entry</button>
           </li>
         </ul>
       ) : (
-        <p>No fuel entry found with the specified ID.</p>
+        <p>No fuel entry found with the specified Vehicle Id.</p>
       )}
 
+      {/* Link to All Fuel Entry page */}
+     <Link to="/fuel/allfuelentries">All Fuel Entries</Link>
     </div>
   );
 }

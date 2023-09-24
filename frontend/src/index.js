@@ -18,86 +18,47 @@ import UniqueRent from './Components/Rent/UniqueRent';
 import UniqueSupplier from './Components/Supplier/UniqueSupplier';
 import UpdateSupplier from './Components/Supplier/UpdateSupplier';
 
-
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <Root />,
     children: [
-
-      {
-        path: "/supplier",
-        element: <Outlet />,
-        children: [
-          {
-            path: "",
-            element: <Supplier />,
-          },
-          {
-            path: "addsupplier",
-            element: <AddSupplier />
-          },
-          {
-            path: "allSuppliers",
-            element: <AllSuppliers />
-          },
-          {
-            path: "uniqueSupplier",
-            element: <UniqueSupplier />
-          },
-          {
-            path: "updateSupplier",
-            element: <UpdateSupplier />
-          },
-          {
-            path: "/supplier/updateSupplier/:id",
-            element: <UpdateSupplier />
-          },
-          {
-            path: "/supplier/uniqueSupplier/:id",
-            element: <UniqueSupplier />
-          },
-        ]
-      },
-      {
-        path: "/rent", // Add Rent route
-        element: <Outlet />,
-        children: [
-          {
-            path: "",
-            element: <Rent />,
-          },
-          {
-            path: "addRent",
-            element: <AddRent />,
-          },
-          {
-            path: "allRent",
-            element: <AllRent />,
-          },
-          {
-            path: "updateRent",
-            element: <UpdateRent />,
-          },
-          {
-            path: "uniqueRent",
-            element: <UniqueRent />
-          },
-          {
-            path: "updateRent/:id", // Add the ":id" parameter
-            element: <UpdateRent />,
-          },
-          {
-            path: "/rent/uniqueRent/:id",
-            element: <UniqueRent />
-          },
-          
-        ],
-      },
-    ],
+    {
+      path: "/supplier",
+      element: <Outlet />,
+      children: [
+        {
+          path: "",
+          element: <Supplier />,
+        },
+        {
+          path: "addsupplier",
+          element: <AddSupplier />
+        },
+        {
+          path: "allSuppliers",
+          element: <AllSuppliers />
+        },
+        {
+          path: "uniqueSupplier",
+          element: <UniqueSupplier />
+        },
+        {
+          path: "updateSupplier",
+          element: <UpdateSupplier />
+        },
+        {
+          path: "/supplier/updateSupplier/:id",
+          element: <UpdateSupplier />
+        },
+        {
+          path: "/supplier/uniqueSupplier/:id",
+          element: <UniqueSupplier />
+        },
+      ]
+    },],
   },
-]);
-  
+])
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
