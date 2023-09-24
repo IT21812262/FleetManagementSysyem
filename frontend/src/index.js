@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 
-import Root from './Root';
+import Root from './Root'
 import Supplier from './Components/Supplier/Supplier';
 import AddSupplier from './Components/Supplier/AddSupplier';
 import AllSuppliers from './Components/Supplier/AllSupplier';
@@ -10,148 +10,157 @@ import UniqueSupplier from './Components/Supplier/UniqueSupplier';
 import UpdateSupplier from './Components/Supplier/UpdateSupplier';
 
 // Fuel Management System
-
 import Fuel from './Components/Fuel/Fuel';
 
+//Fuel Stock
+import Fuelstock from './Components/Fuel/Fuelstock/Fuelstock';
+
+import AddFuelstock from './Components/Fuel/Fuelstock/AddFuelstock';
+import AllFuelstocks from './Components/Fuel/Fuelstock/AllFuelstock';
+import UniqueFuelstock from './Components/Fuel/Fuelstock/UniqueFuelstock';
+import UpdateFuelstock from './Components/Fuel/Fuelstock/UpdateFuelstock';
 
 //Fuel Entry
-import FuelEntry from './Components/Fuel/FuelEntry/FuelEntry';
-import AddFuelEntry from './Components/Fuel/FuelEntry/AddFuelEntry';
-import AllFuelEntry from './Components/Fuel/FuelEntry/AllFuelEntry';
-import UniqueFuelEntry from './Components/Fuel/FuelEntry/UniqueFuelEntry';
-import UpdateFuelEntry from './Components/Fuel/FuelEntry/UpdateFuelEntry';
+import Fuelentry from './Components/Fuel/Fuelentry/Fuelentry';
 
-//Fuel Stock
+import AddFuelentry from './Components/Fuel/Fuelentry/AddFuelentry';
+import AllFuelentries from './Components/Fuel/Fuelentry/AllFuelentry';
+import UniqueFuelentry from './Components/Fuel/Fuelentry/UniqueFuelentry';
+import UpdateFuelentry from './Components/Fuel/Fuelentry/UpdateFuelentry';
 
-import FuelStock from './Components/Fuel/FuelStock/FuelStock';
-import AddFuelStock from './Components/Fuel/FuelStock/AddFuelStock';
-import AllFuelStock from './Components/Fuel/FuelStock/AllFuelStock';
-import UniqueFuelStock from './Components/Fuel/FuelStock/UniqueFuelStock';
-import UpdateFuelStock from './Components/Fuel/FuelStock/UpdateFuelStock';
+
+
+
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <Root />,
     children: [
-    {
-      path: "/supplier",
-      element: <Outlet />,
-      children: [
-        {
-          path: "",
-          element: <Supplier />,
-        },
-        {
-          path: "addsupplier",
-          element: <AddSupplier />
-        },
-        {
-          path: "allSuppliers",
-          element: <AllSuppliers />
-        },
-        {
-          path: "uniqueSupplier",
-          element: <UniqueSupplier />
-        },
-        {
-          path: "updateSupplier",
-          element: <UpdateSupplier />
-        },
-        {
-          path: "/supplier/updateSupplier/:id",
-          element: <UpdateSupplier />
-        },
-        {
-          path: "/supplier/uniqueSupplier/:id",
-          element: <UniqueSupplier />
-        },
-      ]
+      {
+        path: '/supplier',
+        element: <Outlet />,
+        children: [
+          {
+            path: "",
+            element: <Supplier />,
+          },
+          {
+            path: 'addsupplier',
+            element: <AddSupplier />,
+          },
+          {
+            path: 'allSuppliers',
+            element: <AllSuppliers />,
+          },
+          {
+            path: 'uniqueSupplier',
+            element: <UniqueSupplier />,
+          },
+          {
+            path: 'updateSupplier',
+            element: <UpdateSupplier />,
+          },
+          {
+            path: 'updateSupplier/:id',
+            element: <UpdateSupplier />,
+          },
+          {
+            path: 'uniqueSupplier/:id',
+            element: <UniqueSupplier />,
+          },
+        ],
+      },
+      
+      {
+        path: '/fuel',
+        element: <Outlet />,
+        children: [
 
-    },
+          {
+            path: "",
+            element: <Fuel />,
+          },
 
-    {
-      path: "/Fuel",
-      element: <Fuel />,
-      children: [
+          {
+            path: "fuelstock",
+            element: <Outlet />,
+            children: [
+              {
+                path: "",
+                element: <Fuelstock />,
+              },
+              {
+                path: 'addFuelstock',
+                element: <AddFuelstock />,
+              },
+              {
+                path: 'allFuelstocks',
+                element: <AllFuelstocks />,
+              },
+              {
+                path: 'uniqueFuelstock',
+                element: <UniqueFuelstock />,
+              },
+              {
+                path: 'updateFuelstock',
+                element: <UpdateFuelstock />,
+              },
+              {
+                path: 'updateFuelstock/:id',
+                element: <UpdateFuelstock />,
+              },
+              {
+                path: 'uniqueFuelstock/:id',
+                element: <UniqueFuelstock />,
+              },
 
-        {
-          path: "/FuelEntry",
-          element: <Outlet />,
-          children: [
-            {
-              path: "",
-              element: <FuelEntry />,
-            },
-            {
-              path: "addFuelentry",
-              element: <AddFuelEntry />
-            },
-            {
-              path: "allFuelEntry",
-              element: <AllFuelEntry />
-            },
-            {
-              path: "uniqueFuelEntry",
-              element: <UniqueFuelEntry />
-            },
-            {
-              path: "updateFuelEntry",
-              element: <UpdateFuelEntry />
-            },
-            {
-              path: "updateFuelEntry/:id",
-              element: <UpdateFuelEntry />
-            },
-            {
-              path: "uniqueFuelEntry/:id",
-              element: <UniqueFuelEntry />
-            },
-          ]
-        },
-        {
-          path: "/FuelStock",
-          element: <Outlet />,
-          children: [
-            {
-              path: "",
-              element: <FuelStock />,
-            },
-            {
-              path: "addFuelStock",
-              element: <AddFuelStock />
-            },
-            {
-              path: "allFuelStock",
-              element: <AllFuelStock />
-            },
-            {
-              path: "uniqueFuelStock",
-              element: <UniqueFuelStock />
-            },
-            {
-              path: "updateFuelStock",
-              element: <UpdateFuelStock />
-            },
-            {
-              path: "updateFuelStock/:id",
-              element: <UpdateFuelStock />
-            },
-            {
-              path: "uniqueFuelStock/:id",
-              element: <UniqueFuelStock />
-            },
-          ]
-        },
-        
-      ]
+            ],
+          },
 
-    },
+          {
+            path: 'fuelentry',
+            element: <Outlet />,
+            children: [
 
-  ],    
+              {
+                path: "",
+                element: <Fuelentry />,
+              },
+              {
+                path: 'addFuelentry',
+                element: <AddFuelentry />,
+              },
+              {
+                path: 'allFuelentries',
+                element: <AllFuelentries />,
+              },
+              {
+                path: 'uniqueFuelentry',
+                element: <UniqueFuelentry />,
+              },
+              {
+                path: 'updateFuelentry',
+                element: <UpdateFuelentry />,
+              },
+              {
+                path: 'updateFuelentry/:id',
+                element: <UpdateFuelentry />,
+              },
+              {
+                path: 'uniqueFuelentry/:id',
+                element: <UniqueFuelentry />,
+              },
+              
+            ],
+          },
+          
+        ],
+      },
+
+    ],
   },
-  
-])
+]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -159,5 +168,3 @@ root.render(
     <RouterProvider router={router} />
   </React.StrictMode>
 );
-
-

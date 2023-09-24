@@ -1,30 +1,28 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom'; // Import Outlet for nested routes
 
-const FuelEntry= () => {
+const Fuelentry = () => {
   return (
     <div>
-      <h2>Fuel Entry</h2>
+      <h2>Fuel Entry Main Page</h2>
       <ul>
         <li>
-          <Link to="/fuelEntry/AddFuelEntry">Add Fuel Entry</Link>
+          <Link to="addFuelentry">Add Fuel Entry</Link> {/* Use relative path */}
         </li>
         <li>
-          <Link to="/fuelEntry/AllFuelEntry">View Fuel Entry</Link>
+          <Link to="allFuelentries">View Fuel Entries</Link> {/* Use relative path */}
         </li>
         <li>
-          <Link to="/fuelEntry/UpdateFuelEntry">Update Fuel Entry</Link>
+          <Link to="updateFuelentry">Update Fuel Entry</Link> {/* Use relative path */}
         </li>
         <li>
-          <Link to="/fuelEntry/UniqueFuelEntry">Unique Fuel Entry</Link>
+          <Link to="uniqueFuelentry">Unique Fuel Entry</Link> {/* Use relative path */}
         </li>
-        
       </ul>
+
+      <Outlet /> {/* Render nested routes */}
     </div>
   );
 }
 
-export default FuelEntry;
-
-
+export default Fuelentry;
