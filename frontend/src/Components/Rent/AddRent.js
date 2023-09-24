@@ -90,7 +90,7 @@ if (return_date && return_date < currentDateString) {
       axios
         .post("http://localhost:8411/rent/add", newRent)
         .then((response) => {
-          alert("Supplier Successfully added");
+          alert("Rent Successfully added");
           // Reset state variables here...
           setVehicleNo("");
           setBrand("");
@@ -216,7 +216,7 @@ if (return_date && return_date < currentDateString) {
           )}
         </div>
         <div className="form-group">
-          <label htmlFor="milage">Milage</label>
+          <label htmlFor="milage">Mileage</label>
           <input
             type="number"
             className="form-control"

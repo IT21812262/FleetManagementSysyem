@@ -13,6 +13,12 @@ const Rent = () => {
         <li>
           <Link to="/rent/allRent">View Rent</Link>
         </li>
+        <li>
+          <Link to="/rent/UpdateRent">Update Rent</Link>
+        </li>
+        <li>
+          <Link to="/rent/UniqueRent">Unique Rent</Link>
+        </li>
       </ul>
     </div>
   );

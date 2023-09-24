@@ -76,6 +76,14 @@ const router = createBrowserRouter([
             element: <AllRent />,
           },
           {
+            path: "updateRent",
+            element: <UpdateRent />,
+          },
+          {
+            path: "uniqueRent",
+            element: <UniqueRent />
+          },
+          {
             path: "updateRent/:id", // Add the ":id" parameter
             element: <UpdateRent />,
           },

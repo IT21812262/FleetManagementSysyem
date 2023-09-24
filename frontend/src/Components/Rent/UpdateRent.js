@@ -133,7 +133,7 @@ export default function UpdateRent() {
           )}
         </div>
         <div className="form-group">
-          <label htmlFor="milage">Milage</label>
+          <label htmlFor="milage">Mileage</label>
           <input
             type="number"
             className="form-control"
