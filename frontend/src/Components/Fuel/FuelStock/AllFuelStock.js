@@ -11,7 +11,7 @@ export default function AllFuelstocks() {
   useEffect(() => {
     const getFuelstocks = async () => {
       try {
-        const response = await axios.get('http://localhost:8411/fuel/');
+        const response = await axios.get('http://localhost:8411/fuelstock/');
         setFuelstocks(response.data);
       } catch (error) {
         alert('Error fetching fuel stocks:', error.message);
@@ -35,10 +35,10 @@ export default function AllFuelstocks() {
             Total Cost: {fuelstock.total_cost}<br />
             Stocked Fuel Date: {fuelstock.stocked_fuel_date}<br />
 
-            <Link to={`/fuel/updateFuelstock/${fuelstock.invoice_no}`} state={{ fuelstockData: fuelstock }}>
+            <Link to={`/fuel/fuelstock/updateFuelstock/${fuelstock.invoice_no}`} state={{ fuelstockData: fuelstock }}>
               <button>Update</button>
             </Link>
-            <Link to={`/fuel/uniqueFuelstock/${fuelstock.invoice_no}`} state={{ fuelstockData: fuelstock }}>
+            <Link to={`/fuel/fuelstock/uniqueFuelstock/${fuelstock.invoice_no}`} state={{ fuelstockData: fuelstock }}>
               <button>View</button>
             </Link>
           </li>

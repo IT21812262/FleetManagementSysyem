@@ -11,7 +11,7 @@ export default function UniqueFuelentry() {
     const fetchFuelentryData = async () => {
       try {
         if (id) {
-          const response = await axios.get(`http://localhost:8411/fuel/get/${id}`);
+          const response = await axios.get(`http://localhost:8411/fuelentry/get/${id}`);
           setFuelentry(response.data.fuelentry);
         }
       } catch (error) {
@@ -29,7 +29,7 @@ export default function UniqueFuelentry() {
   const fetchFuelentryDataBySearch = async () => {
     try {
       if (searchQ) {
-        const response = await axios.get(`http://localhost:8411/fuel/get/${searchQ}`);
+        const response = await axios.get(`http://localhost:8411/fuelentry/get/${searchQ}`);
         setFuelentry(response.data.fuelentry);
       }
     } catch (error) {
@@ -39,7 +39,7 @@ export default function UniqueFuelentry() {
 
   const handleDelete = async (vehicleId) => {
     try {
-      await axios.delete(`http://localhost:8411/fuel/delete/${vehicleId}`);
+      await axios.delete(`http://localhost:8411/fuelentry/delete/${vehicleId}`);
       alert('Fuel entry deleted successfully.');
       // Navigate to All Fuel entry page
       window.location.href = "/fuel/allFuelentry";
@@ -89,7 +89,7 @@ export default function UniqueFuelentry() {
       )}
 
       {/* Link to All Fuel Entry page */}
-     <Link to="/fuel/allfuelentries">All Fuel Entries</Link>
+     <Link to="/fuel/fuelentry/allfuelentries">All Fuel Entries</Link>
     </div>
   );
 }

@@ -82,7 +82,7 @@ export default function UpdateFuelstock() {
   const fetchFuelstock = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8411/fuel/get/${fuelstockData.invoice_no}`
+        `http://localhost:8411/fuelstock/get/${fuelstockData.invoice_no}`
       );
 
       const fetchedFuelstock = response.data.fuelstock;
@@ -107,7 +107,7 @@ export default function UpdateFuelstock() {
 
   if (newFuelstock.invoice_no) {
     axios
-      .put(`http://localhost:8411/fuel/update/${newFuelstock.invoice_no}`, newFuelstock)
+      .put(`http://localhost:8411/fuelstock/update/${newFuelstock.invoice_no}`, newFuelstock)
       .then((response) => {
         resetForm();
         //alert("Fuel stock successfully updated.");
@@ -141,7 +141,7 @@ export default function UpdateFuelstock() {
       };
 
       axios
-        .put(`http://localhost:8411/fuel/update/${invoice_no}`, newFuelstock)
+        .put(`http://localhost:8411/fuelstock/update/${invoice_no}`, newFuelstock)
         .then((response) => {
           resetForm();
           alert("Fuel stock successfully updated.");
@@ -160,7 +160,7 @@ export default function UpdateFuelstock() {
       try {
         if (searchQ) {
           const response = await axios.get(
-            `http://localhost:8411/fuel/get/${searchQ}`
+            `http://localhost:8411/fuelstock/get/${searchQ}`
           );
 
           if (response.data.fuelstock) {

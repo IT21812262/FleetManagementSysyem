@@ -69,7 +69,7 @@ router.route("/update/:id").put(async(req, res) => {
             vehicle_milage
         }
 
-        const update = await Fuelentry.findByIdAndUpdate(entryId, updateFuelentry)
+        const update = await Fuelentry.findOneAndUpdate({vehicle_id : entryId}, updateFuelentry)
         .then(() => {
             res.status(200).send({status: "Fuel Data updated successfully!!!!!!!"});
     }).catch((err) => {
@@ -83,7 +83,7 @@ router.route("/update/:id").put(async(req, res) => {
 router.route("/delete/:id").delete(async(req,res) =>{
     let entryId = req.params.id;
 
-    await Fuelentry.findByIdAndDelete(entryId)
+    await Fuelentry.findOneAndDelete({vehicle_id : entryId})
     .then(() =>{
         res.status(200).send({status :"Fuel Data Deleted Successfully!!!!!!"});
     }).catch((err) => {
@@ -96,7 +96,7 @@ router.route("/delete/:id").delete(async(req,res) =>{
 router.route("/get/:id").get(async(req,res) =>{
     let entryId = req.params.id;
 
-    const update = await Fuelentry.findByIdAndDelete(entryId) 
+    const update = await Fuelentry.findOne({vehicle_id : entryId}) 
     .then((fuelentry) =>{
         res.status(200).send({status :"Fuel Data Successfully Fetched!!!!!!", fuelentry});
     }).catch((err) => {
