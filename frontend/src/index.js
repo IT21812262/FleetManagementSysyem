@@ -41,6 +41,13 @@ import Fuel from './Components/Fuel/Fuel';
   import UpdateFuelentry from './Components/Fuel/Fuelentry/UpdateFuelentry';
 
 
+  //Employee
+
+  import Employee from './Components/Employee/Employee';
+
+  import AddEmployee from './Components/Employee/AddEmployee';
+  import AllEmployees from './Components/Employee/AllEmployee';
+  import UpdateEmployee from './Components/Employee/UpdateEmployee';
 
 const router = createBrowserRouter([
   {
@@ -203,6 +210,36 @@ const router = createBrowserRouter([
           
         ],
       },
+
+      {
+        path: "/employee",
+        element: <Outlet />,
+        children: [
+          {
+            path: "",
+            element: <Employee />,
+          },
+          {
+            path: "addemployee",
+            element: <AddEmployee />
+          },
+          {
+            path: "allEmployees",
+            element: <AllEmployees />
+          },
+          
+          {
+            path: "updateEmployee",
+            element: <UpdateEmployee />
+          },
+          {
+            path: "/employee/updateEmployee/:id",
+            element: <UpdateEmployee />
+          },
+          
+        ]
+      },
+
     ],
   },
 ]);
