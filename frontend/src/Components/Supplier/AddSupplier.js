@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect,  useCallback} from "react";
 import axios from "axios";
+import "./AddSupplier.css";
 
 export default function AddSupplier() {
   const[supplier_id, setSupplier_ID] = useState ("");
@@ -76,9 +77,9 @@ export default function AddSupplier() {
     if (!item_size) {
       errors.item_size = "Item Size is required";
     } else {
-      const regex = /^\d+$/;
+      const regex = /^\d+(\.\d+)?$/;  // Regular expression for integers and floats
       if (!regex.test(item_size)) {
-        errors.item_size = "Item Size should contain only numbers";
+        errors.item_size = "Item Size should be a valid number";
       }
     }
 
@@ -113,15 +114,6 @@ export default function AddSupplier() {
       }
     }
 
-    if (!total_price) {
-      errors.total_price= "Total Price is required";
-    } else {
-      const regex = /^\d+(\.\d{1,2})?$/; 
-      if (!regex.test(total_price)) {
-        errors.total_price = "Total Price should be a valid float value";
-      }
-    }
-
     if (!orderd_date) {
       errors.orderd_date = "Order Date is required";
     } else {
@@ -152,11 +144,21 @@ export default function AddSupplier() {
       }
     }
 
-    // Add similar validations for other fields...
-
     setErrors(errors);
     return Object.keys(errors).length === 0;
   }
+
+  const calculateTotalPrice = useCallback(() => {
+      const unitPriceValue = parseFloat(unit_price) || 0;
+      const quantityValue = parseInt(quntity, 10) || 0;
+      const totalPriceValue = unitPriceValue * quantityValue;
+      setTotal_Price(totalPriceValue.toFixed(2));// Round to 2 decimal places
+      
+    }, [unit_price, quntity, setTotal_Price]);
+
+  useEffect(() => {
+    calculateTotalPrice();
+  }, [calculateTotalPrice])
 
   function sentData(e) {
     e.preventDefault();
@@ -282,7 +284,7 @@ export default function AddSupplier() {
         <div className="form-group">
           <label htmlFor="phone_number">Phone Number</label>
           <input
-            type="number"
+            type="text"
             className={`form-control ${errors.phone_number ? "is-invalid" : ""}`}
             id="phone_number"
             placeholder="Enter Phone Number"
@@ -376,8 +378,8 @@ export default function AddSupplier() {
 
         <div className="form-group">
           <label htmlFor="item_size">Item Size</label>
-          <input
-            type="number"
+          <input 
+            type="text"  // Change the type to text to allow float values
             className={`form-control ${errors.item_size ? "is-invalid" : ""}`}
             id="item_size"
             placeholder="Enter Item Size"
@@ -385,8 +387,9 @@ export default function AddSupplier() {
             onChange={(e) => {
               setItem_Size(e.target.value);
               setErrors({ ...errors, item_size: null });
-            }}
-          />
+  }}
+/>
+ 
         </div>
 
         {errors.item_code && (
@@ -431,17 +434,18 @@ export default function AddSupplier() {
           <div className="alert alert-danger">{errors.quntity}</div>
         )}
 
-        <div className="form-group">
+<div className="form-group">
           <label htmlFor="quntity">Quantity</label>
           <input
             type="number"
             className={`form-control ${errors.quntity ? "is-invalid" : ""}`}
-            id="quantity"
+            id="quntity"
             placeholder="Enter Quantity"
             value={quntity}
             onChange={(e) => {
               setQuntity(e.target.value);
               setErrors({ ...errors, quntity: null });
+              calculateTotalPrice(); // Update total price on quantity change
             }}
           />
         </div>
@@ -450,10 +454,10 @@ export default function AddSupplier() {
           <div className="alert alert-danger">{errors.unitPrice}</div>
         )}
 
-        <div className="form-group">
+<div className="form-group">
           <label htmlFor="unit_price">Unit Price</label>
           <input
-            type="text" // Change input type to text for float values
+            type="text"
             className={`form-control ${errors.unit_price ? "is-invalid" : ""}`}
             id="unit_price"
             placeholder="Enter Unit Price"
@@ -461,6 +465,7 @@ export default function AddSupplier() {
             onChange={(e) => {
               setUnit_Price(e.target.value);
               setErrors({ ...errors, unit_price: null });
+              calculateTotalPrice(); // Update total price on unit price change
             }}
           />
         </div>
@@ -469,18 +474,15 @@ export default function AddSupplier() {
           <div className="alert alert-danger">{errors.totalPrice}</div>
         )}
 
-        <div className="form-group">
-          <label htmlFor=" total_price">Total Price</label>
+      <div className="form-group">
+          <label htmlFor="total_price">Total Price</label>
           <input
-            type="text" // Change input type to text for float values
+            type="text"
             className={`form-control ${errors.total_price ? "is-invalid" : ""}`}
-            id=" total_price"
-            placeholder="Enter Total Price"
+            id="total_price"
+            placeholder="Total Price"
             value={total_price}
-            onChange={(e) => {
-              setTotal_Price(e.target.value);
-              setErrors({ ...errors, total_price: null });
-            }}
+            readOnly
           />
         </div>
 
@@ -500,7 +502,7 @@ export default function AddSupplier() {
               setOrderd_date(e.target.value);
               setErrors({ ...errors, orderd_date: null });
             }}
-          />
+            />
         </div>
 
         {errors.manufatured_date && (
@@ -540,8 +542,6 @@ export default function AddSupplier() {
             }}
           />
         </div>
-
-        {/* Add similar form fields with validation and error display */}
 
         <button type="submit" className="btn btn-primary">
           Submit
