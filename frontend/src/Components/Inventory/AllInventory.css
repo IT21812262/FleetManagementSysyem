@@ -1,0 +1,90 @@
+/* Container */
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    max-width: 100%; /* Maximize the container width */
+  }
+  
+  /* Left Section */
+  .left {
+    flex: 1;
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .left h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  /* Search Container */
+  .search-container {
+    margin-bottom: 20px;
+  }
+  
+  .search-container input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Table Container */
+  .table-container {
+    flex: 2;
+    overflow: auto;
+    margin-left: 400px;
+  }
+  
+  /* Table Styles */
+  .table {
+    width: 60%; /* Maximize the table width */
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    /* table-layout: fixed; // Added to make the table take up full width */
+  }
+  
+  .table th, .table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ccc; /*ccc */
+    white-space: nowrap; /* Prevents text from wrapping in cells */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adds ellipsis (...) for overflow text */
+  }
+  
+  .table th {
+    background-color: #f2f2f2;
+  }
+  
+  /* Table Buttons */
+  .table .btn {
+    padding: 5px 10px;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  
+  .table .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+  }
+  
+  .table .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+  }
+  
+  /* Hover effect for rows */
+  .table tbody tr:hover {
+    background-color: #f5f5f5;
+  }
+  

@@ -57,11 +57,15 @@ router.route("/add").post((req, res) => {
 
     })
 
-    newInventory.save().then(() => {    // pasing the Student object to the mongoDB database
-        res.json("Item added...", newInventory)
-    }).catch((err) =>{
-        console.log(err);
-    })    
+    newInventory
+        .save()
+        .then(() => {
+            res.status(201).json({ message: "Item added", data: newInventory });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ message: "Error adding item", error: err.message });
+        });
 
 })
 
@@ -89,18 +93,18 @@ router.route("/").get((req, res) => {
 
 // update operation
 
-http://localhost:8411/inventory/update
+http://localhost:8411/inventory/update/id*/
 
-router.route("/upodate/:id").put(async (req, res) => {
+//const Inventory = require('./models/Inventory'); // Import the Inventory model
 
-    let itemId = req.params.id;     // fetch the id value which is coming in the parameter of request
+// Update operation
+router.route("/update/:id").put(async (req, res) => {
+    let itemId = req.params.id; // Fetch the id value from the request parameters
 
-    // using destructure method
-
-    const {pid, type, name, brand, qty, unit_price, size, voltage, amp_hrs, man_date, exp_date,vehicle_brand_and_model, vehicle_man_year, reorder_level } = req.body;
+    // Destructure the request body to get the updated inventory details
+    const { pid, type, name, brand, qty, unit_price, size, voltage, amp_hrs, man_date, exp_date, vehicle_brand_and_model, vehicle_man_year, reorder_level } = req.body;
 
     const updateInventory = {
-
         pid,
         type,
         name,
@@ -115,22 +119,35 @@ router.route("/upodate/:id").put(async (req, res) => {
         vehicle_brand_and_model,
         vehicle_man_year,
         reorder_level
-
     }
-
-
-    const update = await Inventory.findByIdAndUpdate(itemId, updateInventory).then(() => {       // waiting until promise come
-
-
-        res.status(200).send({status: "Item updated...", user: update})  // updating and send the updated details into the frontend
-
+/*
+    // Parse date strings to Date objects
+    updateInventory.man_date = new Date(man_date);  // code to fetch the data to the frontend
+    updateInventory.exp_date = new Date(exp_date);
+*/
+    const updatedInventory = await Inventory.findOneAndUpdate({pid : itemId}, updateInventory).then(() => {
+        res.status(200).send({ status: "Item updated..."});
     }).catch((err) => {
         console.log(err);
-        res.status(500).send({status: "Error with updating data", error: err.message});
-    }) 
-    
-
+        res.status(500).send({ status: "Error with updating data", error: err.message });
+    })
 })
+    /*
+    try {
+        const updatedInventory = await Inventory.findByIdAndUpdate(itemId, updateInventory, { new: true });
+
+        if (!updatedInventory) {
+            return res.status(404).send({ status: "Item not found" });
+        }
+
+        res.status(200).send({ status: "Item updated...", updatedInventory });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ status: "Error with updating data", error: err.message });
+    }
+});
+*/
+
 
 // 404 - not found
 // 200 - success
@@ -148,12 +165,12 @@ router.route("/delete/:id").delete(async(req, res) => {
 
     let itemId = req.params.id;
 
-    await Inventory.findByIdAndDelete(itemId).then(() => {
+    await Inventory.findOneAndDelete({pid : itemId}).then(() => {
 
-        res.status(200).send({status: "Item deleted"});
+        res.status(200).send({status: "Product Deleted Successfully"});
     }).catch((err) => {
         console.log(err.message);
-        res.status(500).send({status: "Error with deleting item"});
+        res.status(500).send({status: "Cannot Delete the Product"});
     })
 })
 
@@ -167,7 +184,7 @@ router.route("/get/:id").get(async (req, res) => {
 
     let itemId = req.params.id;
 
-    const item = await Inventory.findByIdAndDelete(itemId).then((inventory) => {
+    const item = await Inventory.findOne({pid : itemId}).then((inventory) => {
 
         res.status(200).send({status: "Item fetched...", inventory});
     }).catch((err) => {
