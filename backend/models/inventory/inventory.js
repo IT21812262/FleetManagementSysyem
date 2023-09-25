@@ -48,6 +48,14 @@ const inventorySchema = new Schema({
         type: Date,
         required: false
     },
+    vehicle_brand_and_model : {
+        type: String,
+        required: false
+    },
+    vehicle_man_year : {
+        type: Number,
+        required: false
+    },
     reorder_level : {
         type: Number,
         required: true

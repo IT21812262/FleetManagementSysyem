@@ -49,6 +49,16 @@ import Fuel from './Components/Fuel/Fuel';
   import AllEmployees from './Components/Employee/AllEmployee';
   import UpdateEmployee from './Components/Employee/UpdateEmployee';
 
+
+  // Inventory
+
+  import Inventory from './Components/Inventory/Inventory';
+  
+  import AddInventory from './Components/Inventory/AddInventory';
+  import AllInventory from './Components/Inventory/AllInventory';
+  import UniqueInventory from './Components/Inventory/UniqueInventory';
+  import UpdateInventory from './Components/Inventory/UpdateInventory';
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -236,6 +246,46 @@ const router = createBrowserRouter([
             path: "/employee/updateEmployee/:id",
             element: <UpdateEmployee />
           },
+          
+        ]
+      },
+
+      {
+        path: "/inventory",
+        element: <Outlet />,
+        children: [
+          {
+            path: "",
+            element: <Inventory />,
+          },
+          {
+            path: "addInventory",
+            element: <AddInventory />
+          },
+          {
+            path: "allInventory",
+            element: <AllInventory />
+          },
+          {
+            path: "uniqueInventory",
+            element: <UniqueInventory />
+          },
+          {
+            path: "updateInventory",
+            element: <UpdateInventory />
+          },
+          {
+            path: "/inventory/uniqueInventory/:id",
+            element: <UniqueInventory />
+          },
+          {
+            path: "/inventory/updateInventory/:id",
+            element: <UpdateInventory />
+          },
+          /*{
+            path: "/inventory/uniqueInventory/:id",
+            element: <UniqueInventoryForView />
+         },*/ 
           
         ]
       },
