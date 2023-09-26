@@ -1,9 +1,9 @@
-import React, { useState, useEffect,  useCallback} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "./AddFuelstock.css";
+import Sidebar from '../Sidebar';
 
 export default function AddSupplier() {
-
   const[invoice_no, setInvoice_No] = useState ("");
   const[stocked_fuel_type, setStocked_Fuel_Type] = useState ("");
   const[stocked_fuel_quantity, setStocked_Fuel_Quantity] = useState ("");
@@ -60,14 +60,14 @@ export default function AddSupplier() {
     setErrors(errors);
     return Object.keys(errors).length === 0;
   }
-
   const calculateTotalCost = useCallback(() => {
-      const perLeterCostValue = parseFloat(per_leter_cost) || 0;
-      const stockedFuelQuantityValue = parseInt(stocked_fuel_quantity, 10) || 0;
-      const totalCostValue = perLeterCostValue * stockedFuelQuantityValue;
-      setTotal_Cost(totalCostValue.toFixed(2));// Round to 2 decimal places
-      
-    }, [per_leter_cost, stocked_fuel_quantity, setTotal_Cost]);
+    const perLeterCostValue = parseFloat(per_leter_cost) || 0;
+    const stockedFuelQuantityValue = parseInt(stocked_fuel_quantity, 10) || 0;
+    const totalCostValue = perLeterCostValue * stockedFuelQuantityValue;
+    setTotal_Cost(totalCostValue.toFixed(2));// Round to 2 decimal places
+    
+  }, [per_leter_cost, stocked_fuel_quantity, setTotal_Cost]);
+
 
   useEffect(() => {
     calculateTotalCost();
@@ -110,11 +110,16 @@ export default function AddSupplier() {
   }
 
   return (
-    <div className="container">
-      <form onSubmit={sentData}>
-        {/* Add validation errors display */}
-        
-        {errors.invoice_no && (
+    <div className="addfuelentry1">
+      <Sidebar />
+      <div className="contentbg">
+        <div className="contentbg-item">
+          
+            <div className="formbg-item">
+              <form onSubmit={sentData} className="formbg">
+                <div className="form-row">
+                  <div className="form-group col-md-6">
+                  {errors.invoice_no && (
           <div className="alert alert-danger">{errors.invoice_no}</div>
         )}
 
@@ -132,8 +137,9 @@ export default function AddSupplier() {
             }}
           />
         </div>
-
-        {errors.stocked_fuel_type && (
+                  </div>
+                  <div className="form-group col-md-6">
+                  {errors.stocked_fuel_type && (
           <div className="alert alert-danger">{errors.stocked_fuel_type}</div>
         )}
         
@@ -151,9 +157,11 @@ export default function AddSupplier() {
             }}
           />
         </div>
-
- 
-        {errors.stocked_fuel_quantity && (
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group col-md-6">
+                  {errors.stocked_fuel_quantity && (
           <div className="alert alert-danger">{errors.stocked_fuel_quantity}</div>
         )}
 
@@ -172,8 +180,9 @@ export default function AddSupplier() {
             }}
           />
         </div>
-
-        {errors.per_leter_cost && (
+                  </div>
+                  <div className="form-group col-md-6">
+                  {errors.per_leter_cost && (
           <div className="alert alert-danger">{errors.per_leter_cost}</div>
         )}
 
@@ -192,8 +201,9 @@ export default function AddSupplier() {
             }}
           />
         </div>
-
-        {errors.total_cost && (
+                  </div>
+                  <div className="form-group col-md-6">
+                  {errors.total_cost && (
           <div className="alert alert-danger">{errors.total_cost}</div>
         )}
 
@@ -208,8 +218,9 @@ export default function AddSupplier() {
             readOnly
           />
         </div>
-
-        {errors.stocked_fuel_date && (
+                  </div>
+                  <div className="form-group col-md-6">
+                  {errors.stocked_fuel_date && (
           <div className="alert alert-danger">{errors.stocked_fuel_date}</div>
         )}
 
@@ -227,11 +238,18 @@ export default function AddSupplier() {
             }}
             />
         </div>
+                  </div>
+                </div>
 
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
-      </form>
+                <button type="submit" className="btn btn-primary">
+                  Submit
+                </button>
+              </form>
+            </div>
+          
+        </div>
+      </div>
     </div>
   );
-}
+};
+
