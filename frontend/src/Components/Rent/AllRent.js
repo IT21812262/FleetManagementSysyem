@@ -40,7 +40,7 @@ export default function AllRent() {
 
   return (
     <div className="container">
-      <h1>All Rents</h1>
+      <h1 style={{ fontSize: "24px", color: "blue" }}>All Rent Records</h1>
 
       {/* Search input field */}
       <div>
@@ -49,20 +49,35 @@ export default function AllRent() {
           placeholder="Search by brand"
           value={searchKeyword}
           onChange={handleSearch}
+          style={{ width: "100%", padding: "10px", fontSize: "16px" }}
         />
       </div>
 
       <ul>
         {rents.map((rent) => (
-          <li key={rent.vehicle_no}>
+          <li
+            key={rent.vehicle_no}
+            style={{
+              border: "1px solid #ccc",
+              padding: "10px",
+              margin: "10px 0",
+            }}
+          >
             Vehicle No: {rent.vehicle_no}<br />
             Brand: {rent.brand}<br />
+            Owner Name: {rent.owner_name}<br />
+            Owner Phone: {rent.owner_phone}<br />
             {/* Display other rent attributes here... */}
             <Link to={`/rent/updateRent/${rent.vehicle_no}`} state={{ rentDetails: rent }}>
-              <button className="update-button">Update</button>
+              <button
+                className="update-button"
+                style={{ backgroundColor: "green", color: "white", marginRight: "10px" }}
+              >
+                Update
+              </button>
             </Link>
             <Link to={`/rent/uniqueRent/${rent.vehicle_no}`} state={{ rentDetails: rent }}>
-              <button>View</button>
+              <button style={{ backgroundColor: "blue", color: "white" }}>View</button>
             </Link>
           </li>
         ))}

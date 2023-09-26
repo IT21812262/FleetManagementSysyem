@@ -1,5 +1,5 @@
 const router = require("express").Router();
-let employee = require("../models/employee");
+let employee = require("../models/employee/employee");
 
 router.route("/add").post((req, res) => {
   const eid = req.body.eid;

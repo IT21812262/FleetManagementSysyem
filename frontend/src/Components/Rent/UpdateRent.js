@@ -53,9 +53,9 @@ export default function UpdateRent() {
     if (!rent.owner_name) {
       newErrors.owner_name = "Owner Name is required";
     }
-    if (!rent.owner_phone || !rent.owner_phone.match(/^\d{10}$/)) {
+   /*  if (!rent.owner_phone || !rent.owner_phone.match(/^\d{10}$/)) {
       newErrors.owner_phone = "Owner Phone must be 10 digits";
-    }
+    } */
     if (!rent.owner_email || !rent.owner_email.match(/^\S+@\S+\.\S+$/)) {
       newErrors.owner_email = "Invalid email format";
     }
@@ -64,9 +64,9 @@ export default function UpdateRent() {
     const currentDate = new Date();
     const currentDateString = currentDate.toISOString().split("T")[0];
 
-    if (rent.receive_date && rent.receive_date < currentDateString) {
+    /* if (rent.receive_date && rent.receive_date < currentDateString) {
       newErrors.receive_date = "Receive Date cannot be in the past";
-    }
+    } */
 
     if (rent.return_date && rent.return_date < currentDateString) {
       newErrors.return_date = "Return Date cannot be in the past";

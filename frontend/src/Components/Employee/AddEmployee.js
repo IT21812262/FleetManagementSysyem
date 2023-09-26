@@ -1,33 +1,32 @@
 import React, { useState } from "react";
 import axios from "axios";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { format } from "date-fns";
 
 export default function AddEmployee() {
   const [eid, setEid] = useState("");
   const [ename, setEname] = useState("");
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState(""); // Default to "Male"
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [dob, setDob] = useState(null);
-  const [jobroll, setJobroll] = useState("");
+  const [dob, setDob] = useState(""); // To be selected using a calendar
+  const [jobroll, setJobroll] = useState("Driver"); // Default to "Driver"
   const [bsal, setBsal] = useState("");
   const [errors, setErrors] = useState({});
+
+  const handleDateChange = (e) => {
+    setDob(e.target.value);
+  };
 
   function sendData(e) {
     e.preventDefault();
 
+    // Basic validation checks
     const newErrors = {};
     if (!eid) {
       newErrors.eid = "Employee ID is required.";
     }
     if (!ename) {
       newErrors.ename = "Employee Name is required.";
-    }
-    if (!gender) {
-      newErrors.gender = "Gender is required.";
     }
     if (!address) {
       newErrors.address = "Address is required.";
@@ -38,17 +37,12 @@ export default function AddEmployee() {
     if (!dob) {
       newErrors.dob = "Date of Birth is required.";
     }
-    if (!jobroll) {
-      newErrors.jobroll = "Job Roll is required.";
-    }
 
     if (Object.keys(newErrors).length > 0) {
+      // If there are validation errors, set them and prevent form submission
       setErrors(newErrors);
       return;
     }
-
-    // Convert DOB to a string in "yyyy-MM-dd" format
-    const formattedDob = dob ? dob.toLocaleDateString("en-GB") : null;
 
     const newEmployee = {
       eid,
@@ -57,7 +51,7 @@ export default function AddEmployee() {
       address,
       phone,
       email,
-      dob: formattedDob,
+      dob,
       jobroll,
       bsal,
     };
@@ -66,14 +60,15 @@ export default function AddEmployee() {
       .post("http://localhost:8411/employee/add", newEmployee)
       .then(() => {
         alert("Employee Added");
+        // Clear the form data by resetting state variables
         setEid("");
         setEname("");
-        setGender("");
+        setGender("Male");
         setAddress("");
         setPhone("");
         setEmail("");
-        setDob(null);
-        setJobroll("");
+        setDob("");
+        setJobroll("Driver");
         setBsal("");
         setErrors({});
       })
@@ -83,7 +78,7 @@ export default function AddEmployee() {
   }
 
   return (
-    <div className="container">
+    <div className="containercp3">
       <form onSubmit={sendData}>
         <div className="form-group">
           <label htmlFor="eid">Employee ID</label>
@@ -114,18 +109,29 @@ export default function AddEmployee() {
           {errors.ename && <div className="text-danger">{errors.ename}</div>}
         </div>
         <div className="form-group">
-          <label htmlFor="gender">Gender</label>
-          <input
-            type="text"
-            className="form-control"
-            id="gender"
-            placeholder="Enter Gender"
-            value={gender}
-            onChange={(e) => {
-              setGender(e.target.value);
-            }}
-          />
-          {errors.gender && <div className="text-danger">{errors.gender}</div>}
+          <label>Gender</label>
+          <div>
+            <label>
+              <input
+                type="radio"
+                name="gender"
+                value="Male"
+                checked={gender === "Male"}
+                onChange={(e) => setGender(e.target.value)}
+              />
+              Male
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="gender"
+                value="Female"
+                checked={gender === "Female"}
+                onChange={(e) => setGender(e.target.value)}
+              />
+              Female
+            </label>
+          </div>
         </div>
         <div className="form-group">
           <label htmlFor="address">Address</label>
@@ -169,31 +175,30 @@ export default function AddEmployee() {
           {errors.email && <div className="text-danger">{errors.email}</div>}
         </div>
         <div className="form-group">
-          <label>Date of Birth</label>
-          <br />
-          <DatePicker
-            selected={dob}
-            onChange={(date) => setDob(date)}
-            dateFormat="dd/MM/yyyy"
-            showYearDropdown
-            scrollableYearDropdown
-            yearDropdownItemNumber={100}
+          <label htmlFor="dob">Date of Birth</label>
+          <input
+            type="date"
             className="form-control"
+            id="dob"
+            value={dob}
+            onChange={handleDateChange}
           />
           {errors.dob && <div className="text-danger">{errors.dob}</div>}
         </div>
         <div className="form-group">
           <label htmlFor="jobroll">Job Roll</label>
-          <input
-            type="text"
+          <select
             className="form-control"
             id="jobroll"
-            placeholder="Enter Job Roll"
             value={jobroll}
             onChange={(e) => {
               setJobroll(e.target.value);
             }}
-          />
+          >
+            <option value="Driver">Driver</option>
+            <option value="Cleaner">Cleaner</option>
+            <option value="Manager">Manager</option>
+          </select>
           {errors.jobroll && <div className="text-danger">{errors.jobroll}</div>}
         </div>
         <div className="form-group">

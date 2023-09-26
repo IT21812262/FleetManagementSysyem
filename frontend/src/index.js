@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 //Supplier Management System
@@ -41,6 +42,30 @@ import Fuel from './Components/Fuel/Fuel';
   import UpdateFuelentry from './Components/Fuel/Fuelentry/UpdateFuelentry';
 
 
+  //Employee
+
+  import Employee from './Components/Employee/Employee';
+
+  import AddEmployee from './Components/Employee/AddEmployee';
+  import AllEmployees from './Components/Employee/AllEmployee';
+  import UpdateEmployee from './Components/Employee/UpdateEmployee';
+
+
+  // Inventory
+
+  import Inventory from './Components/Inventory/Inventory';
+  
+  import AddInventory from './Components/Inventory/AddInventory';
+  import AllInventory from './Components/Inventory/AllInventory';
+  import UniqueInventory from './Components/Inventory/UniqueInventory';
+  import UpdateInventory from './Components/Inventory/UpdateInventory';
+
+  //Maintanence
+import AddCorrectiveMaintenance from './Components/Maintenance/AddMaintenance';
+import Maintenance from './Components/Maintenance/Maintenance';
+import AllCorrectiveMaintenance from './Components/Maintenance/AllMaintenance';
+import UniqueMaintenance from './Components/Maintenance/UniqueMaintenance';
+import UpdateMaintenance from './Components/Maintenance/UpdateMaintenance';
 
 const router = createBrowserRouter([
   {
@@ -203,6 +228,111 @@ const router = createBrowserRouter([
           
         ],
       },
+
+      {
+        path: "/employee",
+        element: <Outlet />,
+        children: [
+          {
+            path: "",
+            element: <Employee />,
+          },
+          {
+            path: "addemployee",
+            element: <AddEmployee />
+          },
+          {
+            path: "allEmployees",
+            element: <AllEmployees />
+          },
+          
+          {
+            path: "updateEmployee",
+            element: <UpdateEmployee />
+          },
+          {
+            path: "/employee/updateEmployee/:id",
+            element: <UpdateEmployee />
+          },
+          
+        ]
+      },
+
+      {
+        path: "/inventory",
+        element: <Outlet />,
+        children: [
+          {
+            path: "",
+            element: <Inventory />,
+          },
+          {
+            path: "addInventory",
+            element: <AddInventory />
+          },
+          {
+            path: "allInventory",
+            element: <AllInventory />
+          },
+          {
+            path: "uniqueInventory",
+            element: <UniqueInventory />
+          },
+          {
+            path: "updateInventory",
+            element: <UpdateInventory />
+          },
+          {
+            path: "/inventory/uniqueInventory/:id",
+            element: <UniqueInventory />
+          },
+          {
+            path: "/inventory/updateInventory/:id",
+            element: <UpdateInventory />
+          },
+          /*{
+            path: "/inventory/uniqueInventory/:id",
+            element: <UniqueInventoryForView />
+         },*/ 
+          
+        ]
+      },
+      {
+        path: "/maintenance",
+        element: <Outlet />,
+        children: [
+          {
+            path: "",
+            element: <AllCorrectiveMaintenance/>,
+          },
+          {
+            path: "addmaintenance",
+            element: <AddCorrectiveMaintenance />
+          },
+          {
+            path: "allmaintenance",
+            element: <AllCorrectiveMaintenance />
+          },
+          {
+            path: "uniquemaintenance",
+            element: <UniqueMaintenance />
+          },
+          {
+            path: "updateSupplier",
+            element: <UpdateSupplier />
+          },
+          {
+            path: "/maintenance/viewJob/:id",
+            element: <UniqueMaintenance/>
+          },
+          {
+            path: "/maintenance/viewJob/:id/maintenance/update/:id",
+            element: <UpdateMaintenance />
+          },
+    
+        ]
+      },
+
     ],
   },
 ]);

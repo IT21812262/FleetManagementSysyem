@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./AddRent.css";
+//import { useLocation } from "react-router-dom";
 
 export default function AddRent() {
   const [vehicle_no, setVehicleNo] = useState("");
@@ -92,6 +93,7 @@ if (return_date && return_date < currentDateString) {
         .then((response) => {
           alert("Rent Successfully added");
           // Reset state variables here...
+          window.location.href="/rent/allRent";
           setVehicleNo("");
           setBrand("");
           setVehicleModel("");

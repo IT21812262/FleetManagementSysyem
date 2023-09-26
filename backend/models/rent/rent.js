@@ -6,6 +6,7 @@ const rentSchema = new Schema({
 
     vehicle_no : {
         type : String,
+        unique: true,
         required: true
     },
     brand : {
