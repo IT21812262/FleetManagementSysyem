@@ -190,7 +190,8 @@ export default function AddSupplier() {
         .post("http://localhost:8411/supplier/add", newSupplier)
         .then((response) => {
           alert(response.data.message);
-          alert("Supplier Successfully added");
+          window.location.href = "/supplier";
+          //alert("Supplier Successfully added");
           // ... rest of the code to reset form fields
 
           setSupplier_ID("");
@@ -284,7 +285,7 @@ export default function AddSupplier() {
         <div className="form-group">
           <label htmlFor="phone_number">Phone Number</label>
           <input
-            type="text"
+            type="number"
             className={`form-control ${errors.phone_number ? "is-invalid" : ""}`}
             id="phone_number"
             placeholder="Enter Phone Number"
@@ -380,13 +381,13 @@ export default function AddSupplier() {
           <label htmlFor="item_size">Item Size</label>
           <input 
             type="text"  // Change the type to text to allow float values
-            className={`form-control ${errors.item_size ? "is-invalid" : ""}`}
-            id="item_size"
+             className={`form-control ${errors.item_size ? "is-invalid" : ""}`}
+             id="item_size"
             placeholder="Enter Item Size"
             value={item_size}
-            onChange={(e) => {
+           onChange={(e) => {
               setItem_Size(e.target.value);
-              setErrors({ ...errors, item_size: null });
+          setErrors({ ...errors, item_size: null });
   }}
 />
  

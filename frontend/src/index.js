@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 //Supplier Management System

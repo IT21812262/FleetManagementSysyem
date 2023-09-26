@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import "./UpdateSupplier.css";
@@ -31,17 +31,22 @@ export default function UpdateSupplier() {
   
   const [errors, setErrors] = useState({});
   const [searchQ, setSearchQ] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
+  
+  const calculateTotalPrice = useCallback(() => {
+    const unitPriceValue = parseFloat(supplierData.unit_price) || 0;
+    const quantityValue = parseInt(supplierData.quntity, 10) || 0;
+    const totalPriceValue = unitPriceValue * quantityValue;
+    setTotalPrice(totalPriceValue.toFixed(2)); // Round to 2 decimal places
+  }, [supplierData.unit_price, supplierData.quntity]);
+
+  useEffect(() => {
+    calculateTotalPrice();
+  }, [calculateTotalPrice, supplierData, totalPrice]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     let newValue = value;
-  
-    if (id === "unit_price" || id === "quntity") {
-      const unitPrice = parseFloat(value);
-      const quantity = parseFloat(supplierData.quntity);
-      const totalPrice = isNaN(unitPrice) || isNaN(quantity) ? "" : (unitPrice * quantity).toFixed(2);
-      newValue = totalPrice;
-    }
   
     setSupplierData((prevData) => ({
       ...prevData,
@@ -49,8 +54,11 @@ export default function UpdateSupplier() {
     }));
   
     validateInput(id, newValue);
+    if (id === 'unit_price' || id === 'quntity') {
+      calculateTotalPrice();
+    }
   };
-  
+
   const validateInput = (id, value) => {
     let error = "";
 
@@ -110,6 +118,7 @@ export default function UpdateSupplier() {
           case "quntity":
               error = isNaN(value) ? "Quantity should contain only numbers" : "";
               break;
+
         case "unit_price":
           error = !/^\d+(\.\d+)?$/.test(value) ? "Unit Price should be a valid float value" : "";
           break;    
@@ -479,33 +488,30 @@ export default function UpdateSupplier() {
 <div className="form-group">
   <label htmlFor="unit_price">Unit Price</label>
   <input
-  type="number"
-  step="0.01"
-  value={supplierData.unit_price}
-  className={`form-control ${errors.unit_price ? "is-invalid" : ""}`}
-  id="unit_price"
-  placeholder="Enter Unit Price"
-  onChange={(e) => handleInputChange(e)}
-/>
+    type="number"
+    step="0.01"
+    value={supplierData.unit_price}
+    className={`form-control ${errors.unit_price ? "is-invalid" : ""}`}
+    id="unit_price"
+    placeholder="Enter Unit Price"
+    onChange={handleInputChange}
+  />
   {errors.unit_price && (
     <div className="invalid-feedback">{errors.unit_price}</div>
   )}
 </div>
 
 <div className="form-group">
-  <label htmlFor="total_price">Total Price</label>
-  <input
-    type="number"
-    value={supplierData.total_price}
-    className={`form-control ${errors.total_price ? "is-invalid" : ""}`}
-    id="total_price"
-    placeholder="Total Price"
-    disabled // Disable editing of total_price
-  />
-  {errors.total_price && (
-    <div className="invalid-feedback">{errors.total_price}</div>
-  )}
-</div>
+        <label htmlFor="total_price">Total Price</label>
+        <input
+          type="number"
+          value={totalPrice}
+          className="form-control"
+          id="total_price"
+          placeholder="Total Price"
+          disabled
+        />
+      </div>
 
 <div className="form-group">
   <label htmlFor="orderd_date">Order Date</label>
@@ -556,5 +562,4 @@ export default function UpdateSupplier() {
       </form>
     </div>
   );
-}
-
+} 
