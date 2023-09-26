@@ -1,3 +1,25 @@
+.navbar {
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 20px;
+}
+.logo {
+    position: absolute;
+    top: auto;
+    left: 31px;
+    width: 170px;
+    height: 76px;
+    object-fit:contain;
+  }
+.navbar-brand {
+  color: #333;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.navbar-nav {
+  margin-left: auto;
+}
 
 
 /* .navbar-brand {
@@ -93,3 +115,20 @@
   font-weight: bold;
 }
  */
+
+.navbar-nav li {
+  margin-right: 40px;
+}
+
+.navbar-nav a {
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 18px;
+}
+
+.navbar-nav a:hover {
+  color: #1DA1F2;
+}
+

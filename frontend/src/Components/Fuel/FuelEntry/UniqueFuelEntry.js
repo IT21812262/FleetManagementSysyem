@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
+import "./UniqueFuelentry.css"; // Import the CSS file
+import Sidebar from "../Sidebar"; // Import the Sidebar component
 
 export default function UniqueFuelentry() {
   const { id } = useParams();
@@ -54,42 +56,48 @@ export default function UniqueFuelentry() {
   };
 
   return (
-    <div className="container">
-      <h1>Unique Fuel Entry</h1>
+    <div className="addfuelentry1"> {/* Apply the mcontainer1 CSS class */}
+      <Sidebar /> {/* Render the Sidebar component */}
+      <div className="contentbg"> {/* Apply the content background CSS class */}
+        <div className="contentbg-item"> {/* Apply the content background item CSS class */}
+          <div className="container1m">
+            <h1 className="h1m">Unique Fuel Entry</h1>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={searchQ}
-          onChange={handleSearchQ}
-          placeholder="Enter Vehicle Id"
-        />
-        <button type="submit">Fetch Fuel Entry Data</button>
-        <Link to="/fuel/allFuelentries">
-          <button type="button">Cancel</button>
-        </Link>
-      </form>
+            <form className="form1m" onSubmit={handleSubmit}>
+              <input className="inputm"
+                type="text"
+                value={searchQ}
+                onChange={handleSearchQ}
+                placeholder="Enter Vehicle Id"
+              />
+              <button className="buttonm" type="submit">Fetch Fuel Entry Data</button>
+              <Link to="/fuel/allFuelentries">
+                <button className="buttonm" type="button">Cancel</button>
+              </Link>
+            </form>
 
-      {fuelentry ? (
-        <ul>
-          <li key={fuelentry.id}>
+            {fuelentry ? (
+              <ul className="ulm">
+                <li className="lim" key={fuelentry.id}>
+                  Vehicle ID: {fuelentry.vehicle_id}<br />
+                  Fuel Date: {fuelentry.fuel_date}<br />
+                  Fuel Type: {fuelentry.fuel_type}<br />
+                  Fuel Quantity: {fuelentry.fuel_quantity}<br />
+                  Fuel Cost: {fuelentry.fuel_cost}<br />
+                  Vehicle Milage: {fuelentry.vehicle_milage}<br />
 
-            Vehicle ID: {fuelentry.vehicle_id}<br />
-            Fuel Date: {fuelentry.fuel_date}<br />
-            Fuel Type: {fuelentry.fuel_type}<br />
-            Fuel Quantity: {fuelentry.fuel_quantity}<br />
-            Fuel Cost: {fuelentry.fuel_cost}<br />
-            Vehicle Milage: {fuelentry.vehicle_milage}<br />
+                  <button className="buttonm" onClick={() => handleDelete(fuelentry.vehicle_id)}>Delete Fuel Entry</button>
+                </li>
+              </ul>
+            ) : (
+              <p>No fuel entry found with the specified Vehicle Id.</p>
+            )}
 
-            <button onClick={() => handleDelete(fuelentry.vehicle_id)}>Delete Fuel Entry</button>
-          </li>
-        </ul>
-      ) : (
-        <p>No fuel entry found with the specified Vehicle Id.</p>
-      )}
-
-      {/* Link to All Fuel Entry page */}
-     <Link to="/fuel/fuelentry/allfuelentries">All Fuel Entries</Link>
+            {/* Link to All Fuel Entry page */}
+            <Link to="/fuel/fuelentry/allfuelentries">All Fuel Entries</Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

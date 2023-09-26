@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
 
+
 export default function UniqueFuelstock() {
   const { id } = useParams();
   const [fuelstock, setFuelstock] = useState(null);

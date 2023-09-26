@@ -1,22 +1,12 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Sidebar from './Sidebar';
+
 
 const Fuel = () => {
   return (
     <div>
-      <h2>Fuel Main Page</h2>
-      <ul>
-        
-        <li>
-          <Link to="/fuel/fuelentry">Fuel Entry</Link>
-        </li>
-        <li>
-          <Link to="/fuel/fuelstock">Fuel Stock</Link>
-        </li>
-        
-        
-      </ul>
+      <Sidebar />
     </div>
   );
 }
