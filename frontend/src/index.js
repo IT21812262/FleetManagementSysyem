@@ -59,6 +59,13 @@ import Fuel from './Components/Fuel/Fuel';
   import UniqueInventory from './Components/Inventory/UniqueInventory';
   import UpdateInventory from './Components/Inventory/UpdateInventory';
 
+  //Maintanence
+import AddCorrectiveMaintenance from './Components/Maintenance/AddMaintenance';
+import Maintenance from './Components/Maintenance/Maintenance';
+import AllCorrectiveMaintenance from './Components/Maintenance/AllMaintenance';
+import UniqueMaintenance from './Components/Maintenance/UniqueMaintenance';
+import UpdateMaintenance from './Components/Maintenance/UpdateMaintenance';
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -287,6 +294,41 @@ const router = createBrowserRouter([
             element: <UniqueInventoryForView />
          },*/ 
           
+        ]
+      },
+      {
+        path: "/maintenance",
+        element: <Outlet />,
+        children: [
+          {
+            path: "",
+            element: <AllCorrectiveMaintenance/>,
+          },
+          {
+            path: "addmaintenance",
+            element: <AddCorrectiveMaintenance />
+          },
+          {
+            path: "allmaintenance",
+            element: <AllCorrectiveMaintenance />
+          },
+          {
+            path: "uniquemaintenance",
+            element: <UniqueMaintenance />
+          },
+          {
+            path: "updateSupplier",
+            element: <UpdateSupplier />
+          },
+          {
+            path: "/maintenance/viewJob/:id",
+            element: <UniqueMaintenance/>
+          },
+          {
+            path: "/maintenance/viewJob/:id/maintenance/update/:id",
+            element: <UpdateMaintenance />
+          },
+    
         ]
       },
 
