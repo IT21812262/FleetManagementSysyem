@@ -4,6 +4,7 @@ let correctiveMaintence = require("../models/maintenance/maintenance");
 //add date to database
 router.route("/add").post((req,res)=>{
 
+    const jobID = req.body.jobID;
     const DID = req.body.DID;
     const vehicleNo = req.body.vehicleNo;
     const Date_report = Date(req.body.Date_report);
@@ -14,6 +15,7 @@ router.route("/add").post((req,res)=>{
 
     const newcorrectiveMaintence = new correctiveMaintence({
     
+        jobID,
         DID,
         vehicleNo,
         Date_report,
@@ -40,31 +42,39 @@ router.route("/display").get((req,res)=>{
     })
 })
 
-//Update data in the database
-router.route("/update/:correctiveJobid").put(async(req,res)=>{
-    let id = req.params.correctiveJobid;
-    const {priority, description, parts_used} = req.body;
 
+// Update data in the database
+router.route("/update/:id").put(async (req, res) => {
+    let jId = req.params.id;
+    const { jobID,DID,vehicleNo,Date_report,priority, description, parts_used,Date_complete } = req.body;
+  
     const updatecorrectiveMaintence = {
+        jobID,
+        DID,
+        vehicleNo,
+        Date_report,
         priority,
         description,
-        parts_used
+        parts_used,
+        Date_complete
     }
 
-    const update = await correctiveMaintence.findByIdAndUpdate(id,updatecorrectiveMaintence).then(()=>{
-        res.status(200).send({status : "Job Updated"})
+    const update = await correctiveMaintence.findOneAndUpdate({jobID : jId}, updatecorrectiveMaintence)
+    .then(()=>{
+        res.status(200).send({status: "Job Updated Sucess!"});
     }).catch((err)=>{
         console.log(err);
-        res.status(500).send({status:"Error with updating data", error: err.message})
+        res.status(500).send({status : "Not Updated. Error in Update", error: err.message});
     })
-
-})
+  });
+  
 
 //delete Job
 router.route("/delete/:id").delete(async(req,res)=>{
-    let id = req.params.id;
+    let jId = req.params.id;
 
-    await correctiveMaintence.findByIdAndDelete(id).then(()=>{
+    await correctiveMaintence.findOneAndDelete({jobID : jId})
+    .then(()=>{
         res.status(200).send({status:"Job deleted"});
     }).catch((err)=>{
         console.log(ree.message);
@@ -74,12 +84,12 @@ router.route("/delete/:id").delete(async(req,res)=>{
 
 //Finding Unique job
 router.route("/get/:id").get(async(req,res) =>{
-    let jobId = req.params.id;
+    let jId = req.params.id;
 
-    const CorrectiveJob = await correctiveMaintence.findByIdAndDelete(jobId) 
+    const update = await correctiveMaintence.findOne({jobID : jId})
     
-    .then(() =>{
-        res.status(200).send({status :"Job Data Successfully Fetched!!!!!!", supplier});
+    .then((correctiveMaintence) =>{
+        res.status(200).send({status :"Job Data Successfully Fetched!!!!!!", correctiveMaintence});
     }).catch((err) => {
         console.log(err);
         res.status(500).send({status: "Not Fetched. Error in the job data Fetched!!!!", error: err.message});
