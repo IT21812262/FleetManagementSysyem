@@ -40,8 +40,13 @@ import Fuel from './Components/Fuel/Fuel';
   import UniqueFuelentry from './Components/Fuel/Fuelentry/UniqueFuelentry';
   import UpdateFuelentry from './Components/Fuel/Fuelentry/UpdateFuelentry';
 
+  //Vehicle
 
-
+  import Vehicle from './Components/Vehicle/Vehicle';
+  import AllVehicles from './Components/Vehicle/AllVehicle';
+  import AddVehicle from './Components/Vehicle/AddVehicle';
+  import UpdateVehicle from './Components/Vehicle/UpdateVehicle';
+  
 const router = createBrowserRouter([
   {
     path: "/",
@@ -202,6 +207,35 @@ const router = createBrowserRouter([
           },
           
         ],
+      },
+
+      {
+        path: "/vehicle",
+        element: <Outlet />,
+        children: [
+          {
+            path: "",
+            element: <Vehicle />,
+          },
+          {
+            path: "addvehicle",
+            element: <AddVehicle />
+          },
+          {
+            path: "allVehicles",
+            element: <AllVehicles />
+          },
+          
+          {
+            path: "updateVehicle",
+            element: <UpdateVehicle />
+          },
+          {
+            path: "/vehicle/updateVehicle/:id",
+            element: <UpdateVehicle />
+          },
+        
+        ]
       },
     ],
   },
