@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
+import "./UniqueSupplier.css";
 
 export default function UniqueSupplier() {
   const { id } = useParams();
@@ -65,12 +66,10 @@ export default function UniqueSupplier() {
           placeholder="Enter Supplier ID"
         />
         <button type="submit">Fetch Supplier Data</button>
-        <Link to="/supplier/allSuppliers">
-          <button type="button">Cancel</button>
-        </Link>
+        
       </form>
 
-      {supplier ? (
+       {supplier ? (
         <ul>
           <li key={supplier.id}>
             Supplier ID: {supplier.supplier_id}<br />
@@ -86,19 +85,22 @@ export default function UniqueSupplier() {
             Brand: {supplier.brand}<br />
             Quantity: {supplier.quntity}<br />
             Unit Price: {supplier.unit_price}<br />
-            Total Price: {supplier.total_price}<br />
+            Total Price: {(parseFloat(supplier.quntity) * parseFloat(supplier.unit_price)).toFixed(2)}<br />
             Ordered Date: {supplier.orderd_date}<br />
             Manufactured Date: {supplier.manufatured_date}<br />
             Invoice Number: {supplier.invoice_number}<br />
+            <Link to="/supplier/allSuppliers">
+          <button type="button">Cancel</button>
+        </Link>
             <button onClick={() => handleDelete(supplier.supplier_id)}>Delete Supplier</button>
           </li>
         </ul>
       ) : (
         <p>No supplier found with the specified ID.</p>
-      )}
-
+      )} 
       {/* Link to All Suppliers page */}
      <Link to="/supplier/allSuppliers">All Suppliers</Link>
     </div>
   );
 }
+ 
