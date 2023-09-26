@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const correctiveSchema = new Schema({
+    jobID: {
+        type : String,
+        required : true 
+    },
     DID : {
         type : String,
         required : true 

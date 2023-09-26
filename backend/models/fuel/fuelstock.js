@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const fuelStockSchema = new Schema({
+const fuelstockSchema = new Schema({
     
     invoice_no : {
         type : String,
@@ -33,9 +33,8 @@ const fuelStockSchema = new Schema({
         type : Date,
         required : true
     }
-
 })
 
-const FuelStock = mongoose.model("FuelStock", fuelStockSchema);
+const Fuelstock = mongoose.model("Fuelstock", fuelstockSchema);
 
-module.exports = FuelStock;
+module.exports = Fuelstock;

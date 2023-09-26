@@ -1,0 +1,48 @@
+/* Container styles */
+.containeryt {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    text-align: center; /* Align text to the center */
+}
+
+/* Typography */
+h1 {
+    font-size: 32px; /* Increase font size */
+    margin-bottom: 20px;
+    line-height: 1.5; /* Increase line spacing */
+}
+
+/* List styles */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* List item styles */
+li {
+    margin-bottom: 10px;
+}
+
+/* Button styles */
+button {
+    font-size: 16px; /* Button font size */
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    padding: 8px 12px; /* Button dimensions */
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+button:hover {
+    background-color: #d32f2f;
+}
+
+
+  
