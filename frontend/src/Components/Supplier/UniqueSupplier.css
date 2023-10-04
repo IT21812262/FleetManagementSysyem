@@ -42,7 +42,7 @@ form button {
 form button:hover {
   background-color: #45a049;
 }
-
+/*
 ul {
   list-style: none;
   padding: 0;
@@ -68,7 +68,7 @@ ul li button {
 ul li button:hover {
   background-color: #c0392b;
 }
-
+*/
 /* Additional styles */
 .container button[type="button"] {
   background-color: #3498db; /* Corrected button color */
