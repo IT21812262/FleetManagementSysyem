@@ -192,7 +192,7 @@ const UpdateFuelentry = () => {
         onSubmit={handleSubmit}
       >
         
-        <form onSubmit={handleSubmit}>
+        <form className="updateFuelEntryForm" onSubmit={handleSubmit}>
         
         {fuelentryData.vehicle_id && (
       <Header

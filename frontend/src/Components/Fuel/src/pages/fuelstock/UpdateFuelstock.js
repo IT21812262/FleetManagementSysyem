@@ -190,7 +190,7 @@ const UpdateFuelstock = () => {
         onSubmit={handleSubmit}
       >
         
-        <form onSubmit={handleSubmit}>
+        <form className="updateFuelStockForm" onSubmit={handleSubmit}>
         
         {fuelstockData.invoice_no && (
       <Header
