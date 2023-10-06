@@ -157,7 +157,7 @@ const AddFuelstock = ({onClose}) => {
           <Formik onSubmit={sentData} initialValues={initialValues} validationSchema={checkoutSchema}>
             
             {({ values, errors, touched, handleBlur, handleChange }) => (
-              <form onSubmit={sentData}>
+              <form className="addFuelStockForm" onSubmit={sentData}>
                 <center><Header title="ADD FUEL STOCK" subtitle="Adding new fuel stock to Fleet" /></center>
                 <Box
                   display="grid"

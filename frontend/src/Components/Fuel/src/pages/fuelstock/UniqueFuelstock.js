@@ -90,7 +90,7 @@ const UniqueFuelstock = ({ onClose }) => {
         onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit }) => (
-          <form onSubmit={handleSubmit}>
+          <form className="uniqueFuelStockForm" onSubmit={handleSubmit}>
             {fuelstock && (
   <Header
     title={`UNIQUE FUEL STOCK FOR ${fuelstock.invoice_no}`}

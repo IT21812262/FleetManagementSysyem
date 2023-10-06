@@ -21,6 +21,9 @@ import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 
+import DieselTank from "../../components/DieselTank";
+import PetrolTank from "../../components/PetrolTank";
+
 const Dashboard = () => {
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.up("sm"));
@@ -56,50 +59,23 @@ const Dashboard = () => {
 
       {/* GRID & CHARTS */}
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid xs={12} sm={12} md={6} lg={3} xl={3}>
+        <Grid xs={12} sm={12} md={6} lg={3} xl={6}>
         <Box
             width="100%"
-            height="250px" 
+            height="400px" 
             backgroundColor={colors.primary[400]}
             display="flex"
-            flexDirection="column" 
+            flexDirection="row" 
             alignItems="center"
-            justifyContent="center"
-            padding="20px"
+            justifyContent="space-between"
+            padding="50px"
             borderRadius= "15px"
           >
-          <Typography variant="h6" fontWeight="bold" color={colors.grey[100]} paddingTop= "">
-              PETROL LEVEL
-            </Typography>
-            <ProgressCircle progress="0.75" size="125"/>
-            
-            <Typography variant="body2" color={colors.grey[100]}>
-              100K L
-            </Typography>
+          <DieselTank />
+          <PetrolTank />
           </Box>
         </Grid>
-        <Grid xs={12} sm={12} md={6} lg={3} xl={3}>
-        <Box
-            width="100%"
-            height="250px" 
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            flexDirection="column" 
-            alignItems="center"
-            justifyContent="center"
-            padding="20px"
-            borderRadius= "15px"
-          >
-          <Typography variant="h6" fontWeight="bold" color={colors.grey[100]} paddingBottom= "15px">
-              DIESEL LEVEL
-            </Typography>
-            <ProgressCircle progress="0.75" size="125"/>
-            
-            <Typography variant="body2" color={colors.grey[100]} >
-              100K L
-            </Typography>
-          </Box>
-        </Grid>
+        
         <Grid xs={12} sm={12} md={6} lg={3} xl={3}>
         <Box
             width="100%"

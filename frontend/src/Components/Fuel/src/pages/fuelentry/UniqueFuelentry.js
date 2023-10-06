@@ -90,7 +90,7 @@ const UniqueFuelentry = ({ onClose }) => {
         onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit }) => (
-          <form onSubmit={handleSubmit}>
+          <form className="uniqueFuelEntryForm" onSubmit={handleSubmit}>
             {fuelentry && (
   <Header
     title={`UNIQUE FUEL DISPATCH FOR ${fuelentry.vehicle_id}`}
