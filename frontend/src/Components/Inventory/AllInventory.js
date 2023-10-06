@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"; // Import Link from React Router
 import axios from "axios";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-// import "./AllInventory.css";
+import "./AllInventory.css";
 
 
 
@@ -141,12 +141,12 @@ const generatePdf = () => {
 
 
   return (
-    <div >
-        <div className="left">
+    <div className="all-inventory-container-g9">
+        <div className="left-g1">
       <h1>Inventory</h1>
 
       {/* Search input and buttons */}
-        <div className="search-container">
+        <div className="search-container-g2">
         <input
           type="text"
           placeholder="Search..."
@@ -155,7 +155,7 @@ const generatePdf = () => {
 
         </div>
 
-        <div className="buttons-container">
+        <div className="buttons-container-g3">
         <button type="button" onClick={generatePdf}>Generate and Download Monthly Report</button>
       </div>
 
@@ -165,8 +165,8 @@ const generatePdf = () => {
       </div>
 
         
-      <div className="table-container">
-      <table className="table">
+      <div className="table-container-g4">
+      <table className="table-g5">
         <thead>
           <tr>
             <th>Product ID</th>
@@ -210,7 +210,7 @@ const generatePdf = () => {
               <td>
                 
               <Link to={`/inventory/uniqueInventory/${inventory.pid}`} state={{ inventoryData: inventory}}>
-                <button className="btn btn-primary">View</button>
+                <button className="btn btn-primary-g6">View</button>
                 </Link>
               </td>
 {/* <td>
@@ -227,12 +227,12 @@ const generatePdf = () => {
 
               <td>
               <Link to={`/inventory/updateInventory/${inventory.pid}`} state={{ inventoryData: inventory}}>
-                <button className="btn btn-primary">Edit</button>
+                <button className="btn btn-primary-g7">Edit</button>
                 </Link>
               </td>
               <td>
                 <button
-                  className="btn btn-danger"
+                  className="btn btn-danger-g8"
                   onClick={() => handleDelete(inventory.pid)}
                 >
                   Delete

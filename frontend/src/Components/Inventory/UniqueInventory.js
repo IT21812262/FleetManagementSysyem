@@ -1,7 +1,7 @@
 // UniqueInventory 
 
 
-// import "./UniqueInventory.css"; // Import the CSS file
+ import "./UniqueInventory.css"; // Import the CSS file
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
@@ -76,7 +76,7 @@ const handleDelete = (itemId) => {
   };
 
   return (
-    <div className="container">
+    <div className="container-g20">
       <h1>Unique Product</h1>
 
       <form onSubmit={handleSubmit}>
@@ -90,52 +90,52 @@ const handleDelete = (itemId) => {
         &nbsp;&nbsp;&nbsp;
 
         <Link to="/inventory/allInventory">
-          <button className="cancel-button" type="button">Cancel</button>
+          <button className="cancel-button-g21" type="button">Cancel</button>
         </Link>
       </form>
 
       {inventory ? (
-        <div className="product-box">
-        <div className="product-detail">
+        <div className="product-box-g22">
+        <div className="product-detail-g23">
           <strong>Product ID:</strong> {inventory.pid}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Product Type:</strong> {inventory.type}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Product Name:</strong> {inventory.name}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Product Brand:</strong> {inventory.brand}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Quantity:</strong> {inventory.qty}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Unit Price:</strong> {inventory.unit_price}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Size:</strong> {inventory.size}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Voltage:</strong> {inventory.voltage}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Ampiers:</strong> {inventory.amp_hrs}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Manufactured Date:</strong> {inventory.man_date}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Expiry Date:</strong> {inventory.exp_date}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Vehicle Brand and Model:</strong> {inventory.vehicle_brand_and_model}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Vehicle Manufacture Year:</strong> {inventory.vehicle_man_year}
         </div>
-        <div className="product-detail">
+        <div className="product-detail-g23">
           <strong>Reorder Level:</strong> {inventory.reorder_level}
         </div>
         
@@ -147,7 +147,7 @@ const handleDelete = (itemId) => {
 
       {/* Link to All Products page */}
      <Link to="/inventory/allInventory">
-     <button className="dashboard-button">Back To DASHBOARD</button></Link>
+     <button className="dashboard-button-24">Back To DASHBOARD</button></Link>
     </div>
   );
 }
