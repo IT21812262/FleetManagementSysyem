@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import "./AllSupplier.css";
+
 
 export default function AllSuppliers() {
   const [suppliers, setSuppliers] = useState([]);
@@ -32,7 +32,6 @@ export default function AllSuppliers() {
     const columns = [
       "Supplier ID",
       "Supplier Name",
-      "Supplier NIC",
       "Phone Number",
       "Supplier Possition",
       "Email",
@@ -52,7 +51,6 @@ export default function AllSuppliers() {
     const rows = filteredSuppliers.map((supplier) => [
       supplier.supplier_id,
       supplier.supplier_name,
-      supplier.supplier_NIC,
       supplier.phone_number,
       supplier.supplier_possition,
       supplier.email,
@@ -94,7 +92,7 @@ export default function AllSuppliers() {
     return (
       regex.test(supplier.supplier_id) ||
       regex.test(supplier.supplier_name) ||
-      regex.test(supplier.supplier_NIC) ||
+      //regex.test(supplier.supplier_NIC) ||
       regex.test(supplier.phone_number) ||
       regex.test(supplier.supplier_possition) ||
       regex.test(supplier.email) ||

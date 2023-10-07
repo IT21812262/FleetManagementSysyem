@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
+
 //Supplier Management System
 import Root from './Root'
 import Supplier from './Components/Supplier/Supplier';
@@ -23,23 +24,18 @@ import UpdateRent from './Components/Rent/UpdateRent';
 import UniqueRent from './Components/Rent/UniqueRent';
 
 // Fuel Management System
-import Fuel from './Components/Fuel/Fuel';
+import Index from './Components/Fuel/src/App';
+import Fuelstock from './Components/Fuel/src/pages/fuelstock/index';
+import Fuelentry from './Components/Fuel/src/pages/fuelentry/index';
+import Fuelconsumtion from './Components/Fuel/src/pages/fuelconsumtion/index';
+import Fuelinvoices from './Components/Fuel/src/pages/invoices/index';
+import Fuelanalytics from './Components/Fuel/src/pages/faq/index';
 
-  //Fuel Stock
-  import Fuelstock from './Components/Fuel/Fuelstock/Fuelstock';
+import UniqueFuelentry from "./Components/Fuel/src/pages/fuelentry/UniqueFuelentry";
+import UpdateFuelentry  from "./Components/Fuel/src/pages/fuelentry/UpdateFuelentry";
 
-  import AddFuelstock from './Components/Fuel/Fuelstock/AddFuelstock';
-  import AllFuelstocks from './Components/Fuel/Fuelstock/AllFuelstock';
-  import UniqueFuelstock from './Components/Fuel/Fuelstock/UniqueFuelstock';
-  import UpdateFuelstock from './Components/Fuel/Fuelstock/UpdateFuelstock';
-
-  //Fuel Entry
-  import Fuelentry from './Components/Fuel/Fuelentry/Fuelentry';
-
-  import AddFuelentry from './Components/Fuel/Fuelentry/AddFuelentry';
-  import AllFuelentries from './Components/Fuel/Fuelentry/AllFuelentry';
-  import UniqueFuelentry from './Components/Fuel/Fuelentry/UniqueFuelentry';
-  import UpdateFuelentry from './Components/Fuel/Fuelentry/UpdateFuelentry';
+import UniqueFuelstock from "./Components/Fuel/src/pages/fuelstock/UniqueFuelstock";
+import UpdateFuelstock  from "./Components/Fuel/src/pages/fuelstock/UpdateFuelstock";
 
 
   //Employee
@@ -66,6 +62,7 @@ import Maintenance from './Components/Maintenance/Maintenance';
 import AllCorrectiveMaintenance from './Components/Maintenance/AllMaintenance';
 import UniqueMaintenance from './Components/Maintenance/UniqueMaintenance';
 import UpdateMaintenance from './Components/Maintenance/UpdateMaintenance';
+
 
 const router = createBrowserRouter([
   {
@@ -150,85 +147,48 @@ const router = createBrowserRouter([
 
           {
             path: "",
-            element: <Fuel />,
-          },
-
-          {
-            path: "fuelstock",
-            element: <Outlet />,
+            element: <Index />,
             children: [
               {
-                path: "",
+                path: "/fuel/fuelstock",
                 element: <Fuelstock />,
               },
               {
-                path: 'addFuelstock',
-                element: <AddFuelstock />,
-              },
-              {
-                path: 'allFuelstocks',
-                element: <AllFuelstocks />,
-              },
-              {
-                path: 'uniqueFuelstock',
-                element: <UniqueFuelstock />,
-              },
-              {
-                path: 'updateFuelstock',
-                element: <UpdateFuelstock />,
-              },
-              {
-                path: '/fuel/fuelstock/updateFuelstock/:id',
-                element: <UpdateFuelstock />,
-              },
-              {
-                path: '/fuel/fuelstock/uniqueFuelstock/:id',
-                element: <UniqueFuelstock />,
-              },
-
-            ],
-          },
-
-          {
-            path: 'fuelentry',
-            element: <Outlet />,
-            children: [
-
-              {
-                path: "",
+                path: "/fuel/fuelentry",
                 element: <Fuelentry />,
               },
               {
-                path: 'addFuelentry',
-                element: <AddFuelentry />,
+                path: "/fuel/fuelconsumtion",
+                element: <Fuelconsumtion />,
               },
               {
-                path: 'allFuelentries',
-                element: <AllFuelentries />,
+                path: "/fuel/invoices",
+                element: <Fuelinvoices />,
               },
               {
-                path: 'uniqueFuelentry',
+                path: "/fuel/faq",
+                element: <Fuelanalytics />,
+              },
+              {
+                path: "/fuel/uniquefuelentry/:id",
                 element: <UniqueFuelentry />,
               },
               {
-                path: 'updateFuelentry',
+                path: "/fuel/updatefuelentry/:id",
                 element: <UpdateFuelentry />,
               },
               {
-                path: '/fuel/fuelentry/updateFuelentry/:id',
-                element: <UpdateFuelentry />,
+                path: "/fuel/uniquefuelstock/:id",
+                element: <UniqueFuelstock />,
               },
               {
-                path: '/fuel/fuelentry/uniqueFuelentry/:id',
-                element: <UniqueFuelentry />,
+                path: "/fuel/updatefuelstock/:id",
+                element: <UpdateFuelstock />,
               },
-              
             ],
           },
-          
         ],
       },
-
       {
         path: "/employee",
         element: <Outlet />,

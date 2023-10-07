@@ -30,7 +30,7 @@ export default function UniqueSupplier() {
           <li key={supplier.id}>
             Supplier ID: {supplier.supplier_id}<br />
             Supplier Name: {supplier.supplier_name}<br />
-            Supplier NIC: {supplier.supplier_NIC}<br />
+            {/*Supplier NIC: {supplier.supplier_NIC}<br />*/}
             Phone Number: {supplier.phone_number}<br />
             Supplier Position: {supplier.supplier_position}<br />
             Email: {supplier.email}<br />

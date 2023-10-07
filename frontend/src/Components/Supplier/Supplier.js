@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Supplier.css';
+
 //import Button from 'react-bootstrap/Button';
 
 const Supplier = () => {
