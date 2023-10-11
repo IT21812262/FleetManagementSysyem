@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import axios from "axios";
-// import "./AddInventory.css";
+ import "./AddInventory.css";
 
 export default function AddInventory() {
   const [pid, setPid] = useState("");
@@ -34,6 +34,8 @@ export default function AddInventory() {
   const [vehicleBrandAndModelError, setVehicleBrandAndModelError] = useState("");
   const [vehicleManYearError, setVehicleManYearError] = useState("");
   const [reorderLevelError, setReOrderLevelError] = useState("");
+
+  const [showQtyErrorPopup, setShowQtyErrorPopup] = useState(false);
 
   function sendData(e) {
     e.preventDefault();
@@ -186,22 +188,25 @@ export default function AddInventory() {
   };
 
   const validateQty = (qty) => {
-    if (!qty ) {
-        setQtyError("Product Quantity Cannot be empty");
-        return false;
-      }
+    if (!qty) {
+      setQtyError("Product Quantity Cannot be empty");
+      return false;
+    }
     if (!/^\d+$/.test(qty) || parseInt(qty) <= 0) {
       setQtyError("Product Quantity must be a positive whole number greater than zero");
       return false;
     }
-    if (parseInt(qty) < reorder_level) {
-        setQtyError("Product Quantity cannot be less than the Reorder Level");
-        return false;
-      }
+    if (parseInt(qty) <= reorder_level) {
+      setQtyError("Product Quantity cannot be less than the Reorder Level");
+      setShowQtyErrorPopup(true); // Show the popup when qty is less than or equal to reorder level
+      return false;
+    }
 
     setQtyError("");
     return true;
   };
+
+
   
 
   const validateUnitPrice = (unitPrice) => {
@@ -364,6 +369,17 @@ export default function AddInventory() {
       <form onSubmit={sendData}>
         {/* ... (other input fields with error messages) */}
 
+
+         {/* Popup for qty less than or equal to reorder level */}
+      {showQtyErrorPopup && (
+        <div className="popup">
+          <p className="popup-message">Qty cannot be less than the reorder level</p>
+          <button className="popup-close" onClick={() => setShowQtyErrorPopup(false)}>
+            Close
+          </button>
+        </div>
+      )}
+
         <div className="form-group">
   <label htmlFor="pid">Product Id</label>
   <input
@@ -431,6 +447,23 @@ export default function AddInventory() {
   />
   {brandError && <div className="text-danger">{brandError}</div>}
 </div>
+
+<div className="form-group">
+          <label htmlFor="reorder_level">Re-Order Level</label>
+          <input
+            type="text"
+            className="form-control"
+            id="reorder_level"
+            placeholder="Enter Re-Order Level"
+            value={reorder_level}
+            onChange={(e) => {
+              setReOrderLevel(e.target.value);
+              // Validate Re-Order Level as the user types
+              validateReorderLevel(e.target.value);
+            }}
+          />
+          {reorderLevelError && <div className="text-danger">{reorderLevelError}</div>}
+        </div>
 
 <div className="form-group">
   <label htmlFor="qty">Product Quantity</label>
@@ -585,7 +618,7 @@ export default function AddInventory() {
   {vehicleManYearError && <div className="text-danger">{vehicleManYearError}</div>}
 </div>
 
-        <div className="form-group">
+        {/* <div className="form-group">
           <label htmlFor="reorder_level">Re-Order Level</label>
           <input
             type="text"
@@ -600,7 +633,7 @@ export default function AddInventory() {
             }}
           />
           {reorderLevelError && <div className="text-danger">{reorderLevelError}</div>}
-        </div>
+        </div> */}
 
 
 

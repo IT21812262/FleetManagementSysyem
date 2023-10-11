@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
-import "./UniqueSupplier.css";
+
 
 export default function UniqueSupplier() {
   const { id } = useParams();
@@ -74,7 +74,7 @@ export default function UniqueSupplier() {
           <li key={supplier.id}>
             Supplier ID: {supplier.supplier_id}<br />
             Supplier Name: {supplier.supplier_name}<br />
-            Supplier NIC: {supplier.supplier_NIC}<br />
+            {/*Supplier NIC: {supplier.supplier_NIC}<br />*/}
             Phone Number: {supplier.phone_number}<br />
             Supplier Position: {supplier.supplier_possition}<br />
             Email: {supplier.email}<br />

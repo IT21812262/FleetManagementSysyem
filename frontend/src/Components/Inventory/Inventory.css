@@ -1,46 +1,51 @@
-.inventory-container {
+/* Assuming your existing class names */
+
+/* Center the buttons using flexbox */
+.inventory-containerg-10 {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 47vh; /* Center vertically within the viewport */
+  height: 50vh; /* Adjust the height as needed */
 }
 
-.centered-heading {
+.left-column-g11 {
   text-align: center;
 }
 
-
-
-.nav-list {
-  list-style-type: none;
+/* Style the buttons */
+.nav-list-g12 {
+  list-style: none;
   padding: 0;
+  margin: 0;
 }
 
-.nav-link {
-  text-decoration: none;
-  display: block;
+.nav-list-g12 li {
   margin: 10px 0;
 }
 
-.tab-button {
-  background-color: #007bff;
+.tab-button-g14 {
+  width: 100%; /* Maximize the width while keeping the same height */
+  height: 40px; /* Set a fixed height for all buttons */
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff; /* Blue color */
   color: #fff;
   border: none;
-  padding: 10px 20px;
+  border-radius: 5px;
   cursor: pointer;
-  width: 100%; /* Set a fixed width for all buttons */
-  height: 40px; /* Set a fixed height for all buttons */
+  transition: background-color 0.3s ease; /* Smooth hover effect */
 }
 
-.tab-button:hover {
-  background-color: #0056b3;
+.tab-button-g14:hover {
+  background-color: #0056b3; /* Darker blue on hover */
 }
 
-.left-column {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Align items to the left */
-    padding-left: 20px; /* Add some left padding for spacing */
-    width: 100%; /* Ensure the content takes up the full width */
-  }
+.nav-link-g13 {
+  text-decoration: none;
+  color: inherit;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
