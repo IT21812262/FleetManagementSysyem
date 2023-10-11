@@ -23,6 +23,7 @@ import ProgressCircle from "../../components/ProgressCircle";
 
 import DieselTank from "../../components/DieselTank";
 import PetrolTank from "../../components/PetrolTank";
+import StockTable from "../../components/StockTable";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -59,27 +60,43 @@ const Dashboard = () => {
 
       {/* GRID & CHARTS */}
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid xs={12} sm={12} md={6} lg={3} xl={6}>
+        <Grid xs={12} sm={12} md={6} lg={3} xl={3}>
         <Box
             width="100%"
-            height="400px" 
+            height="300px" 
             backgroundColor={colors.primary[400]}
             display="flex"
             flexDirection="row" 
             alignItems="center"
-            justifyContent="space-between"
+            justifyContent="center"
             padding="50px"
             borderRadius= "15px"
           >
           <DieselTank />
+          
+          </Box>
+        </Grid>
+        <Grid xs={12} sm={12} md={6} lg={3} xl={3}>
+        <Box
+            width="100%"
+            height="300px" 
+            backgroundColor={colors.primary[400]}
+            display="flex"
+            flexDirection="row" 
+            alignItems="center"
+            justifyContent="center"
+            padding="50px"
+            borderRadius= "15px"
+          >
+          
           <PetrolTank />
           </Box>
         </Grid>
         
-        <Grid xs={12} sm={12} md={6} lg={3} xl={3}>
+        <Grid xs={12} sm={12} md={6} lg={3} xl={6}>
         <Box
             width="100%"
-            height="250px" 
+            height="300px" 
             backgroundColor={colors.primary[400]}
             display="flex"
             flexDirection="column" 
@@ -88,44 +105,14 @@ const Dashboard = () => {
             padding="20px"
             borderRadius= "15px"
           >
-          <Typography variant="h6" fontWeight="bold" color={colors.grey[100]} paddingTop= "15px">
-              FUEL STATUS
-            </Typography>
-            <ProgressCircle progress="0.75" size="100"/>
-            
-            <Typography variant="body2" color={colors.grey[100]}>
-              FUEL LEVEL IS NORMAL
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid xs={12} sm={12} md={6} lg={3} xl={3}>
-          <Box
-            width="100%"
-            height= "250px"
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <StatBox
-              title="1,325,134"
-              subtitle="Traffic Received"
-              progress="0.80"
-              increase="+43%"
-              icon={
-                <TrafficIcon
-                  sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-                />
-              }
-            />
+          <BarChart isDashboard={true} />
           </Box>
         </Grid>
 
-        <Grid
-          xs={12}
-          sm={12}
-          md={8}
-          lg={8}
+        <Grid Grid xs={12} sm={12} md={8} lg={8} xl={8}
+          
+          
+          
           container
           rowSpacing={1}
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
@@ -138,89 +125,19 @@ const Dashboard = () => {
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
+                
               >
-                <Box>
-                  <Typography
-                    variant="h5"
-                    fontWeight="600"
-                    color={colors.grey[100]}
-                  >
-                    Revenue Generated
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    fontWeight="600"
-                    color={colors.greenAccent[500]}
-                  >
-                    $58,373,698
-                  </Typography>
-                </Box>
-                <Box>
-                  <IconButton>
-                    <DownloadOutlinedIcon
-                      sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
-                    />
-                  </IconButton>
-                </Box>
+                
+                
               </Box>
-              <Box height="250px" m="-20px 0 0 0">
-                <LineChart isDashboard={true} />
+              <Box height="680px" m="-20px 0 0 0">
+               
               </Box>
             </Box>
           </Grid>
-          <Grid xs={12} sm={12} md={6}>
-            <Box backgroundColor={colors.primary[400]} p="30px">
-              <Typography variant="h5" fontWeight="600">
-                Campaign
-              </Typography>
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                mt="25px"
-              >
-                <ProgressCircle size="125" />
-                <Typography
-                  variant="h5"
-                  color={colors.greenAccent[500]}
-                  sx={{ mt: "15px" }}
-                >
-                  $48,352 revenue generated
-                </Typography>
-                <Typography>
-                  Includes extra misc expenditures and costs
-                </Typography>
-              </Box>
-            </Box>
-          </Grid>
-          <Grid xs={12} sm={12} md={6}>
-            <Box backgroundColor={colors.primary[400]}>
-              <Typography
-                variant="h5"
-                fontWeight="600"
-                sx={{ padding: "30px 30px 0 30px" }}
-              >
-                Sales Quantity
-              </Typography>
-              <Box height="250px" mt="-20px">
-                <BarChart isDashboard={true} />
-              </Box>
-            </Box>
-          </Grid>
-          <Grid xs={12}>
-            <Box backgroundColor={colors.primary[400]} padding="30px">
-              <Typography
-                variant="h5"
-                fontWeight="600"
-                sx={{ marginBottom: "15px" }}
-              >
-                Geography Based Traffic
-              </Typography>
-              <Box height="200px">
-                <GeographyChart isDashboard={true} />
-              </Box>
-            </Box>
-          </Grid>
+          
+          
+          
         </Grid>
         <Grid xs={12} sm={12} md={4} lg={4} xl={4}>
           <Box
@@ -245,39 +162,8 @@ const Dashboard = () => {
                 Resent Transaction
               </Typography>
             </Box>
-            {mockTransactions.map((transaction, i) => {
-              return (
-                <Box
-                  key={`${transaction}-${i}`}
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  borderBottom={`4px solid ${colors.primary[500]}`}
-                  p="15px"
-                >
-                  <Box>
-                    <Typography
-                      variant="h5"
-                      fontWeight="600"
-                      color={colors.greenAccent[100]}
-                    >
-                      {transaction.txId}
-                    </Typography>
-                    <Typography color={colors.grey[100]}>
-                      {transaction.user}
-                    </Typography>
-                  </Box>
-                  <Box color={colors.grey[100]}>{transaction.date}</Box>
-                  <Box
-                    color={colors.greenAccent[500]}
-                    p="5px 10px"
-                    borderRadius="4px"
-                  >
-                    ${transaction.cost}
-                  </Box>
-                </Box>
-              );
-            })}
+            <StockTable />
+            
           </Box>
         </Grid>
       </Grid>
