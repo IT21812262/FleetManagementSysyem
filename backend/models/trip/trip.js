@@ -3,13 +3,13 @@ const Schema = mongoose.Schema;
 const tripSchema = new Schema({
     
     tripid : {
-        type: String,
+        type: Number,
         required: true
     },
 
     tripname : {
         type: String,
-        required: false
+        required: true
     },
 
     tripduration :{
@@ -34,7 +34,7 @@ const tripSchema = new Schema({
 
     startpoint: {
         type: String,
-        required: false
+        required: true
     },
 
     destination: {
@@ -56,17 +56,6 @@ const tripSchema = new Schema({
         type: Number,
         required: true
     },
-
-    startfuel: {
-        type:Number,
-        required: true
-    },
-
-    endfuel:{
-        type:Number,
-        required: false
-    }
-
 
 })
 
