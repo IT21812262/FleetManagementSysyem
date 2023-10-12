@@ -1,7 +1,7 @@
 // UniqueInventory 
 
 
- import "./UniqueInventory.css"; // Import the CSS file
+//import "./UniqueInventory.css"; // Import the CSS file
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";

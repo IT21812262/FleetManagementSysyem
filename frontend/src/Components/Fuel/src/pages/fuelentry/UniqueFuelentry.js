@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Box, Button, TextField } from '@mui/material'
+import { Box, Button, TextField, Typography, Paper, List, ListItem, ListItemText } from '@mui/material';
 import { Formik, Field, ErrorMessage } from "formik";
 import * as yup from 'yup'; // Import yup for validation
 import { useMediaQuery } from "@mui/material";
 import Header from "../../components/Header";
 import { useParams } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-
-import "./AddFuelentry.css";
+import { Grid } from '@mui/material';
+import { tokens } from "../../theme";
+import { useTheme} from "@mui/material";
 
 
 
@@ -18,6 +19,9 @@ const UniqueFuelentry = ({ onClose }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { id } = useParams();
   const [fuelentry, setFuelentry] = useState(null);
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const validationSchema = yup.object().shape({
     vehicle_id: yup
@@ -80,186 +84,103 @@ const UniqueFuelentry = ({ onClose }) => {
 
   return (
     <Box m="20px">
-      
-
-
-
       <Formik
         initialValues={{ vehicle_id: "" }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting, handleSubmit }) => (
-          <form className="uniqueFuelEntryForm" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             {fuelentry && (
-  <Header
-    title={`UNIQUE FUEL DISPATCH FOR ${fuelentry.vehicle_id}`}
-    subtitle="View a unique fuel dispatch data"
-  />
-)}
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
-            >
+              <Header
+                title={`UNIQUE FUEL DISPATCH FOR ${fuelentry.vehicle_id}`}
+                subtitle="View a unique fuel dispatch data"
+              />
+            )}
+            <Box mt={2}>
               <Field
                 as={TextField}
                 fullWidth
                 variant="filled"
-                type="text"
                 label="ENTER VEHICLE ID"
                 name="vehicle_id"
-                error={false} // Don't show error by default
-                sx={{ gridColumn: "span 4" }}
+                error={false}
               />
               <ErrorMessage name="vehicle_id">
-                {(msg) => <p style={{ color: 'red' }}>{msg}</p>}
+                {(msg) => <Typography color="error">{msg}</Typography>}
               </ErrorMessage>
             </Box>
-
-            <Box display="flex" justifyContent="end" mt="20px" width="100%">
+  
+            <Box mt={2} display="flex" justifyContent="space-between">
               <Button
                 type="submit"
                 color="secondary"
                 variant="contained"
-                style={{ flex: '1', marginRight: '10px' }}
                 disabled={isSubmitting}
               >
                 FETCH FUEL ENTRY DATA
               </Button>
               <Button
-              onClick={handleButtonClick}
                 type="button"
                 color="secondary"
                 variant="contained"
-                style={{ flex: '1', marginLeft: '10px' }}
-                
+                onClick={handleButtonClick}
                 disabled={isSubmitting}
-                
               >
                 CANCEL
               </Button>
             </Box>
-
+  
             {fuelentry ? (
-             
-             <ul className="ulm" style={{ listStyleType: "none", padding: 0 }}>
-              <Box
-  display="flex"
-  flexDirection="column" // Stack items vertically
-  gap="10px" // Add vertical gap between rows
->
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-    <li
-      className="lim"
-      key={fuelentry.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-        marginRight: "10px",
-      }}
-    >
-      Vehicle ID: {fuelentry.vehicle_id}<br />
-    </li>
-    <li
-      className="lim"
-      key={fuelentry.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-      }}
-    >
-      Fuel Date: {formatDate(fuelentry.fuel_date)}<br />
-    </li>
-  </div>
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-    <li
-      className="lim"
-      key={fuelentry.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-        marginRight: "10px",
-      }}
-    >
-      Fuel Type: {fuelentry.fuel_type}<br />
-    </li>
-    <li
-      className="lim"
-      key={fuelentry.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-      }}
-    >
-      Fuel Quantity: {fuelentry.fuel_quantity}<br />
-    </li>
-  </div>
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-    <li
-      className="lim"
-      key={fuelentry.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-        marginRight: "10px",
-      }}
-    >
-      Fuel Cost: {fuelentry.fuel_cost}<br />
-    </li>
-    <li
-      className="lim"
-      key={fuelentry.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-      }}
-    >
-      Vehicle Mileage: {fuelentry.vehicle_milage}<br />
-    </li>
-  </div>
-</Box>
-<br />
-             {/* Add other fuel entry details here */}
-             <button
-               className="buttonm"
-               onClick={() => handleDelete(fuelentry.vehicle_id)}
-               style={{
-                 width: '100%',
-                 backgroundColor: 'red',
-                 color: 'white',
-                 padding: '10px',
-                 border: 'none',
-                 cursor: 'pointer',
-                 transition: 'background-color 0.3s',
-               }}
-               onMouseEnter={(e) => {
-                 e.target.style.backgroundColor = 'darkred';
-               }}
-               onMouseLeave={(e) => {
-                 e.target.style.backgroundColor = 'red';
-               }}
-             >
-               Delete Fuel Entry
-             </button>
-           </ul>
+              <Paper elevation={3} style={{ marginTop: '20px', padding: '20px', backgroundColor: colors.primary[400] }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <List>
+                      <ListItem>
+                        <ListItemText primary="Vehicle ID" secondary={fuelentry.vehicle_id} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Fuel Date" secondary={formatDate(fuelentry.fuel_date)} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Fuel Type" secondary={fuelentry.fuel_type} />
+                      </ListItem>
+                    </List>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <List>
+                      <ListItem>
+                        <ListItemText primary="Fuel Quantity" secondary={fuelentry.fuel_quantity} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Fuel Cost" secondary={fuelentry.fuel_cost} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Vehicle Mileage" secondary={fuelentry.vehicle_milage} />
+                      </ListItem>
+                    </List>
+                  </Grid>
+                </Grid>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleDelete(fuelentry.vehicle_id)}
+                >
+                  Delete Fuel Entry
+                </Button>
+              </Paper>
             ) : (
-              <p>No fuel entry found with the specified Vehicle Id.</p>
+              <Typography variant="h6" color="textSecondary" style={{ marginTop: '20px' }}>
+                No fuel entry found with the specified Vehicle Id.
+              </Typography>
             )}
           </form>
         )}
       </Formik>
     </Box>
   );
+  
 };
 
 export default UniqueFuelentry;
