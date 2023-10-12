@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import "./UpdateSupplier.css";
+
 
 export default function UpdateSupplier() {
 
@@ -11,7 +11,7 @@ export default function UpdateSupplier() {
       location.state?.supplierData || {
         supplier_id: "",
         supplier_name: "",
-        supplier_NIC: "",
+        //supplier_NIC: "",
         phone_number: "",
         supplier_possition: "",
         email: "",
@@ -31,17 +31,91 @@ export default function UpdateSupplier() {
   
   const [errors, setErrors] = useState({});
   const [searchQ, setSearchQ] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  //const [brand, setBrand] = useState(""); // Define 'brand' state
+  //const [brandOptions, setBrandOptions] = useState([]); // Define 'brandOptions' state
+  
+  const calculateTotalPrice = useCallback(() => {
+    const unitPriceValue = parseFloat(supplierData.unit_price) || 0;
+    const quantityValue = parseInt(supplierData.quntity, 10) || 0;
+    const totalPriceValue = unitPriceValue * quantityValue;
+    setTotalPrice(totalPriceValue.toFixed(2)); // Round to 2 decimal places
+  }, [supplierData.unit_price, supplierData.quntity]);
+
+  useEffect(() => {
+    calculateTotalPrice();
+  }, [calculateTotalPrice, supplierData, totalPrice]);
+
+
+  /*const handleBrandChange = (e) => {
+    const brandValue = e.target.value;
+    setBrand(brandValue);
+    setErrors({ ...errors, brand: null }); // Clear the error when input changes
+
+    if (!brandValue) {
+      setErrors({ ...errors, brand: "Brand is required" });
+    }
+  };*/
+
+
+  /*const handleItemTypeChange = (e) => {
+    const selectedItemType = e.target.value;
+    setItem_type(selectedItemType);
+  
+    // Define a mapping of item types to brand options
+  const brandOptionsMap = {
+    Fuel: ["Ceypetco", "Synopec"],
+    Battery: ["Amaron", "Exide", "Lucas", "Dagenite","Yokohama"],
+    Lubricants: ["Mobil", "Valvoline", "Shell", "Caltex","Laugfs"],
+    Tyres: ["Dunlop", "Michelin", "DSI", "Hankook",],
+    Filters: ["Toyota", "Mitsubishi", "Sakura","TATA"],
+    BrakePads: ["FBK", "Akebono","Power Stop ","StopTech" ], 
+    // Add more mappings as needed
+  };
+
+  // Update brand options based on the selected item type
+  setBrandOptions(brandOptionsMap[selectedItemType] || []);
+
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    item_type: null, // Clear the error for item_type
+  }));
+};*/
+
+
+/*const handleItemTypeChange = (e) => {
+  const selectedItemType = e.target.value;
+  setSupplierData((prevData) => ({
+    ...prevData,
+    item_type: selectedItemType,
+    brand: "", // Clear brand when item type changes
+  }));
+
+  const brandOptionsMap = {
+    Lubricants: ["Mobil", "Valvoline", "Shell", "Caltex", "Laugfs"],
+    Tyres: ["Dunlop", "Michelin", "DSI", "Hankook"],
+    BrakePads: ["FBK", "Akebono", "Power Stop", "StopTech"],
+    Battery: ["Amaron", "Exide", "Lucas", "Dagenite", "Yokohama"],
+    Filters: ["Toyota", "Mitsubishi", "Sakura", "TATA"],
+    Fuel: ["Ceypetco", "Synopec"],
+  };
+
+  // Update brand options based on the selected item type
+  const options = brandOptionsMap[selectedItemType] || [];
+  setBrandOptions(options);
+  setBrand(options[0] || ""); // Set the first brand option or clear if none
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    item_type: null, // Clear the error for item_type
+  }));
+};*/
+
+
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     let newValue = value;
-  
-    if (id === "unit_price" || id === "quntity") {
-      const unitPrice = parseFloat(value);
-      const quantity = parseFloat(supplierData.quntity);
-      const totalPrice = isNaN(unitPrice) || isNaN(quantity) ? "" : (unitPrice * quantity).toFixed(2);
-      newValue = totalPrice;
-    }
   
     setSupplierData((prevData) => ({
       ...prevData,
@@ -49,13 +123,16 @@ export default function UpdateSupplier() {
     }));
   
     validateInput(id, newValue);
+    if (id === 'unit_price' || id === 'quntity') {
+      calculateTotalPrice();
+    }
   };
-  
+
   const validateInput = (id, value) => {
     let error = "";
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const numberRegex = /^[0-9]*$/;
+   // const numberRegex = /^[0-9]*$/;
     const itemCodeRegex = /^[A-Za-z]{2}\d{4}$/;
     
     switch (id) {
@@ -64,9 +141,9 @@ export default function UpdateSupplier() {
         error = value.length !== 6 ? "Supplier ID must be 6 characters" : "";
         break;
 
-    case "supplier_NIC":
+   /* case "supplier_NIC":
         error = value.length !== 12 ? "Supplier NIC must be 12 characters" : "";
-        break;
+        break;*/
 
     case "phone_number":
         const phoneNumberRegex = /^[0-9]{10}$/;
@@ -89,12 +166,13 @@ export default function UpdateSupplier() {
         error = value.trim() === "" ? "Item Name is required" : "";
         break;
 
-    case "item_size":
-         error =
-         value.trim() === "" || !numberRegex.test(value)
-         ? "Item Size should contain only numbers"
-         : "";
-     break;  
+        case "item_size":
+          error =
+            value.trim() === "" || !/^\d+(\.\d+)?$/.test(value)
+              ? "Item Size should be a valid number"
+              : "";
+          break;
+        
 
      case "item_code":
         error =
@@ -110,6 +188,7 @@ export default function UpdateSupplier() {
           case "quntity":
               error = isNaN(value) ? "Quantity should contain only numbers" : "";
               break;
+
         case "unit_price":
           error = !/^\d+(\.\d+)?$/.test(value) ? "Unit Price should be a valid float value" : "";
           break;    
@@ -194,7 +273,7 @@ export default function UpdateSupplier() {
     //alert("Insert");
     const { supplier_id, 
         supplier_name, 
-        supplier_NIC, 
+        //supplier_NIC, 
         phone_number,
         supplier_possition,
         email,
@@ -214,7 +293,7 @@ export default function UpdateSupplier() {
       const newSupplier = {
         supplier_id,
         supplier_name,
-        supplier_NIC,
+       // supplier_NIC,
         phone_number,
         supplier_possition,
         email,
@@ -270,7 +349,7 @@ export default function UpdateSupplier() {
     setSupplierData({
         supplier_id: "",
         supplier_name: "",
-        supplier_NIC: "",
+        //supplier_NIC: "",
         phone_number:"",
         supplier_possition:"",
         email:"",
@@ -326,7 +405,7 @@ export default function UpdateSupplier() {
           />
         </div>
 
-        <div className="form-group">
+       {/*} <div className="form-group">
   <label htmlFor="supplier_NIC">Supplier NIC</label>
   <input
     type="text"
@@ -339,7 +418,7 @@ export default function UpdateSupplier() {
   {errors.supplier_NIC && (
     <div className="invalid-feedback">{errors.supplier_NIC}</div>
   )}
-</div>
+  </div>*/}
 
 <div className="form-group">
   <label htmlFor="phone_number">Phone Number</label>
@@ -415,6 +494,47 @@ export default function UpdateSupplier() {
     <div className="invalid-feedback">{errors.item_type}</div>
   )}
 </div>
+{/*<div>
+      <div className="form-group">
+        <label htmlFor="item_type">Item Name</label>
+        <select
+          className={`form-control ${errors.item_type ? 'is-invalid' : ''}`}
+          id="item_type"
+          value={item_type}
+          onChange={handleItemTypeChange}
+        >
+          <option value="">Select Item Type</option>
+          <option value="Lubricants">Lubricants (oil)</option>
+          <option value="Tyres">Tyres</option>
+          <option value="BrakePads">Brake Pads</option>
+          <option value="Battery">Battery</option>
+          <option value="Filters">Filters</option>
+          <option value="Fuel">Fuel (Diesel & Petrol)</option>
+        </select>
+        {errors.item_type && (
+          <div className="invalid-feedback">{errors.item_type}</div>
+        )}
+      </div>
+    </div>*/}
+
+{/*<div>
+          <div className="form-group">
+            <label htmlFor="item_type">Item Name</label>
+            <select
+              className={`form-control ${errors.item_type ? "is-invalid" : ""}`}
+              id="item_type"
+              value={supplierData.item_type}
+              onChange={handleItemTypeChange}
+            >
+              <option value="">Select Item Type</option>
+              <option value="Lubricants">Lubricants (oil)</option>
+              {/* ... (other options) //
+            </select>
+            {errors.item_type && (
+              <div className="invalid-feedback">{errors.item_type}</div>
+            )}
+          </div>
+        </div>*/}
 
 <div className="form-group">
   <label htmlFor="item_size">Item Size</label>
@@ -461,6 +581,37 @@ export default function UpdateSupplier() {
   )}
 </div>
 
+{/*<div className="form-group">
+  <label htmlFor="brand">Brand</label>
+  {brandOptions.length > 0 ? (
+    <select
+      className={`form-control ${errors.brand ? "is-invalid" : ""}`}
+      id="brand"
+      value={brand}
+      onChange={handleBrandChange}
+    >
+      <option value="">Select Brand</option>
+      {brandOptions.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  ) : (
+    <input
+      type="text"
+      className={`form-control ${errors.brand ? "is-invalid" : ""}`}
+      id="brand"
+      placeholder="Enter Brand"
+      value={brand}
+      onChange={handleBrandChange}
+    />
+  )}
+  {errors.brand && (
+    <div className="invalid-feedback">{errors.brand}</div>
+  )}
+</div>*/}
+
 <div className="form-group">
   <label htmlFor="quntity">Quantity</label>
   <input
@@ -479,33 +630,30 @@ export default function UpdateSupplier() {
 <div className="form-group">
   <label htmlFor="unit_price">Unit Price</label>
   <input
-  type="number"
-  step="0.01"
-  value={supplierData.unit_price}
-  className={`form-control ${errors.unit_price ? "is-invalid" : ""}`}
-  id="unit_price"
-  placeholder="Enter Unit Price"
-  onChange={(e) => handleInputChange(e)}
-/>
+    type="number"
+    step="0.01"
+    value={supplierData.unit_price}
+    className={`form-control ${errors.unit_price ? "is-invalid" : ""}`}
+    id="unit_price"
+    placeholder="Enter Unit Price"
+    onChange={handleInputChange}
+  />
   {errors.unit_price && (
     <div className="invalid-feedback">{errors.unit_price}</div>
   )}
 </div>
 
 <div className="form-group">
-  <label htmlFor="total_price">Total Price</label>
-  <input
-    type="number"
-    value={supplierData.total_price}
-    className={`form-control ${errors.total_price ? "is-invalid" : ""}`}
-    id="total_price"
-    placeholder="Total Price"
-    disabled // Disable editing of total_price
-  />
-  {errors.total_price && (
-    <div className="invalid-feedback">{errors.total_price}</div>
-  )}
-</div>
+        <label htmlFor="total_price">Total Price</label>
+        <input
+          type="number"
+          value={totalPrice}
+          className="form-control"
+          id="total_price"
+          placeholder="Total Price"
+          disabled
+        />
+      </div>
 
 <div className="form-group">
   <label htmlFor="orderd_date">Order Date</label>
@@ -556,5 +704,4 @@ export default function UpdateSupplier() {
       </form>
     </div>
   );
-}
-
+} 

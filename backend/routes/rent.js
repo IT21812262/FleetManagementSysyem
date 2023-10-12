@@ -90,13 +90,21 @@ router.route("/update/:id").put(async (req, res)=>{
         rental
     }
 
-    const update = await Rent.findByIdAndUpdate(userID, updateRent)
+   /*  const update = await Rent.findByIdAndUpdate(userID, updateRent)
     .then(()=>{
         res.status(200).send({status: "Vehicle Updated"})
     }).catch((err)=> {
         console.log(err);
         res.status(500).send({status: "Error with updating data", error: err.message});
-    })
+    }) */
+
+    const update = await Rent.findOneAndUpdate({vehicle_no : userID}, updateRent)
+    .then(() => {
+        res.status(200).send({status: "Rent updated successfully!!!!!!!"});
+}).catch((err) => {
+    console.log(err);
+    res.status(500).send({status: "Not updated. Error in the Update!!!!", error: err.message});
+})
 })
 
 //delete
@@ -104,17 +112,24 @@ router.route("/update/:id").put(async (req, res)=>{
 router.route("/delete/:id").delete(async (req, res)=>{
     let userID = req.params.id;
 
-    await Rent.findByIdAndDelete(userID)
+    /* await Rent.findByIdAndDelete(userID)
     .then(()=>{
         res.status(200).send({status: "Vehicle Deleted"})
     }).catch((err)=>{
         console.log(err.message);
         res.status(500).send({status: "Error with delete user", error: err.message});
+    }) */
+    await Rent.findOneAndDelete({vehicle_no : userID})
+    .then(() =>{
+        res.status(200).send({status :"Rent Deleted Successfully!!!!!!"});
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({status: "Not deleted. Error in the delete!!!!", error: err.message});
     })
 
 })
 
-router.route("/get/:id").get(async (req, res) =>{
+/* router.route("/get/:id").get(async (req, res) =>{
     let userId = req.params.id;
     const user = await Rent.findById(userId)
     .then(()=>{
@@ -123,6 +138,22 @@ router.route("/get/:id").get(async (req, res) =>{
         console.log(err.message);
         res.status(500).send({status: "Error with get Vehicle", error: err.message});
     })
-})
+}) */
+
+router.route('/get/:id').get(async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const rent = await Rent.findOne({ vehicle_no: userId });
+      
+      if (!rent) {
+        return res.status(404).send({ status: 'Rent Data Not Found' });
+      }
+  
+      res.status(200).send({ status: 'Rent Data Successfully Fetched!!!!!!', rent });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({ status: 'Error in Fetching Rent Data', error: err.message });
+    }
+  });
 
 module.exports = router;
