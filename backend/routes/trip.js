@@ -3,7 +3,7 @@ let trip = require("../models/trip/trip");
 
 router.route("/add").post((req,res)=>{
 
-    const tripid = Number(req.body.tripid);
+    const tripid = req.body.tripid;
     const tripname = req.body.tripname;
     const tripduration = Number(req.body.tripduration);
     const tripdistance = Number(req.body.tripdistance);
@@ -14,6 +14,8 @@ router.route("/add").post((req,res)=>{
     const tripgoods = req.body.tripgoods;
     const arrivaltime = Number(req.body.arrivaltime);
     const departuretime = Number(req.body.departuretime);
+    const startfuel = Number(req.body.startfuel);
+    const endfuel = Number(req.body.endfuel);
 
     const newtrip = new trip({
 
@@ -27,7 +29,9 @@ router.route("/add").post((req,res)=>{
         destination,
         tripgoods,
         arrivaltime,
-        departuretime
+        departuretime,
+        startfuel,
+        endfuel
 
     })
 
@@ -54,19 +58,8 @@ router.route("/").get((req,res)=>{
 
 router.route("/update/:id").put(async(req,res)=>{
 
-    let tripid = req.params.id;
-    const {tripname,
-        tripduration,
-        tripdistance,
-        vehicleno,
-        driverid,
-        startpoint,
-        destination,
-        tripgoods,
-        arrivaltime,
-        departuretime} = req.body; 
-
-    const updatetrip = {
+    let tripId = req.params.id;
+    const {tripid,
         tripname,
         tripduration,
         tripdistance,
@@ -76,10 +69,27 @@ router.route("/update/:id").put(async(req,res)=>{
         destination,
         tripgoods,
         arrivaltime,
-        departuretime
-    }
+        departuretime,
+        startfuel,
+        endfuel} = req.body; 
 
-    const update = await trip.findByIdAndUpdate(tripid,updatetrip).then(()=>{
+    const updatetrip = {
+        tripid,
+        tripname,
+        tripduration,
+        tripdistance,
+        vehicleno,
+        driverid,
+        startpoint,
+        destination,
+        tripgoods,
+        arrivaltime,
+        departuretime,
+        startfuel,
+        endfuel
+    }
+    const update = await trip.findOneAndUpdate({_id : tripId}, updatetrip)
+    .then(()=>{
 
         res.status(200).send({status:"Trip Updated"})
 
@@ -89,18 +99,22 @@ router.route("/update/:id").put(async(req,res)=>{
     })
 })
 
-router.route("/delete/:id").delete(async(req,res)=>{
-
-    let tripid =  req.params.id;
-
-    await trip.findByIdAndDelete(tripid).then(()=>{
-        res.status(200).send({status:"Trip Deleted"});
-    }).catch((err)=>{
-        console.log(err.message);
-        res.status(500).send({status:"Error with delete user",error:err.message});
-    })
-})
-
+router.route("/delete/:id").delete(async (req, res) => {
+    let tripId = req.params.id;
+  
+    try {
+      const deletedTrip = await trip.findByIdAndDelete(tripId);
+      if (!deletedTrip) {
+        return res.status(404).send({ status: "Trip not found" });
+      }
+  
+      res.status(200).send({ status: "Trip Deleted" });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send({ status: "Error with deleting trip", error: err.message });
+    }
+  })
+  
 router.route("/get/:id").get(async(req,res)=>{
     let tripid = req.params.id;
     const user = await trip.findById(tripid).then((trip)=>{
@@ -111,4 +125,15 @@ router.route("/get/:id").get(async(req,res)=>{
     })
 })
 
+router.route("/get/:id").get(async (req, res) => {
+    let tid = req.params.id;
+    const user = await trip.findById(tid)
+      .then((trip) => {
+        res.status(200).send({ status: "Employee Fetched", trip });
+      })
+      .catch((err) => {
+        console.log(err.message);
+        res.status(500).send({ status: "Error with getting user", error: err.message });
+      });
+  });
 module.exports = router;
