@@ -1,19 +1,19 @@
-/* PopUp.css */
+/* 
 .popup {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: none; /* Transparent background */
+    background: none;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 999; /* Ensure the pop-up is on top of other content */
+    z-index: 999;
   }
   
   .popup-content {
-    background: #3C99DC; /* Skyblue background color for the box */
+    background: #3C99DC; 
     padding: 20px;
     border-radius: 5px;
     text-align: center;
@@ -22,11 +22,11 @@
     font-size: 20px;
   }
   
-  /* Center the close button */
+
   .popup-content button {
     margin-top: 10px;
     cursor: pointer;
-    color: whitesmoke; /* Red color for the close button text */
+    color: whitesmoke;
     background-color: #f44336;
   }
-  
+   */
