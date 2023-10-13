@@ -169,27 +169,31 @@ const Supplier = () => {
 
             </Link>
           </Button>
-          <Button
-            
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-              margin: "2px",
-              transition: "background-color 0.3s", // Add a transition for smooth color change
-                "&:hover": {
-                backgroundColor: "#141B2D", // Red color on hover
-              },
-            }}
-          ><Link
-          to={`/supplier/updateSupplier/${params.row.supplier_id}`}
-          state={{ supplierkData: params.row }}
-          style={linkStyle}
-        >
-            EDIT</Link>
-          </Button>
+          <Link 
+    to={`/supplier/updateSupplier/${params.row.supplier_id}`}
+    state={{ supplierData: params.row }}
+    style={linkStyle}
+>
+    <Button
+        onClick={() => {}}
+        sx={{
+            backgroundColor: colors.blueAccent[700],
+            color: colors.grey[100],
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "10px 20px",
+            margin: "2px",
+            transition: "background-color 0.3s",
+            "&:hover": {
+                backgroundColor: "#141B2D",
+            },
+        }}
+    >
+        EDIT
+    </Button>
+</Link>
+        
+         
           <Button onClick={() => handleDelete(params.row.supplier_id)}
             sx={{
               backgroundColor: '#FF0000',
