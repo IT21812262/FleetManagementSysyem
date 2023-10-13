@@ -6,13 +6,13 @@ import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import AddFuelstock from './AddFuelstock';
+import AddFuelentry from './AddFuelentry';
 import "./index.css";
 
 
 
 
-const Fuelstock = () => {
+const Fuelentry = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -40,82 +40,82 @@ const Fuelstock = () => {
   
 
 
-  const [fuelstocks, setFuelstocks] = useState([]);
+  const [fuelentries, setFuelentries] = useState([]);
 
-  const handleDelete = async (invoiceNo) => {
+  const handleDelete = async (vehicleId) => {
     try {
-      await axios.delete(`http://localhost:8411/fuelstock/delete/${invoiceNo}`);
-      alert('Fuel stock deleted successfully.');
+      await axios.delete(`http://localhost:8411/fuelentry/delete/${vehicleId}`);
+      alert('Fuel entry deleted successfully.');
       // Refresh the data after deletion
       window.location.reload();
     } catch (error) {
-      alert('Error deleting fuel stock:', error.message);
+      alert('Error deleting fuel entry:', error.message);
     }
   };
-  const rows = fuelstocks.map((fuelstock) => ({
-    id: fuelstock.invoice_no,
-    invoice_no: fuelstock.invoice_no,
-    stocked_fuel_type: fuelstock.stocked_fuel_type, // Update with the correct field name
-    stocked_fuel_quantity: fuelstock.stocked_fuel_quantity,
-    per_leter_cost: fuelstock.per_leter_cost,
-    total_cost: fuelstock.total_cost,
-    stocked_fuel_date: formatDate(fuelstock.stocked_fuel_date),
-    
+  const rows = fuelentries.map((fuelentry) => ({
+    id: fuelentry.vehicle_id,
+    vehicle_id: fuelentry.vehicle_id, // Update with the correct field name
+    fuel_date: formatDate(fuelentry.fuel_date),
+    fuel_type: fuelentry.fuel_type,
+    fuel_quantity: fuelentry.fuel_quantity,
+    fuel_cost: fuelentry.fuel_cost,
+    vehicle_milage: fuelentry.vehicle_milage,
   }));
   const linkStyle = {
     textDecoration: "none", // Remove underline
     color: "white",       // Set text color to white
   };
+  
 
 
   const columns = [
     
     {
-      field: "invoice_no",
-      headerName: "INVOICE NO",
+      field: "vehicle_id",
+      headerName: "VEHICLE NO",
       cellClassName: "name-column--cell",
       headerAlign: "center",
       align: "center",
-      width: 150,
+      width: 100,
     },
     {
-      field: "stocked_fuel_type",
-      headerName: "STOCKED FUEL TYPE",
-      headerAlign: "center",
-      align: "center",
-      width: 150,
-    },
-    {
-      field: "stocked_fuel_quantity",
-      headerName: "STOCKED FUEL QUANTITY",
-      headerAlign: "center",
-      align: "center",
-      type: "number",
-      width: 150,
-    },
-    {
-      field: "per_leter_cost",
-      headerName: "PER LETER COST",
-      headerAlign: "center",
-      align: "center",
-      type: "number",
-      width: 150,
-    },
-    {
-      field: "total_cost",
-      headerName: "TOTAL COST",
-      headerAlign: "center",
-      align: "center",
-      type: "number",
-      width: 150,
-    },
-    {
-      field: "stocked_fuel_date",
-      headerName: "STOCKED FUEL DATE",
+      field: "fuel_date",
+      headerName: "TRIP ID",
       type: "date",
       headerAlign: "center",
       align: "center",
-      width: 150,
+      width: 100,
+    },
+    {
+      field: "fuel_type",
+      headerName: "FUEL TYPE",
+      headerAlign: "center",
+      align: "center",
+      width: 100,
+    },
+    {
+      field: "fuel_quantity",
+      headerName: "DISPATCHED FUEL QUANTITY",
+      headerAlign: "center",
+      align: "center",
+      type: "number",
+      width: 200,
+    },
+    {
+      field: "fuel_cost",
+      headerName: "DESIGNED FUEL CONSUMTION",
+      headerAlign: "center",
+      align: "center",
+      type: "number",
+      width: 200,
+    },
+    {
+      field: "vehicle_milage",
+      headerName: "ACTUAL FUEL CONSUMTION",
+      type: "number",
+      headerAlign: "center",
+      align: "center",
+      width: 200,
     },
     {
       headerName: "OPERATIONS",
@@ -139,8 +139,8 @@ const Fuelstock = () => {
             }}
           >
             <Link 
-                to={`/fuel/uniqueFuelstock/${params.row.invoice_no}`}
-                state={{ fuelstockData: params.row }}
+                to={`/fuel/uniqueFuelentry/${params.row.vehicle_id}`}
+                state={{ fuelentryData: params.row }}
                 style={linkStyle}
             >
               VIEW
@@ -162,13 +162,13 @@ const Fuelstock = () => {
               },
             }}
           ><Link
-          to={`/fuel/updateFuelstock/${params.row.invoice_no}`}
-          state={{ fuelstockData: params.row }}
+          to={`/fuel/updateFuelentry/${params.row.vehicle_id}`}
+          state={{ fuelentryData: params.row }}
           style={linkStyle}
         >
-            EDIT</Link>
+            REPAIR</Link>
           </Button>
-          <Button onClick={() => handleDelete(params.row.invoice_no)}
+          <Button onClick={() => handleDelete(params.row.vehicle_id)}
             sx={{
               backgroundColor: '#FF0000',
               color: colors.grey[100],
@@ -189,21 +189,21 @@ const Fuelstock = () => {
     },
   ];
 
-  const fetchFuelstocks = async () => {
+  const fetchFuelentries = async () => {
     try {
-      const response = await fetch("http://localhost:8411/fuelstock/");
+      const response = await fetch("http://localhost:8411/fuelentry/");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      setFuelstocks(data);
+      setFuelentries(data);
     } catch (error) {
-      console.error("Error fetching fuel stocks:", error);
+      console.error("Error fetching fuel entries:", error);
     }
   };
 
   useEffect(() => {
-    fetchFuelstocks();
+    fetchFuelentries();
   }, []);
 
 
@@ -213,7 +213,7 @@ const Fuelstock = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
-          title="FUEL STOCK MANAGER"
+          title="FUEL CONSUMTION MANAGER"
           subtitle="Welcome to LogiX Fuel Management System"
         />
         
@@ -232,11 +232,11 @@ const Fuelstock = () => {
             }}
           >
             <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            ADD NEW FUEL STOCK
+            CALCULATE FUEL CONSUMTION
           </Button>
           {isPopupVisible && (
             <div className="overlay">
-              <AddFuelstock onClose={closePopup} />
+              <AddFuelentry onClose={closePopup} />
             </div>
           )}
 
@@ -283,4 +283,4 @@ const Fuelstock = () => {
   );
 };
 
-export default Fuelstock;
+export default Fuelentry;

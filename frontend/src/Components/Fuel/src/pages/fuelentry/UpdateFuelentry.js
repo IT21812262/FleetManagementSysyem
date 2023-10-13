@@ -9,8 +9,22 @@ import { useNavigate } from 'react-router-dom';
 
 import "./UpdateFuelentry.css";
 
+const validationSchema = yup.object({
+  vehicle_id: yup.string()
+  .required("Vehicle ID is required")
+  .matches(/^[A-Za-z]{2}\d{4}$/, "Vehicle ID must have 2 letters followed by 4 numbers")
+  .length(6, "Vehicle ID must be 6 characters"),
+  
+  fuel_date: yup.date().required("Fuel Date is required").nullable(),
+  fuel_type: yup.string().required("Fuel Type is required"),
+  fuel_quantity: yup.number().required("Fuel Quantity is required"),
+  fuel_cost: yup.number().required("Fuel Cost is required"),
+  vehicle_milage: yup.number().required("Vehicle Milage is required"),
+});
+
 const UpdateFuelentry = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [fuelentryData, setFuelentryData] = useState(
     location.state?.fuelentryData || {
@@ -23,123 +37,27 @@ const UpdateFuelentry = () => {
     }
   );
 
-  const [errors, setErrors] = useState({});
   const [searchQ, setSearchQ] = useState("");
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    let newValue = value;
-
-    setFuelentryData((prevData) => ({
-      ...prevData,
-      [id]: newValue,
-    }));
-
-    validateInput(id, newValue);
-  };
-
-  const validateInput = (id, value) => {
-    let error = "";
-
-    switch (id) {
-      case "vehicle_id":
-        error = value.length !== 6 ? "Vehicle ID must be 6 characters" : "";
-        break;
-
-      case "fuel_date":
-        if (!value) {
-          error = "Fuel Date is required";
-        } else {
-          const date = new Date(value);
-          if (isNaN(date.getTime())) {
-            error = "Invalid date format";
-          }
-        }
-        break;
-
-      case "fuel_type":
-        error = value.trim() === "" ? "Fuel Type is required" : "";
-        break;
-
-      case "fuel_quantity":
-        error = isNaN(value) ? "Fuel Quantity should contain only numbers" : "";
-        break;
-
-      case "fuel_cost":
-        error = !/^\d+(\.\d+)?$/.test(value) ? "Unit Price should be a valid float value" : "";
-        break;
-
-      case "vehicle_milage":
-        error = !/^\d+(\.\d+)?$/.test(value) ? "Unit Price should be a valid float value" : "";
-        break;
-
-      default:
-        break;
-    }
-    setErrors((prevErrors) => ({ ...prevErrors, [id]: error }));
-  };
-
- 
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const hasErrors = Object.values(errors).some((error) => error !== "");
-
-    if (hasErrors) {
-      alert("Please correct the errors before updating.");
-      return; // Stop the form submission
-    }
-
-    const newFuelentry = { ...fuelentryData };
-
-    if (newFuelentry.vehicle_id) {
-      axios
-        .put(`http://localhost:8411/fuelentry/update/${newFuelentry.vehicle_id}`, newFuelentry)
-        .then((response) => {
-          resetForm();
-          //alert("Fuel entry successfully updated.");
-          window.location.href = "/fuel/fuelentry";
-        })
-        .catch((err) => {
-          alert(err);
+  const handleSubmit = (values) => {
+    // Your existing logic to update the fuel entry
+    axios
+      .put(`http://localhost:8411/fuelentry/update/${values.vehicle_id}`, values)
+      .then((response) => {
+        setFuelentryData({
+          vehicle_id: "",
+          fuel_date: "",
+          fuel_type: "",
+          fuel_quantity: "",
+          fuel_cost: "",
+          vehicle_milage: ""
         });
-    } else {
-      alert("Vehicle Id is required.");
-    }
-    //alert("Insert");
-    const {
-      vehicle_id,
-      fuel_date,
-      fuel_type,
-      fuel_quantity,
-      fuel_cost,
-      vehicle_milage
-    } = fuelentryData;
-
-    if (fuelentryData.vehicle_id) {
-      const newFuelentry = {
-        vehicle_id,
-        fuel_date,
-        fuel_type,
-        fuel_quantity,
-        fuel_cost,
-        vehicle_milage
-      };
-
-      axios
-        .put(`http://localhost:8411/fuelentry/update/${vehicle_id}`, newFuelentry)
-        .then((response) => {
-          resetForm();
-          alert("Fuel entry successfully updated.");
-          window.location.href = "/fuel/allFuelentries";
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    } else {
-      alert("Vehicle Id is required.");
-    }
+        alert("Fuel entry successfully updated.");
+        navigate("/fuel/fuelentry");
+      })
+      .catch((err) => {
+        alert(err);
+      });
   };
 
   useEffect(() => {
@@ -162,153 +80,150 @@ const UpdateFuelentry = () => {
     fetchFuelentryData();
   }, [searchQ]);
 
-  const resetForm = () => {
-    setFuelentryData({
-      vehicle_id: "",
-      fuel_date: "",
-      fuel_type: "",
-      fuel_quantity: "",
-      fuel_cost: "",
-      vehicle_milage: ""
-    });
-    setErrors({});
-  };
-
-  const linkStyle = {
-    textDecoration: "none", // Remove underline
-    color: "white",       // Set text color to white
-  };
-  const navigate = useNavigate();
-
-  // Use navigate function to programmatically navigate to a different route
-  const handleButtonClick = () => {
-    navigate('/fuel/fuelentry');
-  };
   return (
     <Box m="20px">
-      
       <Formik
-      
+        initialValues={fuelentryData}
+        validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        
-        <form className="updateFuelEntryForm" onSubmit={handleSubmit}>
-        
-        {fuelentryData.vehicle_id && (
-      <Header
-        title={`EDIT FUEL DISPATCH DATA FOR ${fuelentryData.vehicle_id}`}
-        subtitle="Update Fuel Dispatch Data"
-      />
-    )}
-          <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="Enter Vehicle ID to Update"
-            id="vehicle_id"
-            value={searchQ}
-            onChange={(e) => setSearchQ(e.target.value)}
-            placeholder="Enter Vehicle ID"
-            name="vehicle_id"
-            sx={{ gridColumn: "span 2" }}
-          />
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+          <form className="updateFuelEntryForm" onSubmit={handleSubmit}>
+            {values.vehicle_id && (
+              <Header
+                title={`EDIT FUEL DISPATCH DATA FOR ${values.vehicle_id}`}
+                subtitle="Update Fuel Dispatch Data"
+              />
+            )}
+            <TextField
+              fullWidth
+              variant="filled"
+              type="text"
+              label="Enter Vehicle ID to Update"
+              id="vehicle_id"
+              value={searchQ}
+              onChange={(e) => setSearchQ(e.target.value)}
+              placeholder="Enter Vehicle ID"
+              name="vehicle_id"
+              sx={{ gridColumn: "span 2" }}
+            />
+            <Box
+              display="grid"
+              gap=""
+              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              sx={{
+                "& > div": { gridColumn: "span 4" },
+              }}
+            >
+              <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+  {/* ... */}
+<TextField
+  fullWidth
+  variant="filled"
+  type="text"
+  label="VEHICLE ID"
+  id="vehicle_id"
+  onChange={handleChange}
+  onBlur={handleBlur}
+  value={values.vehicle_id}
+  name="vehicle_id"
+  sx={{ gridColumn: "span 2" }}
+  error={touched.vehicle_id && Boolean(errors.vehicle_id)}
+  helperText={touched.vehicle_id && errors.vehicle_id}
+/>
+<TextField
+  fullWidth
+  variant="filled"
+  type="date"
+  label="FUEL DATE"
+  id="fuel_date"
+  onChange={handleChange}
+  onBlur={handleBlur}
+  value={values.fuel_date}
+  name="fuel_date"
+  sx={{ gridColumn: "span 2" }}
+  error={touched.fuel_date && Boolean(errors.fuel_date)}
+  helperText={touched.fuel_date && errors.fuel_date}
+/>
+<TextField
+  fullWidth
+  variant="filled"
+  type="text"
+  label="FUEL TYPE"
+  id="fuel_type"
+  onChange={handleChange}
+  onBlur={handleBlur}
+  value={values.fuel_type}
+  name="fuel_type"
+  sx={{ gridColumn: "span 2" }}
+  error={touched.fuel_type && Boolean(errors.fuel_type)}
+  helperText={touched.fuel_type && errors.fuel_type}
+/>
+<TextField
+  fullWidth
+  variant="filled"
+  type="number"
+  label="FUEL QUANTITY"
+  id="fuel_quantity"
+  onChange={handleChange}
+  onBlur={handleBlur}
+  value={values.fuel_quantity}
+  name="fuel_quantity"
+  sx={{ gridColumn: "span 2" }}
+  error={touched.fuel_quantity && Boolean(errors.fuel_quantity)}
+  helperText={touched.fuel_quantity && errors.fuel_quantity}
+/>
+<TextField
+  fullWidth
+  variant="filled"
+  type="number"
+  label="FUEL COST"
+  id="fuel_cost"
+  onChange={handleChange}
+  onBlur={handleBlur}
+  value={values.fuel_cost}
+  name="fuel_cost"
+  sx={{ gridColumn: "span 2" }}
+  error={touched.fuel_cost && Boolean(errors.fuel_cost)}
+  helperText={touched.fuel_cost && errors.fuel_cost}
+/>
+<TextField
+  fullWidth
+  variant="filled"
+  type="number"
+  label="VEHICLE MILAGE"
+  id="vehicle_milage"
+  onChange={handleChange}
+  onBlur={handleBlur}
+  value={values.vehicle_milage}
+  name="vehicle_milage"
+  sx={{ gridColumn: "span 2" }}
+  error={touched.vehicle_milage && Boolean(errors.vehicle_milage)}
+  helperText={touched.vehicle_milage && errors.vehicle_milage}
+/>
+{/* ... */}
 
-          <Box
-            display="grid"
-            gap=""
-            gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-            sx={{
-              "& > div": { gridColumn: "span 4" },
-            }}
-          >
-            <Box display="flex" justifyContent="end" mt="20px" gap="30px">
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="VEHICLE ID"
-                id="vehicle_id"
-                onChange={handleInputChange}
-                value={fuelentryData.vehicle_id}
-                name="vehicle_id"
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="date"
-                label="FUEL DATE"
-                id="fuel_date"
-                onChange={(e) => handleInputChange(e, "fuel_Date")}
-                value={fuelentryData.fuel_date}
-                name="fuel_date"
-                sx={{ gridColumn: "span 2" }}
-              />
+
+              </Box>
+              {/* ... Repeat the above pattern for other fields ... */}
             </Box>
-            <Box display="flex" justifyContent="end" mt="20px" gap="30px">
-            <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="FUEL TYPE"
-              id="fuel_type"
-              onChange={(e) => handleInputChange(e, "fuel_Type")}
-              value={fuelentryData.fuel_type}
-              name="fuel_type"
-              sx={{ gridColumn: "span 4" }}
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="FUEL QUANTITY"
-              id="fuel_quantity"
-              onChange={(e) => handleInputChange(e, "fuel_Quantity")}
-              value={fuelentryData.fuel_quantity}
-              name="fuel_quantity"
-              sx={{ gridColumn: "span 4" }}
-            /></Box>
-<Box display="flex" justifyContent="end" mt="20px" gap="30px">
-            <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="FUEL COST"
-              id="fuel_cost"
-              onChange={(e) => handleInputChange(e, "fuel_Cost")}
-              value={fuelentryData.fuel_cost}
-              name="fuel_cost"
-              sx={{ gridColumn: "span 4" }}
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="VEHICLE MILAGE"
-              id="vehicle_milage"
-              onChange={(e) => handleInputChange(e, "vehicle_Milage")}
-              value={fuelentryData.vehicle_milage}
-              name="vehicle_milage"
-              sx={{ gridColumn: "span 4" }}
-            /></Box>
-          </Box>
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button type="submit" color="secondary" variant="contained" fullWidth>
-              UPDATE FUEL ENTRY
-            </Button>
-          </Box>
-
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button
-              type="submit"
-              color="btnBack"
-              variant="contained"
-              fullWidth
-              onClick={handleButtonClick}>
-              BACK TO FUEL DISPATCH
-            </Button>
-          </Box>
-        </form>
+            <Box display="flex" justifyContent="end" mt="20px">
+              <Button type="submit" color="secondary" variant="contained" fullWidth>
+                UPDATE FUEL ENTRY
+              </Button>
+            </Box>
+            <Box display="flex" justifyContent="end" mt="20px">
+              <Button
+                type="button"
+                color="btnBack"
+                variant="contained"
+                fullWidth
+                onClick={() => navigate('/fuel/fuelentry')}>
+                BACK TO FUEL DISPATCH
+              </Button>
+            </Box>
+          </form>
+        )}
       </Formik>
     </Box>
   );
