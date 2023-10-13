@@ -12,10 +12,6 @@ const supplierSchema = new Schema({
         type : String,
         required : true
     },
-    supplier_NIC : {
-        type : String,
-        required : true
-    },
     phone_number : {
         type : String,
         required : true
