@@ -11,7 +11,6 @@ let Supplier = require("../models/supplier/supplier")
     
     const supplier_id = req.body.supplier_id;
     const supplier_name = req.body.supplier_name;
-    const supplier_NIC = req.body.supplier_NIC;
     const phone_number = req.body.phone_number;
     const supplier_possition = req.body.supplier_possition;
     const email = req.body.email;
@@ -31,7 +30,6 @@ let Supplier = require("../models/supplier/supplier")
         
             supplier_id,
             supplier_name,
-            supplier_NIC,
             phone_number,
             supplier_possition,
             email,
@@ -77,7 +75,6 @@ router.route("/update/:id").put(async(req, res) => {
     const { 
         supplier_id,
         supplier_name,
-        supplier_NIC,
         phone_number,
         supplier_possition,
         email,
@@ -97,7 +94,6 @@ router.route("/update/:id").put(async(req, res) => {
         const updateSupplier = {
             supplier_id,
             supplier_name,
-            supplier_NIC,
             phone_number,
             supplier_possition,
             email,
