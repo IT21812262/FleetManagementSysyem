@@ -12,8 +12,6 @@ router.route("/add").post((req,res)=>{
     const description = req.body.description;
     const parts_used = req.body.parts_used;
     const Date_complete = Date(req.body.Date_complete);
-    const latitude = req.body.latitude;
-    const longitude = req.body.longitude;
 
     const newcorrectiveMaintence = new correctiveMaintence({
     
@@ -24,9 +22,7 @@ router.route("/add").post((req,res)=>{
         priority,
         description,
         parts_used,
-        Date_complete,
-        latitude,
-        longitude
+        Date_complete
     })
 
     newcorrectiveMaintence.save().then(()=>{

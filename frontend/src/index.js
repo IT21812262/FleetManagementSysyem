@@ -69,6 +69,11 @@ import UpdateRealease  from "./Components/Inventory/src/pages/release/UpdateFuel
   import UniqueMaintenance from './Components/Maintenance/src/pages/correctivemaintenance/UniqueMaintenance';
 import UpdateMaintenance from './Components/Maintenance/src/pages/correctivemaintenance/UpdateMaintenance';
 
+//Trip Management System
+import IndexTrip from './Components/Trip/src/App';
+import TripData from './Components/Trip/src/pages/trip/index';
+import UniqueTrip from './Components/Trip/src/pages/trip/UniqueTrip';
+import UpdateTrip from './Components/Trip/src/pages/trip/UpdateTrip';
 
 
 const router = createBrowserRouter([
@@ -146,6 +151,32 @@ const router = createBrowserRouter([
           
         ],
       },
+      {
+        path: '/trip',
+        element: <Outlet />,
+        children: [
+
+          {
+            path: "",
+            element: <IndexTrip />,
+            children: [
+              {
+                path: "/trip/tripdata",
+                element: <TripData />,
+              },
+              {
+                path: "/trip/uniquetrip/:id",
+                element: <UniqueTrip />,
+              },
+              {
+                path: "/trip/updatetrip/:id",
+                element: <UpdateTrip />,
+              },
+            ],
+          },
+        ],
+      },
+      
       {
         path: '/inventory',
         element: <Outlet />,
