@@ -160,7 +160,7 @@ const Inventory = () => {
             }}
           >
             <Link 
-                to={`/invntory/uniqueinventory/${params.row.pid}`}
+                to={`/inventory/uniqueinventory/${params.row.pid}`}
                 state={{ inventoryData: params.row }}
                 style={linkStyle}
             >
