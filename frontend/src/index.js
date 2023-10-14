@@ -55,7 +55,6 @@ import IndexInventory from './Components/Inventory/src/App';
 import InventoryData from './Components/Inventory/src/pages/inventorydata/index';
 import ReleaseInventory from './Components/Inventory/src/pages/release/index';
 import AnalyticsInventory from './Components/Inventory/src/pages/analytics/index';
-
 import UniqueInventory from "./Components/Inventory/src/pages/inventorydata/UniqueInventory";
 import UpdateInventory  from "./Components/Inventory/src/pages/inventorydata/UpdateInventory";
 
@@ -63,11 +62,13 @@ import UniqueRelease from "./Components/Inventory/src/pages/release/UniqueFuelst
 import UpdateRealease  from "./Components/Inventory/src/pages/release/UpdateFuelstock";
 
   //Maintanence
-import AddCorrectiveMaintenance from './Components/Maintenance/AddMaintenance';
-import Maintenance from './Components/Maintenance/Maintenance';
-import AllCorrectiveMaintenance from './Components/Maintenance/AllMaintenance';
-import UniqueMaintenance from './Components/Maintenance/UniqueMaintenance';
-import UpdateMaintenance from './Components/Maintenance/UpdateMaintenance';
+  import IndexMaintenance from './Components/Maintenance/src/App';
+  import Correctivemaintanence from './Components/Maintenance/src/pages/correctivemaintenance/index';
+  import Preventivemaintanence from './Components/Maintenance/src/pages/preventivemaintenance/index';
+  
+  import UniqueMaintenance from './Components/Maintenance/src/pages/correctivemaintenance/UniqueMaintenance';
+import UpdateMaintenance from './Components/Maintenance/src/pages/correctivemaintenance/UpdateMaintenance';
+
 
 
 const router = createBrowserRouter([
@@ -186,6 +187,36 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: '/maintenance',
+        element: <Outlet />,
+        children: [
+
+          {
+            path: "",
+            element: <IndexMaintenance />,
+            children: [
+              {
+                path: "/maintenance/correctivemaintenance",
+                element: <Correctivemaintanence />,
+              },
+              {
+                path: "/maintenance/preventivemaintenance",
+                element: <Preventivemaintanence />,
+              },
+              
+              {
+                path: "/maintenance/uniquemaintenance/:id",
+                element: <UniqueMaintenance />,
+              },
+              {
+                path: "/maintenance/updatemaintenance/:id",
+                element: <UpdateMaintenance />,
+              },
+            ],
+          },
+        ],
+      },
 
       {
         path: '/fuel',
@@ -265,7 +296,7 @@ const router = createBrowserRouter([
         ]
       },
 
-      
+      /* 
       {
         path: "/maintenance",
         element: <Outlet />,
@@ -300,9 +331,9 @@ const router = createBrowserRouter([
           },
     
         ]
-      },
+      },*/
 
-    ],
+    ], 
   },
 ]);
   
