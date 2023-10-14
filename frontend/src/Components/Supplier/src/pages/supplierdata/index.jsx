@@ -10,7 +10,7 @@ import AddSupplier from "./AddSupplier";
 import "./index.css";
 
 
-
+//comment
 
 const Supplier = () => {
   const theme = useTheme();
