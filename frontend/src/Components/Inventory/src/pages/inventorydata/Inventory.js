@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Inventory.css';
+//import './Inventory.css';
 
 const Inventory = () => {
   return (

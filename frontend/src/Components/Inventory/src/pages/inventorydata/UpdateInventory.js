@@ -308,7 +308,7 @@ export default function UpdateInventory() {
         alert("Updated Successfully...")
         resetForm();
                 // Redirect to the AllInventory page
-         window.location.href = 'inventory/allInventory'; 
+         window.location.href = '/inventory/inventorydata'; 
 
         // history.push("/inventory/allInventory");  // Redirect to the AllInventory page after a successful update
 
@@ -782,7 +782,7 @@ const validateManDate = (manDate) => {
           </button>
 
           {/* Back to Dashboard button */}
-          <Link to="/inventory/allInventory" className="back-to-dashboard-link">
+          <Link to="/inventory/inventorydata" className="back-to-dashboard-link">
             <button className="back-to-dashboard-button">Back to DASHBOARD</button>
           </Link>
         </div>
