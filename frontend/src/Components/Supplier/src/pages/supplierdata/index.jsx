@@ -10,7 +10,7 @@ import AddSupplier from "./AddSupplier";
 import "./index.css";
 
 
-
+//comment
 
 const Supplier = () => {
   const theme = useTheme();
@@ -60,7 +60,7 @@ const Supplier = () => {
     supplier.phone_number,
     supplier.supplier_possition,
     supplier.email,
-    /* supplier.company_name,
+    supplier.company_name,
     supplier.item_type,
     supplier.item_size,
     supplier.item_code,
@@ -71,16 +71,27 @@ const Supplier = () => {
     supplier.orderd_date,
     supplier.manufatured_date,
     supplier.invoice_number, 
-  ]);
- */
+  ]);*/
+ 
 
   const rows = suppliers.map((supplier) =>  ({
     id: supplier.supplier_id,
-    supplier_id: supplier.supplier_id,
-    supplier_name: supplier.supplier_name, // Update with the correct field name
-    phone_number: supplier.phone_number,
-    supplier_possition: supplier.supplier_possition,
-    email: supplier.email,
+    supplier_id:supplier.supplier_id,
+    supplier_name:supplier.supplier_name,
+    phone_number:supplier.phone_number,
+    supplier_possition:supplier.supplier_possition,
+    email:supplier.email,
+    company_name:supplier.company_name,
+    item_type:supplier.item_type,
+    item_size:supplier.item_size,
+    item_code:supplier.item_code,
+    brand:supplier.brand,
+    quntity:supplier.quntity,
+    unit_price:supplier.unit_price,
+    total_price:supplier.total_price,
+    orderd_date:supplier.orderd_date,
+    manufatured_date:supplier.manufatured_date,
+    invoice_number:supplier.invoice_number,
     
   }));
 

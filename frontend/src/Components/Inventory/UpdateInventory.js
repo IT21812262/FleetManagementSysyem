@@ -11,7 +11,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 // import { useLocation,  useNavigate } from "react-router-dom";
 import emailjs from "emailjs-com";
-//import "./UpdateInventory.css";
+import "./UpdateInventory.css";
 
 
 
@@ -308,7 +308,7 @@ export default function UpdateInventory() {
         alert("Updated Successfully...")
         resetForm();
                 // Redirect to the AllInventory page
-         window.location.href = '/inventory/allInventory'; 
+         window.location.href = 'inventory/allInventory'; 
 
         // history.push("/inventory/allInventory");  // Redirect to the AllInventory page after a successful update
 

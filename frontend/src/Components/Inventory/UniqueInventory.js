@@ -1,16 +1,11 @@
-// UniqueInventory 
-
-
-//import "./UniqueInventory.css"; // Import the CSS file
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Box, Button, TextField } from '@mui/material';
 import { useParams, Link } from "react-router-dom";
+import "./UniqueInventory.css";
 
 export default function UniqueInventory() {
   const { id } = useParams();
-  console.log("Received ID:", id);
-//  const { inventoryData } = location.state; // Access the inventoryData from location.state
-
   const [inventory, setInventory] = useState(null);
   const [searchQ, setSearchQ] = useState("");
 
@@ -19,7 +14,6 @@ export default function UniqueInventory() {
       try {
         if (id) {
           const response = await axios.get(`http://localhost:8411/inventory/get/${id}`);
-          console.log("API Response:", response.data);
           setInventory(response.data.inventory);
         }
       } catch (error) {
@@ -45,30 +39,22 @@ export default function UniqueInventory() {
     }
   };
 
-  // Function to handle deletion of an inventory item
-const handleDelete = (itemId) => {
-    // Display a confirmation dialog to the user
+  const handleDelete = (itemId) => {
     const userConfirmed = window.confirm("Do you want to delete the item?");
-  
     if (userConfirmed) {
-      // User clicked "OK," proceed with deletion
       deleteItem(itemId);
-    } else {
-      // User clicked "Cancel," do nothing
     }
   };
-  
+
   const deleteItem = async (itemId) => {
     try {
       await axios.delete(`http://localhost:8411/inventory/delete/${itemId}`);
       alert('Item deleted successfully.');
-      // Navigate to All Inventory page
       window.location.href = "/inventory/allInventory";
     } catch (error) {
       alert('Error deleting item:', error.message);
     }
   };
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -76,78 +62,53 @@ const handleDelete = (itemId) => {
   };
 
   return (
-    <div className="container-g20">
+    <Box m="20px">
       <h1>Unique Product</h1>
 
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={searchQ}
+        <TextField 
+          value={searchQ} 
           onChange={handleSearchQ}
-          placeholder="Enter Product ID"
+          label="Enter Product ID"
+          fullWidth
         />
-        <button type="submit">Fetch Product Data</button>
-        &nbsp;&nbsp;&nbsp;
-
-        <Link to="/inventory/allInventory">
-          <button className="cancel-button-g21" type="button">Cancel</button>
-        </Link>
+        <Box mt="20px">
+          <Button type="submit" color="primary" variant="contained">
+            Fetch Product Data
+          </Button>
+          <Button component={Link} to="/inventory/allInventory" color="secondary" variant="contained" style={{ marginLeft: '15px' }}>
+            Cancel
+          </Button>
+        </Box>
       </form>
 
       {inventory ? (
-        <div className="product-box-g22">
-        <div className="product-detail-g23">
-          <strong>Product ID:</strong> {inventory.pid}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Product Type:</strong> {inventory.type}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Product Name:</strong> {inventory.name}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Product Brand:</strong> {inventory.brand}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Quantity:</strong> {inventory.qty}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Unit Price:</strong> {inventory.unit_price}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Size:</strong> {inventory.size}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Voltage:</strong> {inventory.voltage}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Ampiers:</strong> {inventory.amp_hrs}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Manufactured Date:</strong> {inventory.man_date}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Expiry Date:</strong> {inventory.exp_date}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Vehicle Brand and Model:</strong> {inventory.vehicle_brand_and_model}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Vehicle Manufacture Year:</strong> {inventory.vehicle_man_year}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Reorder Level:</strong> {inventory.reorder_level}
-        </div>
-        
-        <button type="button" onClick={() => handleDelete(inventory.pid)}>Delete Item</button>
-      </div>
+        <Box className="product-box-g22" mt="20px">
+          {/* Map through inventory properties to create a UI like the UniqueFuelStock */}
+          <Box display="flex" flexDirection="column" gap="20px">
+            {/* Assuming you want a similar style of display as UniqueFuelstock */}
+            {/* You may need to modify this to match exactly what you want */}
+            {Object.entries(inventory).map(([key, value]) => (
+              <Box key={key}>
+                <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {value}
+              </Box>
+            ))}
+          </Box>
+          <Box mt="20px">
+            <Button color="error" variant="contained" onClick={() => handleDelete(inventory.pid)}>
+              Delete Item
+            </Button>
+          </Box>
+        </Box>
       ) : (
         <p>No Item found with the specified ID.</p>
       )}
 
-      {/* Link to All Products page */}
-     <Link to="/inventory/allInventory">
-     <button className="dashboard-button-24">Back To DASHBOARD</button></Link>
-    </div>
+      <Box mt="20px">
+        <Button component={Link} to="/inventory/allInventory" variant="contained">
+          Back To DASHBOARD
+        </Button>
+      </Box>
+    </Box>
   );
 }

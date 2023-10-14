@@ -50,21 +50,30 @@ import UpdateFuelstock  from "./Components/Fuel/src/pages/fuelstock/UpdateFuelst
   import UpdateEmployee from './Components/Employee/UpdateEmployee';
 
 
-  // Inventory
+  // Inventroy Management System
+import IndexInventory from './Components/Inventory/src/App';
+import InventoryData from './Components/Inventory/src/pages/inventorydata/index';
+import ReleaseInventory from './Components/Inventory/src/pages/release/index';
+import AnalyticsInventory from './Components/Inventory/src/pages/analytics/index';
+import UniqueInventory from "./Components/Inventory/src/pages/inventorydata/UniqueInventory";
+import UpdateInventory  from "./Components/Inventory/src/pages/inventorydata/UpdateInventory";
 
-  import Inventory from './Components/Inventory/Inventory';
-  
-  import AddInventory from './Components/Inventory/AddInventory';
-  import AllInventory from './Components/Inventory/AllInventory';
-  import UniqueInventory from './Components/Inventory/UniqueInventory';
-  import UpdateInventory from './Components/Inventory/UpdateInventory';
+import UniqueRelease from "./Components/Inventory/src/pages/release/UniqueFuelstock";
+import UpdateRealease  from "./Components/Inventory/src/pages/release/UpdateFuelstock";
 
   //Maintanence
-import AddCorrectiveMaintenance from './Components/Maintenance/AddMaintenance';
-import Maintenance from './Components/Maintenance/Maintenance';
-import AllCorrectiveMaintenance from './Components/Maintenance/AllMaintenance';
-import UniqueMaintenance from './Components/Maintenance/UniqueMaintenance';
-import UpdateMaintenance from './Components/Maintenance/UpdateMaintenance';
+  import IndexMaintenance from './Components/Maintenance/src/App';
+  import Correctivemaintanence from './Components/Maintenance/src/pages/correctivemaintenance/index';
+  import Preventivemaintanence from './Components/Maintenance/src/pages/preventivemaintenance/index';
+  
+  import UniqueMaintenance from './Components/Maintenance/src/pages/correctivemaintenance/UniqueMaintenance';
+import UpdateMaintenance from './Components/Maintenance/src/pages/correctivemaintenance/UpdateMaintenance';
+
+//Trip Management System
+import IndexTrip from './Components/Trip/src/App';
+import TripData from './Components/Trip/src/pages/trip/index';
+import UniqueTrip from './Components/Trip/src/pages/trip/UniqueTrip';
+import UpdateTrip from './Components/Trip/src/pages/trip/UpdateTrip';
 
 
 const router = createBrowserRouter([
@@ -140,6 +149,103 @@ const router = createBrowserRouter([
             element: <UniqueRent />
           },
           
+        ],
+      },
+      {
+        path: '/trip',
+        element: <Outlet />,
+        children: [
+
+          {
+            path: "",
+            element: <IndexTrip />,
+            children: [
+              {
+                path: "/trip/tripdata",
+                element: <TripData />,
+              },
+              {
+                path: "/trip/uniquetrip/:id",
+                element: <UniqueTrip />,
+              },
+              {
+                path: "/trip/updatetrip/:id",
+                element: <UpdateTrip />,
+              },
+            ],
+          },
+        ],
+      },
+      
+      {
+        path: '/inventory',
+        element: <Outlet />,
+        children: [
+
+          {
+            path: "",
+            element: <IndexInventory />,
+            children: [
+              {
+                path: "/inventory/inventorydata",
+                element: <InventoryData />,
+              },
+              {
+                path: "/inventory/release",
+                element: <ReleaseInventory />,
+              },
+              {
+                path: "/inventory/analytics",
+                element: <AnalyticsInventory />,
+              },
+              {
+                path: "/inventory/uniqueinventory/:id",
+                element: <UniqueInventory />,
+              },
+              {
+                path: "/inventory/updateinventory/:id",
+                element: <UpdateInventory />,
+              },
+              {
+                path: "/inventory/uniquerelease/:id",
+                element: <UniqueRelease />,
+              },
+              {
+                path: "/inventory/updaterelease/:id",
+                element: <UpdateRealease />,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: '/maintenance',
+        element: <Outlet />,
+        children: [
+
+          {
+            path: "",
+            element: <IndexMaintenance />,
+            children: [
+              {
+                path: "/maintenance/correctivemaintenance",
+                element: <Correctivemaintanence />,
+              },
+              {
+                path: "/maintenance/preventivemaintenance",
+                element: <Preventivemaintanence />,
+              },
+              
+              {
+                path: "/maintenance/uniquemaintenance/:id",
+                element: <UniqueMaintenance />,
+              },
+              {
+                path: "/maintenance/updatemaintenance/:id",
+                element: <UpdateMaintenance />,
+              },
+            ],
+          },
         ],
       },
 
@@ -221,45 +327,7 @@ const router = createBrowserRouter([
         ]
       },
 
-      {
-        path: "/inventory",
-        element: <Outlet />,
-        children: [
-          {
-            path: "",
-            element: <Inventory />,
-          },
-          {
-            path: "addInventory",
-            element: <AddInventory />
-          },
-          {
-            path: "allInventory",
-            element: <AllInventory />
-          },
-          {
-            path: "uniqueInventory",
-            element: <UniqueInventory />
-          },
-          {
-            path: "updateInventory",
-            element: <UpdateInventory />
-          },
-          {
-            path: "/inventory/uniqueInventory/:id",
-            element: <UniqueInventory />
-          },
-          {
-            path: "/inventory/updateInventory/:id",
-            element: <UpdateInventory />
-          },
-          /*{
-            path: "/inventory/uniqueInventory/:id",
-            element: <UniqueInventoryForView />
-         },*/ 
-          
-        ]
-      },
+      /* 
       {
         path: "/maintenance",
         element: <Outlet />,
@@ -294,9 +362,9 @@ const router = createBrowserRouter([
           },
     
         ]
-      },
+      },*/
 
-    ],
+    ], 
   },
 ]);
   
