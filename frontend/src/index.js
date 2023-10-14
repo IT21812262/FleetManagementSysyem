@@ -6,14 +6,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
-//Supplier Management System
-import Root from './Root'
-import Supplier from './Components/Supplier/Supplier';
-import AddSupplier from './Components/Supplier/AddSupplier';
-import AllSuppliers from './Components/Supplier/AllSupplier';
 
-import UniqueSupplier from './Components/Supplier/UniqueSupplier';
-import UpdateSupplier from './Components/Supplier/UpdateSupplier';
+import Root from './Root'
+//Supplier Management System
+import IndexSupplier from './Components/Supplier/src/App';
+import Supplier from './Components/Supplier/src/pages/supplierdata/index';
+import Notifications from './Components/Supplier/src/pages/notifications/index';
+
+import UniqueSupplier from "./Components/Supplier/src/pages/supplierdata/UniqueSupplier";
+import UpdateSupplier  from "./Components/Supplier/src/pages/supplierdata/UpdateSupplier";
+
+import UniqueNotification from "./Components/Supplier/src/pages/notifications/UniqueNotification";
 
 //Rent Management System
 
@@ -71,38 +74,38 @@ const router = createBrowserRouter([
     children: [
 
       {
-        path: "/supplier",
+        path: '/supplier',
         element: <Outlet />,
         children: [
+
           {
             path: "",
-            element: <Supplier />,
+            element: <IndexSupplier />,
+            children: [
+              {
+                path: "/supplier/supplierdata",
+                element: <Supplier />,
+              },
+              {
+                path: "/supplier/notifications",
+                element: <Notifications />,
+              },
+              
+              {
+                path: "/supplier/uniquesupplier/:id",
+                element: <UniqueSupplier />
+              },
+              {
+                path: "/supplier/updatesupplier/:id",
+                element: <UpdateSupplier />
+              },
+              {
+                path: "/supplier/uniquenotification/:id",
+                element: <UniqueNotification />,
+              },
+            ],
           },
-          {
-            path: "addsupplier",
-            element: <AddSupplier />
-          },
-          {
-            path: "allSuppliers",
-            element: <AllSuppliers />
-          },
-          {
-            path: "uniqueSupplier",
-            element: <UniqueSupplier />
-          },
-          {
-            path: "updateSupplier",
-            element: <UpdateSupplier />
-          },
-          {
-            path: "/supplier/updateSupplier/:id",
-            element: <UpdateSupplier />
-          },
-          {
-            path: "/supplier/uniqueSupplier/:id",
-            element: <UniqueSupplier />
-          },
-        ]
+        ],
       },
       {
         path: "/rent", // Add Rent route
