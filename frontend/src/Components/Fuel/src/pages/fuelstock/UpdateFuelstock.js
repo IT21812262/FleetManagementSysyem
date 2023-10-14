@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback  } from "react";
 import axios from "axios";
 import { Box, Button, TextField } from '@mui/material';
 import { useLocation } from "react-router-dom";
 import { Formik } from "formik";
-import * as yup from 'yup';
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
 
@@ -25,6 +24,20 @@ const UpdateFuelstock = () => {
 
   const [errors, setErrors] = useState({});
   const [searchQ, setSearchQ] = useState("");
+  const [total_cost, setTotal_Cost] = useState(0);
+
+  const calculateTotalCost = useCallback(() => {
+    const perLeterCostValue = parseFloat(fuelstockData.per_leter_cost) || 0;
+    const stockedFuelQuantityValue = parseInt(fuelstockData.stocked_fuel_quantity, 10) || 0;
+    const totalCostValue = perLeterCostValue * stockedFuelQuantityValue;
+    setTotal_Cost(totalCostValue.toFixed(2));// Round to 2 decimal places
+    
+  }, [fuelstockData.per_leter_cost, fuelstockData.stocked_fuel_quantity]);
+
+
+  useEffect(() => {
+    calculateTotalCost();
+  }, [calculateTotalCost, fuelstockData])
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -36,6 +49,9 @@ const UpdateFuelstock = () => {
     }));
 
     validateInput(id, newValue);
+    if (id === 'per_leter_cost' || id === 'stocked_fuel_quantity') {
+      calculateTotalCost();
+    }
   };
 
   const validateInput = (id, value) => {
@@ -44,31 +60,58 @@ const UpdateFuelstock = () => {
     switch (id) {
 
       case "invoice_no":
-        error = value.length !== 6 ? "Invoice No must be 6 characters" : "";
-        break;
+    const regex = /^[A-Za-z]{2}\d{5}$/;
+    if (!regex.test(value)) {
+        error = "Invoice No should be 2 letters followed by 5 numbers.";
+    } else {
+        error = "";
+    }
+    break;
+
 
       case "stocked_fuel_type":
         error = value.trim() === "" ? "Stocked Fuel Type is required" : "";
         break;
 
-      case "stocked_fuel_quantity":
-        error = isNaN(value) ? "Stocked Fuel Quantity should contain only numbers" : "";
-        break;
+        case "stocked_fuel_quantity":
+          if (!value) {
+              error = "Stocked Fuel Quantity is required.";
+          } else if (isNaN(value)) {
+              error = "Stocked Fuel Quantity should contain only numbers.";
+          } else if (parseFloat(value) < 0) {
+              error = "Stocked Fuel Quantity cannot be negative.";
+          } else if (!Number.isInteger(parseFloat(value))) {
+              error = "Stocked Fuel Quantity should be a whole number.";
+          } else {
+              error = "";
+          }
+          break;
       
-      case "per_leter_cost":
-        error = !/^\d+(\.\d+)?$/.test(value) ? "Unit Price should be a valid float value" : "";
-        break;    
+      
+          case "per_leter_cost":
+            error = !/^\d+(\.\d{1,2})?$/.test(value) ? "Unit Price should be a number with up to 2 decimal places." : "";
+            break;
+           
 
-      case "stocked_fuel_date":
-        if (!value) {
-            error = "Stocked Fuel Date is required";
-        } else {
-            const date = new Date(value);
-            if (isNaN(date.getTime())) {
-            error = "Invalid date format";
-            }
-        }
-        break;  
+            case "stocked_fuel_date":
+              if (!value) {
+                  error = "Stocked Fuel Date is required";
+              } else {
+                  const date = new Date(value);
+                  const today = new Date();
+          
+                  // Set the hours, minutes, seconds, and milliseconds to 0 for today's date
+                  // to ensure we're only comparing the day, month, and year.
+                  today.setHours(0, 0, 0, 0);
+          
+                  if (isNaN(date.getTime())) {
+                      error = "Invalid date format";
+                  } else if (date > today) {
+                      error = "Stocked Fuel Date should be today or a past date";
+                  }
+              }
+              break;
+           
             
       default:
         break;
@@ -172,16 +215,14 @@ const UpdateFuelstock = () => {
     setErrors({});
   };
 
-  const linkStyle = {
-    textDecoration: "none", // Remove underline
-    color: "white",       // Set text color to white
-  };
+
   const navigate = useNavigate();
 
   // Use navigate function to programmatically navigate to a different route
   const handleButtonClick = () => {
     navigate('/fuel/fuelstock');
   };
+
   return (
     <Box m="20px">
       
@@ -220,75 +261,81 @@ const UpdateFuelstock = () => {
             }}
           >
             <Box display="flex" justifyContent="end" mt="20px" gap="30px">
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="INVOICE NO"
-                id="invoice_no"
-                onChange={handleInputChange}
-                value={fuelstockData.invoice_no}
-                name="invoice_no"
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="STOCKED FUEL TYPE"
-                id="stocked_fuel_type"
-                onChange={(e) => handleInputChange(e, "stocked_fuel_type")}
-                value={fuelstockData.stocked_fuel_type}
-                name="stocked_fuel_type"
-                sx={{ gridColumn: "span 2" }}
-              />
+
+            <TextField
+            fullWidth
+            id="invoice_no"
+            label="Invoice No"
+            variant="outlined"
+            value={fuelstockData.invoice_no}
+            onChange={handleInputChange}
+            error={!!errors.invoice_no}
+            helperText={errors.invoice_no}
+          />{errors.invoice_no && (
+            <div className="invalid-feedback">{errors.invoice_no}</div>
+          )}
+
+<TextField
+            fullWidth
+            id="stocked_fuel_type"
+            label="Stocked Fuel Type"
+            variant="outlined"
+            value={fuelstockData.stocked_fuel_type}
+            onChange={handleInputChange}
+            error={!!errors.stocked_fuel_type}
+            helperText={errors.stocked_fuel_type}
+          />
             </Box>
+
             <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+              
             <TextField
-              fullWidth
-              variant="filled"
-              type="number"
-              label="STOCKED FUEL QUANTITY"
-              id="stocked_fuel_quantity"
-              onChange={(e) => handleInputChange(e, "stocked_fuel_quantity")}
-              value={fuelstockData.stocked_fuel_quantity}
-              name="stocked_fuel_quantity"
-              sx={{ gridColumn: "span 4" }}
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="number"
-              label="PER LETER COST"
-              id="per_leter_cost"
-              onChange={(e) => handleInputChange(e, "per_leter_cost")}
-              value={fuelstockData.per_leter_cost}
-              name="per_leter_cost"
-              sx={{ gridColumn: "span 4" }}
-            /></Box>
+            fullWidth
+            id="stocked_fuel_quantity"
+            label="Stocked Fuel Quantity"
+            variant="outlined"
+            value={fuelstockData.stocked_fuel_quantity}
+            onChange={handleInputChange}
+            error={!!errors.stocked_fuel_quantity}
+            helperText={errors.stocked_fuel_quantity}
+          />
+              <TextField
+            fullWidth
+            id="per_leter_cost"
+            label="Per Litre Cost"
+            variant="outlined"
+            value={fuelstockData.per_leter_cost}
+            onChange={handleInputChange}
+            error={!!errors.per_leter_cost}
+            helperText={errors.per_leter_cost}
+          />
+
+            </Box>
+
 <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+
+           <TextField
+    fullWidth
+    id="total_cost"
+    label="Total Price"
+    variant="outlined"
+    type="number"
+    value={total_cost}
+    disabled
+  />
             <TextField
-              fullWidth
-              variant="filled"
-              type="number"
-              label="TOTAL COST"
-              id="total_cost"
-              onChange={(e) => handleInputChange(e, "total_cost")}
-              value={fuelstockData.total_cost}
-              name="total_cost"
-              sx={{ gridColumn: "span 4" }}
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="datet"
-              label="STOCKED FUEL DATE"
-              id="stocked_fuel_date"
-              onChange={(e) => handleInputChange(e, "stocked_fuel_date")}
-              value={fuelstockData.stocked_fuel_date}
-              name="stocked_fuel_date"
-              sx={{ gridColumn: "span 4" }}
-            /></Box>
+            fullWidth
+            id="stocked_fuel_date"
+            label="Stocked Fuel Date"
+            variant="outlined"
+            value={fuelstockData.stocked_fuel_date}
+            onChange={handleInputChange}
+            error={!!errors.stocked_fuel_date}
+            helperText={errors.stocked_fuel_date}
+          />
+            
+            </Box>
+
           </Box>
           <Box display="flex" justifyContent="end" mt="20px">
             <Button type="submit" color="secondary" variant="contained" fullWidth>
@@ -303,7 +350,7 @@ const UpdateFuelstock = () => {
               variant="contained"
               fullWidth
               onClick={handleButtonClick}>
-              BACK TO FUEL STOCK MANAGER
+              BACK TO FUEL STOCK 
             </Button>
           </Box>
         </form>
