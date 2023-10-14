@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import {
+  GoogleMap,
+  LoadScript,
+  Marker
+} from "@react-google-maps/api";
 
+const mapContainerStyle = {
+  width: '100%',
+  height: '400px'
+};
 
 export default function AddCorrectiveMaintenance() {
-  
-
   const [jobID, setJobID] = useState("");
   const [DID, setDID] = useState("");
   const [vehicleNo, setVehicleNo] = useState("");
@@ -13,8 +20,33 @@ export default function AddCorrectiveMaintenance() {
   const [description, setDescription] = useState("");
   const [parts_used, setPartsUsed] = useState("");
   const [Date_complete, setDateComplete] = useState("");
-
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
+
+  function getCurrentLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+      }, (error) => {
+        console.error("Error Code = " + error.code + " - " + error.message);
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
+
+  function handleMapClick(event) {
+    setSelectedLocation({ lat: event.latLng.lat(), lng: event.latLng.lng() });
+    setLatitude(event.latLng.lat());
+    setLongitude(event.latLng.lng());
+  }
 
   function validateForm() {
     const errors = {};
@@ -24,7 +56,7 @@ export default function AddCorrectiveMaintenance() {
     }
 
     if (!DID) {
-      errors.DID = "DID is required";
+      errors.DID = "Driver ID is required";
     }
 
     if (!vehicleNo) {
@@ -45,14 +77,6 @@ export default function AddCorrectiveMaintenance() {
       errors.description = "Description is required";
     }
 
-   /* if (!parts_used) {
-      errors.parts_used = "Parts Used is required";
-    }
-
-    if (!Date_complete) {
-      errors.Date_complete = "Date Complete is required";
-    }*/
-
     setErrors(errors);
     return Object.keys(errors).length === 0;
   }
@@ -70,6 +94,8 @@ export default function AddCorrectiveMaintenance() {
         description,
         parts_used,
         Date_complete,
+        latitude,
+        longitude,
       };
 
       axios
@@ -88,8 +114,6 @@ export default function AddCorrectiveMaintenance() {
           setDescription("");
           setPartsUsed("");
           setDateComplete("");
-
-          
         })
         .catch((err) => {
           alert(err);
@@ -127,7 +151,7 @@ export default function AddCorrectiveMaintenance() {
           <input
             type="text"
             className={`form-control ${errors.DID ? "is-invalid" : ""}`}
-            id="Diver ID"
+            id="Driver ID"
             placeholder="Enter Driver ID"
             value={DID}
             onChange={(e) => {
@@ -161,7 +185,7 @@ export default function AddCorrectiveMaintenance() {
         <div className="form-group">
           <label htmlFor="Date_report">Date Report</label>
           <input
-            type="date" // Use input type "date" for date input
+            type="date"
             className={`form-control ${errors.Date_report ? "is-invalid" : ""}`}
             id="Date_report"
             placeholder="Enter Date Report"
@@ -191,7 +215,6 @@ export default function AddCorrectiveMaintenance() {
             <option value="Low Priority">Low Priority</option>
             <option value="Medium Priority">Medium Priority</option>
             <option value="High Priority">High Priority</option>
-            {/* <option value="Completed">Completed</option> */}
           </select>
         </div>
 
@@ -210,7 +233,25 @@ export default function AddCorrectiveMaintenance() {
               setErrors({ ...errors, description: null });
             }}
           />
+       
+
         </div>
+        <h2>Select Location</h2>
+        {
+          latitude && longitude && (
+            <LoadScript googleMapsApiKey="AIzaSyAz27qe4QY9J6XxL_8VmOW4AiA8xr4uuUU">
+              <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={{ lat: latitude, lng: longitude }} // use state values
+                zoom={19}
+                onClick={handleMapClick}
+              >
+                {selectedLocation && <Marker position={selectedLocation} />}
+              </GoogleMap>
+            </LoadScript>
+          )
+        }
+
 
         {/* {errors.parts_used && (
           <div className="alert alert-danger">{errors.parts_used}</div>
