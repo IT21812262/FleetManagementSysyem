@@ -124,50 +124,54 @@ const Fuelstock = () => {
       width: 300,
       renderCell: (params) => (
         <div className="edit-1-2-parent">
-          <Button 
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-              margin: "2px",
-              transition: "background-color 0.3s", // Add a transition for smooth color change
-                "&:hover": {
-                backgroundColor: "#141B2D", // Red color on hover
-              },
-            }}
-          >
-            <Link 
-                to={`/fuel/uniqueFuelstock/${params.row.invoice_no}`}
-                state={{ fuelstockData: params.row }}
-                style={linkStyle}
-            >
-              VIEW
+         <Link 
+    to={`/fuel/uniqueFuelstock/${params.row.invoice_no}`}
+    state={{ fuelstockData: params.row }}
+    style={linkStyle}
+>
+    <Button 
+        onClick={() => {}}
+        sx={{
+            backgroundColor: colors.blueAccent[700],
+            color: colors.grey[100],
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "10px 20px",
+            margin: "2px",
+            transition: "background-color 0.3s",
+            "&:hover": {
+                backgroundColor: "#141B2D",
+            },
+        }}
+    >
+        VIEW
+    </Button>
+</Link>
 
-            </Link>
-          </Button>
-          <Button
-            
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-              margin: "2px",
-              transition: "background-color 0.3s", // Add a transition for smooth color change
-                "&:hover": {
-                backgroundColor: "#141B2D", // Red color on hover
-              },
-            }}
-          ><Link
-          to={`/fuel/updateFuelstock/${params.row.invoice_no}`}
-          state={{ fuelstockData: params.row }}
-          style={linkStyle}
-        >
-            EDIT</Link>
-          </Button>
+<Link 
+    to={`/fuel/updateFuelstock/${params.row.invoice_no}`}
+    state={{ fuelstockData: params.row }}
+    style={linkStyle}
+>
+    <Button
+        onClick={() => {}}
+        sx={{
+            backgroundColor: colors.blueAccent[700],
+            color: colors.grey[100],
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "10px 20px",
+            margin: "2px",
+            transition: "background-color 0.3s",
+            "&:hover": {
+                backgroundColor: "#141B2D",
+            },
+        }}
+    >
+        EDIT
+    </Button>
+</Link>
+
           <Button onClick={() => handleDelete(params.row.invoice_no)}
             sx={{
               backgroundColor: '#FF0000',

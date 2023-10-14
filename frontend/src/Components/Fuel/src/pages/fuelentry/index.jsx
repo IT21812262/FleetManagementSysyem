@@ -71,7 +71,7 @@ const Fuelentry = () => {
     
     {
       field: "vehicle_id",
-      headerName: "VEHICLE ID",
+      headerName: "VEHICLE NO",
       cellClassName: "name-column--cell",
       headerAlign: "center",
       align: "center",

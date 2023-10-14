@@ -1,7 +1,4 @@
-/* Assuming your existing CSS code */
-
-/* Center the form content */
-.container {
+/* .container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,7 +6,6 @@
   height: 200vh;
 }
 
-/* Form styles */
 form {
   max-width: 500px;
   width: 100%;
@@ -19,13 +15,11 @@ form {
   margin-bottom: 20px;
 }
 
-/* Label styles */
 label {
   display: block;
   font-weight: bold;
 }
 
-/* Input styles */
 .form-control {
   width: 100%;
   padding: 10px;
@@ -34,14 +28,12 @@ label {
   font-size: 16px;
 }
 
-/* Error message styles */
 .text-danger {
   color: red;
 }
 
-/* Button styles */
 .btn-primary {
-  background-color: blue; /* Blue color for the "SUBMIT" button */
+  background-color: blue;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -50,25 +42,24 @@ label {
 }
 
 .btn-primary:hover {
-  background-color: #0056b3; /* Darker blue color on hover */
+  background-color: #0056b3;
 }
 
 .btn-danger {
-  background-color: red; /* Red color for the "CANCEL" button */
+  background-color: red;
   color: white;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
 }
 
-/* Back to Dashboard button styles */
 .back-to-dashboard-link {
   text-align: center;
   margin-top: 20px;
 }
 
 .back-to-dashboard-button {
-  background-color: green; /* Green color for the "Back to DASHBOARD" button */
+  background-color: green;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -76,13 +67,9 @@ label {
 }
 
 .back-to-dashboard-button:hover {
-  background-color: #006400; /* Darker green color on hover */
+  background-color: #006400;
 }
 
-
-/* AddInventory.css */
-
-/* Styles for the popup */
 .popup {
   position: fixed;
   top: 50%;
@@ -111,4 +98,4 @@ label {
   border: none;
   cursor: pointer;
   text-align: center;
-}
+} */

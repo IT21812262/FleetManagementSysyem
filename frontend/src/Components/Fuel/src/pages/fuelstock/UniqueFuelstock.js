@@ -1,19 +1,23 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Box, Button, TextField } from '@mui/material'
+import { Box, Button, TextField, Typography, Paper, List, ListItem, ListItemText } from '@mui/material';
 import { Formik, Field, ErrorMessage } from "formik";
 import * as yup from 'yup'; // Import yup for validation
 import { useMediaQuery } from "@mui/material";
 import Header from "../../components/Header";
 import { useParams } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import { Grid } from '@mui/material';
+import { tokens } from "../../theme";
+import { useTheme} from "@mui/material";
 
-import "./AddFuelstock.css";
 
 
 
 const UniqueFuelstock = ({ onClose }) => {
 
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { id } = useParams();
@@ -46,7 +50,7 @@ const UniqueFuelstock = ({ onClose }) => {
       await axios.delete(`http://localhost:8411/fuelstock/delete/${invoiceNo}`);
       alert('Fuel stock deleted successfully.');
       // Navigate to All Fuel entry page
-      window.location.href = "/fuelstock";
+      window.location.href = "/fuel/fuelstock";
     } catch (error) {
       alert('Error deleting fuel stock:', error.message);
     }
@@ -80,187 +84,103 @@ const UniqueFuelstock = ({ onClose }) => {
 
   return (
     <Box m="20px">
-      
+    <Formik
+      initialValues={{ invoice_no: "" }}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting, handleSubmit }) => (
+        <form onSubmit={handleSubmit}>
+          {fuelstock && (
+            <Header
+              title={`UNIQUE FUEL STOCK FOR ${fuelstock.invoice_no}`}
+              subtitle="View a unique fuel stock data"
+            />
+          )}
+          <Box mt={2}>
+            <Field
+              as={TextField}
+              fullWidth
+              variant="filled"
+              label="ENTER INVOICE NO"
+              name="invoice_no"
+              error={false}
+            />
+            <ErrorMessage name="invoice_no">
+              {(msg) => <Typography color="error">{msg}</Typography>}
+            </ErrorMessage>
+          </Box>
 
-
-
-      <Formik
-        initialValues={{ invoice_no: "" }}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting, handleSubmit }) => (
-          <form className="uniqueFuelStockForm" onSubmit={handleSubmit}>
-            {fuelstock && (
-  <Header
-    title={`UNIQUE FUEL STOCK FOR ${fuelstock.invoice_no}`}
-    subtitle="View a unique fuel stock data"
-  />
-)}
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
+          <Box mt={2} display="flex" justifyContent="space-between">
+            <Button
+              type="submit"
+              color="secondary"
+              variant="contained"
+              disabled={isSubmitting}
             >
-              <Field
-                as={TextField}
-                fullWidth
-                variant="filled"
-                type="text"
-                label="ENTER INVOICE NO"
-                name="invoice_no"
-                error={false} // Don't show error by default
-                sx={{ gridColumn: "span 4" }}
-              />
-              <ErrorMessage name="invoice_no">
-                {(msg) => <p style={{ color: 'red' }}>{msg}</p>}
-              </ErrorMessage>
-            </Box>
-
-            <Box display="flex" justifyContent="end" mt="20px" width="100%">
-              <Button
-                type="submit"
-                color="secondary"
-                variant="contained"
-                style={{ flex: '1', marginRight: '10px' }}
-                disabled={isSubmitting}
-              >
-                FETCH FUEL STOCK DATA
-              </Button>
-              <Button
+              FETCH FUEL STOCK DATA
+            </Button>
+            <Button
+              type="button"
+              color="secondary"
+              variant="contained"
               onClick={handleButtonClick}
-                type="button"
-                color="secondary"
-                variant="contained"
-                style={{ flex: '1', marginLeft: '10px' }}
-                
-                disabled={isSubmitting}
-                
-              >
-                CANCEL
-              </Button>
-            </Box>
+              disabled={isSubmitting}
+            >
+              CANCEL
+            </Button>
+          </Box>
 
-            {fuelstock ? (
-             
-             <ul className="ulm" style={{ listStyleType: "none", padding: 0 }}>
-              <Box
-  display="flex"
-  flexDirection="column" // Stack items vertically
-  gap="10px" // Add vertical gap between rows
->
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-    <li
-      className="lim"
-      key={fuelstock.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-        marginRight: "10px",
-      }}
-    >
-      Invoice No: {fuelstock.invoice_no}<br />
-    </li>
-    <li
-      className="lim"
-      key={fuelstock.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-        marginRight: "10px",
-      }}
-    >
-      Stocked Fuel Type: {fuelstock.stocked_fuel_type}<br />
-    </li>
-  </div>
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-    
-    <li
-      className="lim"
-      key={fuelstock.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-      }}
-    >
-      Stocked Fuel Quantity: {fuelstock.stocked_fuel_quantity}<br />
-    </li>
-     <li
-      className="lim"
-      key={fuelstock.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-        marginRight: "10px",
-      }}
-    >
-      Per Leter Cost: {fuelstock.per_leter_cost}<br />
-    </li>
-  </div>
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-   
-    <li
-      className="lim"
-      key={fuelstock.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-      }}
-    >
-      Total Cost: {fuelstock.total_cost}<br />
-    </li>
-    <li
-      className="lim"
-      key={fuelstock.id}
-      style={{
-        flex: "1", // Each li takes 50% width
-        border: "1px solid #ccc",
-        padding: "10px",
-      }}
-    >
-      Stocked Fuel Date: {formatDate(fuelstock.stocked_fuel_date)}<br />
-    </li>
-  </div>
-</Box>
-<br />
-             {/* Add other fuel entry details here */}
-             <button
-               className="buttonm"
-               onClick={() => handleDelete(fuelstock.invoice_no)}
-               style={{
-                 width: '100%',
-                 backgroundColor: 'red',
-                 color: 'white',
-                 padding: '10px',
-                 border: 'none',
-                 cursor: 'pointer',
-                 transition: 'background-color 0.3s',
-               }}
-               onMouseEnter={(e) => {
-                 e.target.style.backgroundColor = 'darkred';
-               }}
-               onMouseLeave={(e) => {
-                 e.target.style.backgroundColor = 'red';
-               }}
-             >
-               Delete Fuel Stock
-             </button>
-           </ul>
-            ) : (
-              <p>No fuel stock found with the specified Vehicle Id.</p>
-            )}
-          </form>
-        )}
-      </Formik>
-    </Box>
+          {fuelstock ? (
+             <Paper elevation={3} style={{ marginTop: '20px', padding: '20px', backgroundColor: colors.primary[400] }}>
+
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <List>
+                    <ListItem>
+                      <ListItemText primary="Invoice No" secondary={fuelstock.invoice_no} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="Stocked Fuel Type" secondary={fuelstock.stocked_fuel_type} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="Stocked Fuel Quantity" secondary={fuelstock.stocked_fuel_quantity} />
+                    </ListItem>
+                  </List>
+                </Grid>
+                <Grid item xs={6}>
+                  <List>
+                    <ListItem>
+                      <ListItemText primary="Per Leter Cost" secondary={fuelstock.per_leter_cost} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="Total Cost" secondary={fuelstock.total_cost} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="Stocked Fuel Date" secondary={formatDate(fuelstock.stocked_fuel_date)} />
+                    </ListItem>
+                  </List>
+                  
+                </Grid>
+              </Grid>
+              <Button
+                    fullWidth
+                    variant="contained"
+                    color="error"
+                    onClick={() => handleDelete(fuelstock.invoice_no)}
+                  >
+                    Delete Fuel Stock
+                  </Button>
+            </Paper>
+          ) : (
+            <Typography variant="h6" color="textSecondary" style={{ marginTop: '20px' }}>
+              No fuel stock found with the specified Vehicle Id.
+            </Typography>
+          )}
+        </form>
+      )}
+    </Formik>
+  </Box>
   );
 };
 
