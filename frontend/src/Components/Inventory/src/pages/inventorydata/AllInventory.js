@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"; // Import Link from React Router
 import axios from "axios";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import "./AllInventory.css";
+//import "./AllInventory.css";
 
 
 

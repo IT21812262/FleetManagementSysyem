@@ -178,7 +178,7 @@ const UpdateSupplier = () => {
       .then((response) => {
         resetForm();
         //alert("Supplier successfully updated.");
-        window.location.href = "/supplier/allSuppliers";
+        window.location.href = "/supplier/supplierdata";
       })
       .catch((err) => {
         alert(err);
@@ -231,7 +231,7 @@ const UpdateSupplier = () => {
         .then((response) => {
           resetForm();
           alert("Supplier successfully updated.");
-          window.location.href = "/supplier/allSuppliers"; 
+          window.location.href = "/supplier/supplierdata"; 
         })
         .catch((err) => {
           alert(err);
@@ -289,7 +289,10 @@ const UpdateSupplier = () => {
       navigate('/supplier/supplierdata');
     };
 
-/*   const fetchSupplier = async () => {
+
+
+
+   /* const fetchSupplier = async () => {
     try {
       const response = await axios.get(
         `http://localhost:8411/supplier/get/${supplierData.supplier_id}`
@@ -301,7 +304,7 @@ const UpdateSupplier = () => {
     } catch (error) {
       alert("Error fetching supplier: " + error.message);
     }
-  }; */
+  };  */
 
 
 
