@@ -559,18 +559,7 @@ return (
         
         </form>
         </Formik>
-        </Box>
-    
-    
-      
-        
-       
-        
-
-
-
-        
-       
+        </Box>     
 );
 
 };
