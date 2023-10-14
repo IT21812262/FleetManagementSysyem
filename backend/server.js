@@ -72,8 +72,6 @@ app.use("/trip", trip);
 app.use("/corrective",corrective_m);
 app.use("/employee",employee);
 
-
-
 app.listen(PORT, () =>{
     console.log(`Server is up and running on port number is: ${PORT}`)
 })

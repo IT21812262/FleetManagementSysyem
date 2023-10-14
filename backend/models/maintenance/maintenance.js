@@ -39,15 +39,6 @@ const correctiveSchema = new Schema({
     Date_complete :{
         type : Date,
         required : false
-    },
-
-    longitude : {
-        type : Number,
-        required : false
-    },
-    latitude : {
-        type : Number,
-        required : false
     }
 
 })
