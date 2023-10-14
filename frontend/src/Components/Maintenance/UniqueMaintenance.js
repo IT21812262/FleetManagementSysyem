@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import "./UniqueMaintenanceJob.css";
 
 export default function UniqueMaintenanceJob() {
   const { id } = useParams();
   const [job, setJob] = useState(null);
+
+  const mapContainerStyle = {
+    width: '100%',
+    height: '400px'
+  };
 
   useEffect(() => {
     const fetchJobData = async () => {
@@ -51,12 +57,24 @@ export default function UniqueMaintenanceJob() {
             <b>Description:</b> {job.description}<br />
             <b>Parts Used:</b> {job.parts_used}<br />
             {/* Date Complete: {job.Date_complete}<br /> */}
+            <h2>Error Reported Location</h2>
+          <LoadScript googleMapsApiKey="AIzaSyAz27qe4QY9J6XxL_8VmOW4AiA8xr4uuUU">
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              center={{ lat: parseFloat(job.latitude), lng: parseFloat(job.longitude) }}
+              zoom={20}
+            >
+              <Marker position={{ lat: parseFloat(job.latitude), lng: parseFloat(job.longitude) }} />
+            </GoogleMap>
+          </LoadScript>
             <button onClick={() => handleDelete(job.jobID)}>Delete Job</button>
             <Link to={`maintenance/update/${job.jobID}`} className="btn btn-primary">
               Update Job
             </Link>
           </li>
+          
         </ul>
+        
       ) : (
         <p>No maintenance job found with the specified ID.</p>
       )}
