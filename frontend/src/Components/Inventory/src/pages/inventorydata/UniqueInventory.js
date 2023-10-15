@@ -1,153 +1,430 @@
-// UniqueInventory 
-
-
- //import "./UniqueInventory.css"; // Import the CSS file
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback  } from "react";
 import axios from "axios";
-import { useParams, Link } from "react-router-dom";
+import { Box, Button, TextField } from '@mui/material';
+import { useLocation } from "react-router-dom";
+import { Formik } from "formik";
+import Header from "../../components/Header";
+import { useNavigate } from 'react-router-dom';
 
-export default function UniqueInventory() {
+import { useParams} from "react-router-dom";
+
+
+import './UpdateInventory.css';
+
+
+
+const UniqueInventory = () => {
+const location = useLocation();
+
   const { id } = useParams();
   console.log("Received ID:", id);
-//  const { inventoryData } = location.state; // Access the inventoryData from location.state
+  
+const [pid, setPid] = useState("");
+const [type, setType] = useState("");
+const [name, setName] = useState("");
+const [brand, setBrand] = useState("");
+const [qty, setQty] = useState("");
+const [unit_price, setUnitPrice] = useState("");
+const [size, setSize] = useState("");
+const [voltage, setVoltage] = useState("");
+const [amp_hrs, setAmpHrs] = useState("");
+const [man_date, setManDate] = useState("");
+const [exp_date, setExpDate] = useState("");
+const [vehicle_brand_and_model,  setVehicleBrandAndModel] = useState("");
+const [vehicle_man_year, setVehicleManYear] = useState("");
+const [reorder_level, setReOrderLevel] = useState("");
 
-  const [inventory, setInventory] = useState(null);
-  const [searchQ, setSearchQ] = useState("");
+const [searchQ, setSearchQ] = useState("");
+const [inventory, setInventory] = useState(null);
 
-  useEffect(() => {
-    const fetchInventoryData = async () => {
-      try {
-        if (id) {
-          const response = await axios.get(`http://localhost:8411/inventory/get/${id}`);
-          console.log("API Response:", response.data);
+
+
+const handleDelete = async (pid) => {
+  try {
+    await axios.delete(`http://localhost:8411/inventory/delete/${pid}`);
+    alert('Product deleted successfully.');
+    // Navigate to All Fuel entry page
+    window.location.href = "/inventory/inventorydata";
+  } catch (error) {
+    alert('Error deleting fuel entry:', error.message);
+  }
+};
+
+
+
+useEffect(() => {
+  const fetchInventoryData = async () => {
+    try {
+      if (searchQ ) {  // searchQ
+        const response = await axios.get(
+          `http://localhost:8411/inventory/get/${searchQ}`  //searchQ
+        );
+
+        if (response.data.inventory) {
           setInventory(response.data.inventory);
+
+          const inventoryData = response.data.inventory;
+
+          const manDate = new Date(inventoryData.man_date);
+          const expDate = new Date(inventoryData.exp_date);
+
+          const formattedManDate = manDate.toISOString().split('T')[0];
+          const formattedExpDate = expDate.toISOString().split('T')[0];
+
+          setPid(inventoryData.pid);
+          setType(inventoryData.type);
+          setName(inventoryData.name);
+          setBrand(inventoryData.brand);
+          setQty(inventoryData.qty);
+          setUnitPrice(inventoryData.unit_price);
+          setSize(inventoryData.size);
+          setVoltage(inventoryData.voltage);
+          setAmpHrs(inventoryData.amp_hrs);
+          setManDate(formattedManDate);
+          setExpDate(formattedExpDate);
+          setVehicleBrandAndModel(inventoryData.vehicle_brand_and_model);
+          setVehicleManYear(inventoryData.vehicle_man_year);
+          setReOrderLevel(inventoryData.reorder_level);
         }
-      } catch (error) {
-        alert('Error fetching inventory:', error.message);
-      }
-    };
-
-    fetchInventoryData();
-  }, [id]);
-
-  const handleSearchQ = (e) => {
-    setSearchQ(e.target.value);
-  };
-
-  const fetchInventoryDataBySearch = async () => {
-    try {
-      if (searchQ) {
-        const response = await axios.get(`http://localhost:8411/inventory/get/${searchQ}`);
-        setInventory(response.data.inventory);
       }
     } catch (error) {
-      alert('Error fetching item:', error.message);
+      alert("Error fetching inventory: " + error.message);
     }
   };
 
-  // Function to handle deletion of an inventory item
-const handleDelete = (itemId) => {
-    // Display a confirmation dialog to the user
-    const userConfirmed = window.confirm("Do you want to delete the item?");
-  
-    if (userConfirmed) {
-      // User clicked "OK," proceed with deletion
-      deleteItem(itemId);
-    } else {
-      // User clicked "Cancel," do nothing
-    }
-  };
-  
-  const deleteItem = async (itemId) => {
+  fetchInventoryData();
+}, [searchQ]);
+
+
+// useEffect for id
+
+useEffect(() => {
+  const fetchInventoryData = async () => {
     try {
-      await axios.delete(`http://localhost:8411/inventory/delete/${itemId}`);
-      alert('Item deleted successfully.');
-      // Navigate to All Inventory page
-      window.location.reload();
+      if (id ) {  // searchQ
+        const response = await axios.get(
+          `http://localhost:8411/inventory/get/${id}`  //searchQ
+        );
+
+        if (response.data.inventory) {
+          setInventory(response.data.inventory);
+
+          const inventoryData = response.data.inventory;
+
+          const manDate = new Date(inventoryData.man_date);
+          const expDate = new Date(inventoryData.exp_date);
+
+          const formattedManDate = manDate.toISOString().split('T')[0];
+          const formattedExpDate = expDate.toISOString().split('T')[0];
+
+          setPid(inventoryData.pid);
+          setType(inventoryData.type);
+          setName(inventoryData.name);
+          setBrand(inventoryData.brand);
+          setQty(inventoryData.qty);
+          setUnitPrice(inventoryData.unit_price);
+          setSize(inventoryData.size);
+          setVoltage(inventoryData.voltage);
+          setAmpHrs(inventoryData.amp_hrs);
+          setManDate(formattedManDate);
+          setExpDate(formattedExpDate);
+          setVehicleBrandAndModel(inventoryData.vehicle_brand_and_model);
+          setVehicleManYear(inventoryData.vehicle_man_year);
+          setReOrderLevel(inventoryData.reorder_level);
+        }
+      }
     } catch (error) {
-      alert('Error deleting item:', error.message);
+      alert("Error fetching inventory: " + error.message);
     }
   };
+
+  fetchInventoryData();
+}, [id]);
+
+
+const navigate = useNavigate();
   
+const handleButtonClick = () => {
+  navigate('/inventory/inventorydata');
+};
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    fetchInventoryDataBySearch();
-  };
 
-  return (
-    <div className="container-g20">
-      <h1>Unique Product</h1>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={searchQ}
-          onChange={handleSearchQ}
-          placeholder="Enter Product ID"
-        />
-        <button type="submit">Fetch Product Data</button>
-        &nbsp;&nbsp;&nbsp;
-
-        <Link to="/inventory/inventorydata">
-          <button className="cancel-button-g21" type="button">Cancel</button>
-        </Link>
-      </form>
-
-      {inventory ? (
-        <div className="product-box-g22">
-        <div className="product-detail-g23">
-          <strong>Product ID:</strong> {inventory.pid}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Product Type:</strong> {inventory.type}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Product Name:</strong> {inventory.name}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Product Brand:</strong> {inventory.brand}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Quantity:</strong> {inventory.qty}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Unit Price:</strong> {inventory.unit_price}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Size:</strong> {inventory.size}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Voltage:</strong> {inventory.voltage}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Ampiers:</strong> {inventory.amp_hrs}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Manufactured Date:</strong> {inventory.man_date}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Expiry Date:</strong> {inventory.exp_date}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Vehicle Brand and Model:</strong> {inventory.vehicle_brand_and_model}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Vehicle Manufacture Year:</strong> {inventory.vehicle_man_year}
-        </div>
-        <div className="product-detail-g23">
-          <strong>Reorder Level:</strong> {inventory.reorder_level}
-        </div>
+return (
+  <Box m="20px">
+      
+      <Formik
+      
         
-        <button type="button" onClick={() => handleDelete(inventory.pid)}>Delete Item</button>
-      </div>
-      ) : (
-        <p>No Item found with the specified ID.</p>
-      )}
+      >
+        
+        <form className="updateSupplietrForm" >
+        {pid && (
+      <Header
+        title={`SPARE PARTS DETAILS FOR ${pid}`}
+        subtitle="Display details"
+      />
+    )}
+    
+    <TextField
+            fullWidth
+            variant="filled"
+            type="text"
+            label="Enter Product ID to view"
+            id="pid"
+            value={searchQ}
+            onChange={(e) => setSearchQ(e.target.value)}
+            placeholder="Enter Product ID"
+            name="pid"
+            sx={{ gridColumn: "span 2" }}
+          />
 
-      {/* Link to All Products page */}
-     <Link to="/inventory/inventorydata">
-     <button className="dashboard-button-24">Back To DASHBOARD</button></Link>
-    </div>
-  );
-}
+        <Box
+            display="grid"
+            gap=""
+            gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+            sx={{
+              "& > div": { gridColumn: "span 4" },
+            }}
+          >
+            <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+            <TextField
+    fullWidth
+    id="pid"
+    label="PRODUCT ID"
+    variant="outlined"
+    value={pid}
+    
+    disabled
+
+/>
+
+</Box>
+<Box display="flex" justifyContent="end" mt="20px" gap="30px">
+            <TextField
+    fullWidth
+    id="type"
+    label="TYPE"
+    variant="outlined"
+    disabled
+    value={type}
+    
+
+/>
+
+<TextField
+    fullWidth
+    id="name"
+    label="NAME"
+    variant="outlined"
+    disabled
+    value={name}
+    
+
+/>
+
+<TextField
+    fullWidth
+    id="brand"
+    label="BRAND"
+    variant="outlined"
+    disabled
+    value={brand}
+    
+
+    
+/>
+<TextField
+    fullWidth
+    id="reorder_level"
+    label="REORDER LEVEL"
+    disabled
+    variant="outlined"
+    value={reorder_level}
+   
+
+   
+/>
+
+
+</Box>
+<Box display="flex" justifyContent="end" mt="20px" gap="30px">
+<TextField
+    fullWidth
+    id="qty"
+    label="QUANTITY"
+    variant="outlined"
+    disabled
+    value={qty}
+    
+
+/>
+ 
+<TextField
+    fullWidth
+    id="unit_price"
+    label="UNIT PRICE"
+    disabled
+    variant="outlined"
+    value={unit_price}
+    
+
+    
+/>
+
+<TextField
+    fullWidth
+    id="size"
+    label="SIZE"
+    variant="outlined"
+    disabled
+    value={size}
+  
+
+/>
+
+
+<TextField
+    fullWidth
+    id="voltage"
+    label="VOLTAGE"
+    variant="outlined"
+    disabled
+    value={voltage}
+   
+
+    
+/>
+
+
+</Box>
+<Box display="flex" justifyContent="end" mt="20px" gap="30px">
+<TextField
+    fullWidth
+    id="amp_hrs"
+    label="AMP HOURS"
+    variant="outlined"
+    disabled
+    value={amp_hrs}
+    
+
+    
+    
+/>
+<TextField
+    fullWidth
+    id="man_date"
+    label="MANUFACTURE DATE"
+    disabled
+    variant="outlined"
+    value={man_date}
+   
+    
+/>
+
+
+<TextField
+    fullWidth
+    id="exp_date"
+    label="EXPIRY DATE"
+    disabled
+    variant="outlined"
+    value={exp_date}
+  
+
+    
+/>
+
+
+
+
+<TextField
+    fullWidth
+    id="vehicle_man_year"
+    label="VEHICLE MANUFACTURE YEAR"
+    disabled
+    variant="outlined"
+    value={vehicle_man_year}
+  
+   
+  
+/>
+
+</Box>
+<Box display="flex" justifyContent="end" mt="20px" gap="30px">
+
+<TextField
+    fullWidth
+    id="vehicle_brand_and_model"
+    label="VEHICLE BRAND & MODEL"
+    disabled
+    variant="outlined"
+    value={vehicle_brand_and_model}
+   
+  
+/>
+
+</Box>
+
+</Box>
+<Box display="flex" justifyContent="end" mt="20px" >
+<button
+               className="buttonm"
+               onClick={() => handleDelete(pid)}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'red',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'red';
+               }}
+             >
+               DELETE PRODUCT
+             </button>
+             <button
+               className="buttonm"
+               onClick={handleButtonClick}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'green',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'green';
+               }}
+             >
+               BACK TO SPARE PARTS
+             </button>
+          </Box>
+
+         
+          
+        
+        </form>
+        </Formik>
+        </Box>
+    
+   
+       
+);
+
+};
+
+export default UniqueInventory;
