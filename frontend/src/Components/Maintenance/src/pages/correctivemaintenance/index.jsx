@@ -197,6 +197,26 @@ const Maintenance = () => {
       ),
     },
   ];
+  const getRowStyle = (params) => {
+    const priority = params.getValue("priority");
+  
+    if (priority === "High") {
+      return {
+        backgroundColor: "#FF0000", // Red for High Priority
+      };
+    } else if (priority === "Medium") {
+      return {
+        backgroundColor: "#FFA500", // Orange for Medium Priority
+      };
+    } else if (priority === "Low") {
+      return {
+        backgroundColor: "#FFFF00", // Yellow for Low Priority
+      };
+    }
+  
+    return {};
+  };
+  
 
   const fetchJobData = async () => {
     try {
@@ -285,7 +305,12 @@ const Maintenance = () => {
           },
         }}
       >
-        <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} />
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          components={{ Toolbar: GridToolbar }}
+          getRowStyle={getRowStyle} // Apply the row styles based on priority
+        />
       </Box>
     </Box>
   );
