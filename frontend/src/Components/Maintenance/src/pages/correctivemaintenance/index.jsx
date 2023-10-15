@@ -85,9 +85,10 @@ const Maintenance = () => {
   const rows = maintenanceJobs.map((job) => ({
     id: job.jobID,
     jobID: job.jobID,
-    priority: job.priority, // Update with the correct field name
+    priority: job.priority,
     vehicleNo: job.vehicleNo,
-  }));
+}));
+
   const linkStyle = {
     textDecoration: "none", // Remove underline
     color: "white",       // Set text color to white
@@ -153,7 +154,7 @@ const Maintenance = () => {
 </Link>
 
 <Link 
-    to={`maintenance/update/${params.row.invoice_no}`}
+    to={`/maintenance/updateMaintenance/${params.row.jobID}`}
     state={{ jobsData: params.row }}
     style={linkStyle}
 >
@@ -206,7 +207,8 @@ const Maintenance = () => {
     } catch (error) {
       alert('Error fetching maintenance job:', error.message);
     }
-  };
+};
+
 
   useEffect(() => {
     fetchJobData();
