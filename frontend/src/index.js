@@ -58,6 +58,9 @@ import AnalyticsInventory from './Components/Inventory/src/pages/analytics/index
 import UniqueInventory from "./Components/Inventory/src/pages/inventorydata/UniqueInventory";
 import UpdateInventory  from "./Components/Inventory/src/pages/inventorydata/UpdateInventory";
 
+
+  //Vehicle
+
 import UniqueRelease from "./Components/Inventory/src/pages/release/UniqueFuelstock";
 import UpdateRealease  from "./Components/Inventory/src/pages/release/UpdateFuelstock";
 
@@ -76,6 +79,11 @@ import UniqueTrip from './Components/Trip/src/pages/trip/UniqueTrip';
 import UpdateTrip from './Components/Trip/src/pages/trip/UpdateTrip';
 
 
+  import Vehicle from './Components/Vehicle/Vehicle';
+  import AllVehicles from './Components/Vehicle/AllVehicle';
+  import AddVehicle from './Components/Vehicle/AddVehicle';
+  import UpdateVehicle from './Components/Vehicle/UpdateVehicle';
+  
 const router = createBrowserRouter([
   {
     path: "/",
@@ -298,12 +306,43 @@ const router = createBrowserRouter([
           },
         ],
       },
+
+
+      {
+        path: "/vehicle",
+
       {
         path: "/employee",
+
         element: <Outlet />,
         children: [
           {
             path: "",
+
+            element: <Vehicle />,
+          },
+          {
+            path: "addvehicle",
+            element: <AddVehicle />
+          },
+          {
+            path: "allVehicles",
+            element: <AllVehicles />
+          },
+          
+          {
+            path: "updateVehicle",
+            element: <UpdateVehicle />
+          },
+          {
+            path: "/vehicle/updateVehicle/:id",
+            element: <UpdateVehicle />
+          },
+        
+        ]
+      },
+    ],
+
             element: <Employee />,
           },
           {
@@ -365,6 +404,7 @@ const router = createBrowserRouter([
       },*/
 
     ], 
+
   },
 ]);
   

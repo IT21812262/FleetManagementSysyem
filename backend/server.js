@@ -61,7 +61,11 @@ const rent = require("./routes/rent.js");
 const supplier = require("./routes/supplier.js")
 const trip = require("./routes/trip.js");
 const corrective_m = require("./routes/maintenance.js");
+
+const vehicle = require("./routes/vehicle.js");
+
 const employee = require("./routes/employees.js");
+
 
 app.use("/fuelentry", fuelentry);
 app.use("/fuelstock", fuelstock);
@@ -70,7 +74,11 @@ app.use("/rent", rent);
 app.use("/inventory", inventoryRouter);
 app.use("/trip", trip);
 app.use("/corrective",corrective_m);
+
+app.use("/vehicle",vehicle);
+
 app.use("/employee",employee);
+
 
 app.listen(PORT, () =>{
     console.log(`Server is up and running on port number is: ${PORT}`)
