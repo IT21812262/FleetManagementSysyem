@@ -50,6 +50,14 @@ import UpdateFuelstock  from "./Components/Fuel/src/pages/fuelstock/UpdateFuelst
   import UpdateEmployee from './Components/Employee/UpdateEmployee';
 
 
+  //Vehicle
+
+  import Vehicle from './Components/Vehicle/Vehicle';
+  import AllVehicles from './Components/Vehicle/AllVehicle';
+  import AddVehicle from './Components/Vehicle/AddVehicle';
+  import UpdateVehicle from './Components/Vehicle/UpdateVehicle';
+
+
   // Inventroy Management System
 import IndexInventory from './Components/Inventory/src/App';
 import InventoryData from './Components/Inventory/src/pages/inventorydata/index';
@@ -57,9 +65,6 @@ import ReleaseInventory from './Components/Inventory/src/pages/release/index';
 import AnalyticsInventory from './Components/Inventory/src/pages/analytics/index';
 import UniqueInventory from "./Components/Inventory/src/pages/inventorydata/UniqueInventory";
 import UpdateInventory  from "./Components/Inventory/src/pages/inventorydata/UpdateInventory";
-
-
-  //Vehicle
 
 import UniqueRelease from "./Components/Inventory/src/pages/release/UniqueFuelstock";
 import UpdateRealease  from "./Components/Inventory/src/pages/release/UpdateFuelstock";
@@ -79,11 +84,6 @@ import UniqueTrip from './Components/Trip/src/pages/trip/UniqueTrip';
 import UpdateTrip from './Components/Trip/src/pages/trip/UpdateTrip';
 
 
-  import Vehicle from './Components/Vehicle/Vehicle';
-  import AllVehicles from './Components/Vehicle/AllVehicle';
-  import AddVehicle from './Components/Vehicle/AddVehicle';
-  import UpdateVehicle from './Components/Vehicle/UpdateVehicle';
-  
 const router = createBrowserRouter([
   {
     path: "/",
@@ -311,9 +311,6 @@ const router = createBrowserRouter([
       {
         path: "/vehicle",
 
-      {
-        path: "/employee",
-
         element: <Outlet />,
         children: [
           {
@@ -339,10 +336,16 @@ const router = createBrowserRouter([
             element: <UpdateVehicle />
           },
         
-        ]
+        ],
       },
-    ],
 
+
+      {
+        path: "/employee",
+        element: <Outlet />,
+        children: [
+          {
+            path: "",
             element: <Employee />,
           },
           {
@@ -404,7 +407,6 @@ const router = createBrowserRouter([
       },*/
 
     ], 
-
   },
 ]);
   
