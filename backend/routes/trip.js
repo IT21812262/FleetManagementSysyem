@@ -54,7 +54,7 @@ router.route("/").get((req,res)=>{
 
 router.route("/update/:id").put(async(req,res)=>{
 
-    let tripid = req.params.id;
+    let tripId = req.params.id;
     const {tripname,
         tripduration,
         tripdistance,
@@ -66,7 +66,7 @@ router.route("/update/:id").put(async(req,res)=>{
         arrivaltime,
         departuretime} = req.body; 
 
-    const updatetrip = {
+    const updateTrip = {
         tripname,
         tripduration,
         tripdistance,
@@ -79,7 +79,7 @@ router.route("/update/:id").put(async(req,res)=>{
         departuretime
     }
 
-    const update = await trip.findByIdAndUpdate(tripid,updatetrip).then(()=>{
+    const update = await trip.findOneAndUpdate({tripid : tripId}, updateTrip).then(()=>{
 
         res.status(200).send({status:"Trip Updated"})
 
@@ -91,9 +91,9 @@ router.route("/update/:id").put(async(req,res)=>{
 
 router.route("/delete/:id").delete(async(req,res)=>{
 
-    let tripid =  req.params.id;
+    let tripId =  req.params.id;
 
-    await trip.findByIdAndDelete(tripid).then(()=>{
+    await trip.findOneAndDelete({tripid : tripId}).then(()=>{
         res.status(200).send({status:"Trip Deleted"});
     }).catch((err)=>{
         console.log(err.message);
@@ -102,8 +102,8 @@ router.route("/delete/:id").delete(async(req,res)=>{
 })
 
 router.route("/get/:id").get(async(req,res)=>{
-    let tripid = req.params.id;
-    const user = await trip.findById(tripid).then((trip)=>{
+    let tripId = req.params.id;
+    const user = await trip.findOne({tripid : tripId}).then((trip)=>{
         res.status(200).send({status:"Trip Fetched",trip})
     }).catch((err)=>{
         console.log(err.message);
