@@ -2,16 +2,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-//Supplier Management System
+
+
 import Root from './Root'
-import Supplier from './Components/Supplier/Supplier';
-import AddSupplier from './Components/Supplier/AddSupplier';
-import AllSuppliers from './Components/Supplier/AllSupplier';
+//Supplier Management System
+import IndexSupplier from './Components/Supplier/src/App';
+import Supplier from './Components/Supplier/src/pages/supplierdata/index';
+import Notifications from './Components/Supplier/src/pages/notifications/index';
 
-import UniqueSupplier from './Components/Supplier/UniqueSupplier';
-import UpdateSupplier from './Components/Supplier/UpdateSupplier';
+import UniqueSupplier from "./Components/Supplier/src/pages/supplierdata/UniqueSupplier";
+import UpdateSupplier  from "./Components/Supplier/src/pages/supplierdata/UpdateSupplier";
+
+import UniqueNotification from "./Components/Supplier/src/pages/notifications/UniqueNotification";
 
 //Rent Management System
 
@@ -22,25 +27,57 @@ import UpdateRent from './Components/Rent/UpdateRent';
 import UniqueRent from './Components/Rent/UniqueRent';
 
 // Fuel Management System
-import Fuel from './Components/Fuel/Fuel';
+import Index from './Components/Fuel/src/App';
+import Fuelstock from './Components/Fuel/src/pages/fuelstock/index';
+import Fuelentry from './Components/Fuel/src/pages/fuelentry/index';
+import Fuelconsumtion from './Components/Fuel/src/pages/fuelconsumtion/index';
+import Fuelinvoices from './Components/Fuel/src/pages/invoices/index';
+import Fuelanalytics from './Components/Fuel/src/pages/faq/index';
 
-  //Fuel Stock
-  import Fuelstock from './Components/Fuel/Fuelstock/Fuelstock';
+import UniqueFuelentry from "./Components/Fuel/src/pages/fuelentry/UniqueFuelentry";
+import UpdateFuelentry  from "./Components/Fuel/src/pages/fuelentry/UpdateFuelentry";
 
-  import AddFuelstock from './Components/Fuel/Fuelstock/AddFuelstock';
-  import AllFuelstocks from './Components/Fuel/Fuelstock/AllFuelstock';
-  import UniqueFuelstock from './Components/Fuel/Fuelstock/UniqueFuelstock';
-  import UpdateFuelstock from './Components/Fuel/Fuelstock/UpdateFuelstock';
+import UniqueFuelstock from "./Components/Fuel/src/pages/fuelstock/UniqueFuelstock";
+import UpdateFuelstock  from "./Components/Fuel/src/pages/fuelstock/UpdateFuelstock";
 
-  //Fuel Entry
-  import Fuelentry from './Components/Fuel/Fuelentry/Fuelentry';
 
-  import AddFuelentry from './Components/Fuel/Fuelentry/AddFuelentry';
-  import AllFuelentries from './Components/Fuel/Fuelentry/AllFuelentry';
-  import UniqueFuelentry from './Components/Fuel/Fuelentry/UniqueFuelentry';
-  import UpdateFuelentry from './Components/Fuel/Fuelentry/UpdateFuelentry';
+  //Employee
+
+  import Employee from './Components/Employee/Employee';
+
+  import AddEmployee from './Components/Employee/AddEmployee';
+  import AllEmployees from './Components/Employee/AllEmployee';
+  import UpdateEmployee from './Components/Employee/UpdateEmployee';
+
+
+  // Inventroy Management System
+import IndexInventory from './Components/Inventory/src/App';
+import InventoryData from './Components/Inventory/src/pages/inventorydata/index';
+import ReleaseInventory from './Components/Inventory/src/pages/release/index';
+import AnalyticsInventory from './Components/Inventory/src/pages/analytics/index';
+import UniqueInventory from "./Components/Inventory/src/pages/inventorydata/UniqueInventory";
+import UpdateInventory  from "./Components/Inventory/src/pages/inventorydata/UpdateInventory";
+
 
   //Vehicle
+
+import UniqueRelease from "./Components/Inventory/src/pages/release/UniqueFuelstock";
+import UpdateRealease  from "./Components/Inventory/src/pages/release/UpdateFuelstock";
+
+  //Maintanence
+  import IndexMaintenance from './Components/Maintenance/src/App';
+  import Correctivemaintanence from './Components/Maintenance/src/pages/correctivemaintenance/index';
+  import Preventivemaintanence from './Components/Maintenance/src/pages/preventivemaintenance/index';
+  
+  import UniqueMaintenance from './Components/Maintenance/src/pages/correctivemaintenance/UniqueMaintenance';
+import UpdateMaintenance from './Components/Maintenance/src/pages/correctivemaintenance/UpdateMaintenance';
+
+//Trip Management System
+import IndexTrip from './Components/Trip/src/App';
+import TripData from './Components/Trip/src/pages/trip/index';
+import UniqueTrip from './Components/Trip/src/pages/trip/UniqueTrip';
+import UpdateTrip from './Components/Trip/src/pages/trip/UpdateTrip';
+
 
   import Vehicle from './Components/Vehicle/Vehicle';
   import AllVehicles from './Components/Vehicle/AllVehicle';
@@ -54,38 +91,38 @@ const router = createBrowserRouter([
     children: [
 
       {
-        path: "/supplier",
+        path: '/supplier',
         element: <Outlet />,
         children: [
+
           {
             path: "",
-            element: <Supplier />,
+            element: <IndexSupplier />,
+            children: [
+              {
+                path: "/supplier/supplierdata",
+                element: <Supplier />,
+              },
+              {
+                path: "/supplier/notifications",
+                element: <Notifications />,
+              },
+              
+              {
+                path: "/supplier/uniquesupplier/:id",
+                element: <UniqueSupplier />
+              },
+              {
+                path: "/supplier/updatesupplier/:id",
+                element: <UpdateSupplier />
+              },
+              {
+                path: "/supplier/uniquenotification/:id",
+                element: <UniqueNotification />,
+              },
+            ],
           },
-          {
-            path: "addsupplier",
-            element: <AddSupplier />
-          },
-          {
-            path: "allSuppliers",
-            element: <AllSuppliers />
-          },
-          {
-            path: "uniqueSupplier",
-            element: <UniqueSupplier />
-          },
-          {
-            path: "updateSupplier",
-            element: <UpdateSupplier />
-          },
-          {
-            path: "/supplier/updateSupplier/:id",
-            element: <UpdateSupplier />
-          },
-          {
-            path: "/supplier/uniqueSupplier/:id",
-            element: <UniqueSupplier />
-          },
-        ]
+        ],
       },
       {
         path: "/rent", // Add Rent route
@@ -122,6 +159,103 @@ const router = createBrowserRouter([
           
         ],
       },
+      {
+        path: '/trip',
+        element: <Outlet />,
+        children: [
+
+          {
+            path: "",
+            element: <IndexTrip />,
+            children: [
+              {
+                path: "/trip/tripdata",
+                element: <TripData />,
+              },
+              {
+                path: "/trip/uniquetrip/:id",
+                element: <UniqueTrip />,
+              },
+              {
+                path: "/trip/updatetrip/:id",
+                element: <UpdateTrip />,
+              },
+            ],
+          },
+        ],
+      },
+      
+      {
+        path: '/inventory',
+        element: <Outlet />,
+        children: [
+
+          {
+            path: "",
+            element: <IndexInventory />,
+            children: [
+              {
+                path: "/inventory/inventorydata",
+                element: <InventoryData />,
+              },
+              {
+                path: "/inventory/release",
+                element: <ReleaseInventory />,
+              },
+              {
+                path: "/inventory/analytics",
+                element: <AnalyticsInventory />,
+              },
+              {
+                path: "/inventory/uniqueinventory/:id",
+                element: <UniqueInventory />,
+              },
+              {
+                path: "/inventory/updateinventory/:id",
+                element: <UpdateInventory />,
+              },
+              {
+                path: "/inventory/uniquerelease/:id",
+                element: <UniqueRelease />,
+              },
+              {
+                path: "/inventory/updaterelease/:id",
+                element: <UpdateRealease />,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: '/maintenance',
+        element: <Outlet />,
+        children: [
+
+          {
+            path: "",
+            element: <IndexMaintenance />,
+            children: [
+              {
+                path: "/maintenance/correctivemaintenance",
+                element: <Correctivemaintanence />,
+              },
+              {
+                path: "/maintenance/preventivemaintenance",
+                element: <Preventivemaintanence />,
+              },
+              
+              {
+                path: "/maintenance/uniquemaintenance/:id",
+                element: <UniqueMaintenance />,
+              },
+              {
+                path: "/maintenance/updatemaintenance/:id",
+                element: <UpdateMaintenance />,
+              },
+            ],
+          },
+        ],
+      },
 
       {
         path: '/fuel',
@@ -130,91 +264,61 @@ const router = createBrowserRouter([
 
           {
             path: "",
-            element: <Fuel />,
-          },
-
-          {
-            path: "fuelstock",
-            element: <Outlet />,
+            element: <Index />,
             children: [
               {
-                path: "",
+                path: "/fuel/fuelstock",
                 element: <Fuelstock />,
               },
               {
-                path: 'addFuelstock',
-                element: <AddFuelstock />,
-              },
-              {
-                path: 'allFuelstocks',
-                element: <AllFuelstocks />,
-              },
-              {
-                path: 'uniqueFuelstock',
-                element: <UniqueFuelstock />,
-              },
-              {
-                path: 'updateFuelstock',
-                element: <UpdateFuelstock />,
-              },
-              {
-                path: '/fuel/fuelstock/updateFuelstock/:id',
-                element: <UpdateFuelstock />,
-              },
-              {
-                path: '/fuel/fuelstock/uniqueFuelstock/:id',
-                element: <UniqueFuelstock />,
-              },
-
-            ],
-          },
-
-          {
-            path: 'fuelentry',
-            element: <Outlet />,
-            children: [
-
-              {
-                path: "",
+                path: "/fuel/fuelentry",
                 element: <Fuelentry />,
               },
               {
-                path: 'addFuelentry',
-                element: <AddFuelentry />,
+                path: "/fuel/fuelconsumtion",
+                element: <Fuelconsumtion />,
               },
               {
-                path: 'allFuelentries',
-                element: <AllFuelentries />,
+                path: "/fuel/invoices",
+                element: <Fuelinvoices />,
               },
               {
-                path: 'uniqueFuelentry',
+                path: "/fuel/faq",
+                element: <Fuelanalytics />,
+              },
+              {
+                path: "/fuel/uniquefuelentry/:id",
                 element: <UniqueFuelentry />,
               },
               {
-                path: 'updateFuelentry',
+                path: "/fuel/updatefuelentry/:id",
                 element: <UpdateFuelentry />,
               },
               {
-                path: '/fuel/fuelentry/updateFuelentry/:id',
-                element: <UpdateFuelentry />,
+                path: "/fuel/uniquefuelstock/:id",
+                element: <UniqueFuelstock />,
               },
               {
-                path: '/fuel/fuelentry/uniqueFuelentry/:id',
-                element: <UniqueFuelentry />,
+                path: "/fuel/updatefuelstock/:id",
+                element: <UpdateFuelstock />,
               },
-              
             ],
           },
-          
         ],
       },
 
+
       {
         path: "/vehicle",
+
+      {
+        path: "/employee",
+
         element: <Outlet />,
         children: [
           {
             path: "",
+
             element: <Vehicle />,
           },
           {
@@ -238,6 +342,69 @@ const router = createBrowserRouter([
         ]
       },
     ],
+
+            element: <Employee />,
+          },
+          {
+            path: "addemployee",
+            element: <AddEmployee />
+          },
+          {
+            path: "allEmployees",
+            element: <AllEmployees />
+          },
+          
+          {
+            path: "updateEmployee",
+            element: <UpdateEmployee />
+          },
+          {
+            path: "/employee/updateEmployee/:id",
+            element: <UpdateEmployee />
+          },
+          
+        ]
+      },
+
+      /* 
+      {
+        path: "/maintenance",
+        element: <Outlet />,
+        children: [
+          {
+            path: "",
+            element: <AllCorrectiveMaintenance/>,
+          },
+          {
+            path: "addmaintenance",
+            element: <AddCorrectiveMaintenance />
+          },
+          {
+            path: "allmaintenance",
+            element: <AllCorrectiveMaintenance />
+          },
+          {
+            path: "uniquemaintenance",
+            element: <UniqueMaintenance />
+          },
+          {
+            path: "updateSupplier",
+            element: <UpdateSupplier />
+          },
+          {
+            path: "/maintenance/viewJob/:id",
+            element: <UniqueMaintenance/>
+          },
+          {
+            path: "/maintenance/viewJob/:id/maintenance/update/:id",
+            element: <UpdateMaintenance />
+          },
+    
+        ]
+      },*/
+
+    ], 
+
   },
 ]);
   

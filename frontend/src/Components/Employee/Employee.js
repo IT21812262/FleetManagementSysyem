@@ -7,11 +7,12 @@ const Employee = () => {
       <h2>Employee Dashboard</h2>
       <ul>
         <li>
-          <Link to="/employee/addEmployees">Add Supplier</Link>
+          <Link to="/employee/addEmployee">Add Employee</Link>
         </li>
         <li>
-          <Link to="/employee/allEmployees">View Supplier</Link>
+          <Link to="/employee/allEmployees">View Employee</Link>
         </li>
+        
        
         
       </ul>
