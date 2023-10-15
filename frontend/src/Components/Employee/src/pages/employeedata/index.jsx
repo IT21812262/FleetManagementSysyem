@@ -6,7 +6,7 @@ import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import AddInventory from './AddInventory';
+import AddEmployee from './AddEmployee';
 import "./index.css";
 
 
@@ -21,7 +21,7 @@ import { InputBase } from "@mui/material";
 
 
 
-const Inventory = () => {
+const Employee = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -47,41 +47,36 @@ const Inventory = () => {
   
   const [selectedRow, setSelectedRow] = useState(null);
 
-  
+  const [employees, setEmployees] = useState([]);
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
 
 
-  const [inventories, setInventories] = useState([]);
-
-
-  const handleDelete = async (itemId) => {
-    // Display a confirmation dialog to the user
-    const userConfirmed = window.confirm("Do you want to delete the item?");
-  
-    if (userConfirmed) {
-      try {
-        await axios.delete(`http://localhost:8411/inventory/delete/${itemId}`);
-        // After successful deletion, update the inventories list to reflect the changes
-        const updatedInventories = inventories.filter(
-          (inventory) => inventory.pid !== itemId
-        );
-        setInventories(updatedInventories);
-        alert("Item deleted successfully.");
-        window.location.reload();
-      } catch (error) {
-        alert(`Error deleting item: ${error.message}`);
-      }
-    } else {
-      // User clicked "No," do nothing
+  const handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this employee?')) {
+      axios
+        .delete(`http://localhost:8411/employee/delete/${id}`)
+        .then(() => {
+          // Remove the deleted employee from the list
+          setEmployees(employees.filter((employee) => employee._id !== id));
+          setFilteredEmployees(filteredEmployees.filter((employee) => employee._id !== id));
+        })
+        .catch((err) => {
+          alert(err.message);
+        });
     }
   };
-  const rows = inventories.map((inventory) => ({
-    id: inventory.pid,
-    pid: inventory.pid, // Update with the correct field name
-    name: inventory.name,
-    brand: inventory.brand,
-    qty: inventory.qty,
-    unit_price: inventory.unit_price,
-    reorder_level: inventory.reorder_level,
+  
+  const rows = employees.map((employee) => ({
+    id: employee.eid,
+    eid:employee.eid,
+    ename:employee.ename,
+    gender:employee.gender,
+    address:employee.address,
+    phone:employee.phone,
+    email:employee.email,
+    dob:employee.dob,
+    jobroll:employee.jobroll,
+    bsal:employee.bsal,
 
   }));
   const linkStyle = {
@@ -93,46 +88,65 @@ const Inventory = () => {
   const columns = [
     
     {
-      field: "pid",
-      headerName: "PRODUCT ID",
+      field: "eid",
+      headerName: "EMPLOYEE ID",
       cellClassName: "name-column--cell",
       headerAlign: "center",
       align: "center",
       width: 150,
     },
     {
-      field: "name",
-      headerName: "PRODUCT NAME",
+      field: "ename",
+      headerName: "EMPLOYEE NAME",
       headerAlign: "center",
       align: "center",
       width: 150,
     },
     {
-      field: "brand",
-      headerName: "BRAND",
+      field: "gender",
+      headerName: "GENDER",
       headerAlign: "center",
       align: "center",
       width: 150,
     },
     {
-      field: "qty",
-      headerName: "QUANTITY",
+      field: "address",
+      headerName: "ADDRESS",
       headerAlign: "center",
       align: "center",
-      type: "number",
       width: 150,
     },
     {
-      field: "unit_price",
-      headerName: "UNIT PRICE",
+      field: "phone",
+      headerName: "PHONE",
       headerAlign: "center",
       align: "center",
-      type: "number",
       width: 150,
     },
     {
-      field: "reorder_level",
-      headerName: "REORDER LEVEL",
+      field: "email",
+      headerName: "EMAIL",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+    {
+      field: "dob",
+      headerName: "DATE OF BIRTH",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+    {
+      field: "jobroll",
+      headerName: "JOB ROLE",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+    {
+      field: "bsal",
+      headerName: "BASIC SALARY",
       type: "number",
       headerAlign: "center",
       align: "center",
@@ -160,8 +174,8 @@ const Inventory = () => {
             }}
           >
             <Link 
-                to={`/invntory/uniqueinventory/${params.row.pid}`}
-                state={{ inventoryData: params.row }}
+                to={`/employee/uniqueEmployee/${params.row.id}`}
+                state={{ employeeData: params.row }}
                 style={linkStyle}
             >
               VIEW
@@ -183,13 +197,13 @@ const Inventory = () => {
               },
             }}
           ><Link
-          to={`/inventory/updateInventory/${params.row.pid}`}
-          state={{ inventoryData: params.row }}
+          to={`/employee/updateEmployee/${params.row.id}`}
+          state={{ employeeData: params.row }}
           style={linkStyle}
         >
             EDIT</Link>
           </Button>
-          <Button onClick={() => handleDelete(params.row.pid)}
+          <Button onClick={() => handleDelete(params.row.eid)}
             sx={{
               backgroundColor: '#FF0000',
               color: colors.grey[100],
@@ -210,64 +224,25 @@ const Inventory = () => {
     },
   ];
 
-  const fetchInventories = async () => {
+  const fetchEmployees = async () => {
     try {
-      const response = await fetch("http://localhost:8411/inventory/");
+      const response = await fetch("http://localhost:8411/employee/");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      setInventories(data);
+      setEmployees(data);
       // setFilteredRows(data);
     } catch (error) {
-      console.error("Error fetching Inventories:", error);
+      console.error("Error fetching Employees:", error);
     }
   };
 
   useEffect(() => {
-    fetchInventories();
+    fetchEmployees();
   }, []);
 
 
-
-  // search function
-
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const [filteredRows, setFilteredRows] = useState({rows}); 
-
-
-  // const handleSearch = (e) => {
-  //   const query = e.target.value.toLowerCase();
-  //   setSearchQuery(query);
-
-  //   // Filter rows based on the search query
-  //   const filteredData = rows.filter((row) =>
-  //     Object.values(row).some((value) =>
-  //       String(value).toLowerCase().includes(query)
-  //     )
-  //   );
-  //   setFilteredRows(filteredData);
-  // };
-// end of search function
-
-// second handle search function
-
-// const [searchQuery, setSearchQuery] = useState("");
-// const [filteredRows, setFilteredRows] = useState({rows});
-
-
-// const handleSearch = (e) => {
-//   const query = e.target.value.toLowerCase();
-//   setSearchQuery(query);
-
-//   // Filter rows based on the search query
-//   const filteredData = inventories.filter((inventory) =>
-//     Object.values(inventory).some((value) =>
-//       String(value).toLowerCase().includes(query)
-//     )
-//   );
-//   setFilteredRows(filteredData);
-// };
 
 
   
@@ -276,7 +251,7 @@ const Inventory = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
-          title="SPARE PARTS MANAGER"
+          title="EMPLOYEE MANAGER"
           subtitle="Welcome to LogiX Fleet Management System"
         />
 
@@ -296,19 +271,6 @@ const Inventory = () => {
             <SearchIcon />
           </IconButton>
         </Box>
-
-        {/* <Box
-        m="8px 0 0 0"
-        width="100%"
-        height="80vh"
-        sx={{
-          // ... other styling ...
-        }}
-      >
-        <DataGrid rows={filteredRows} columns={columns} components={{ Toolbar: GridToolbar }} />
-      </Box> */}
-
-      {/* // end of search */}
         
         <Button 
             onClick={openPopup}
@@ -325,11 +287,11 @@ const Inventory = () => {
             }}
           >
             <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            ADD NEW SPARE PART
+            ADD NEW EMPLOYEE
           </Button>
           {isPopupVisible && (
             <div className="overlay">
-              <AddInventory onClose={closePopup} />
+              <AddEmployee onClose={closePopup} />
             </div>
           )}
 
@@ -377,4 +339,4 @@ const Inventory = () => {
   );
 };
 
-export default Inventory;
+export default Employee;
