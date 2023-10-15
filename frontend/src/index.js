@@ -40,22 +40,19 @@ import UpdateFuelentry  from "./Components/Fuel/src/pages/fuelentry/UpdateFuelen
 import UniqueFuelstock from "./Components/Fuel/src/pages/fuelstock/UniqueFuelstock";
 import UpdateFuelstock  from "./Components/Fuel/src/pages/fuelstock/UpdateFuelstock";
 
+// Employee Management System
+import IndexEmployee from './Components/Employee/src/App';
+import EmployeeData from './Components/Employee/src/pages/employeedata/index';
 
-  //Employee
-
-  import Employee from './Components/Employee/Employee';
-
-  import AddEmployee from './Components/Employee/AddEmployee';
-  import AllEmployees from './Components/Employee/AllEmployee';
-  import UpdateEmployee from './Components/Employee/UpdateEmployee';
+import UniqueEmployee from "./Components/Employee/src/pages/employeedata/UniqueEmployee";
+import UpdateEmployee  from "./Components/Employee/src/pages/employeedata/UpdateEmployee";
 
 
-  //Vehicle
-
-  import Vehicle from './Components/Vehicle/Vehicle';
-  import AllVehicles from './Components/Vehicle/AllVehicle';
-  import AddVehicle from './Components/Vehicle/AddVehicle';
-  import UpdateVehicle from './Components/Vehicle/UpdateVehicle';
+//Vehicle
+import Vehicle from './Components/Vehicle/Vehicle';
+import AllVehicles from './Components/Vehicle/AllVehicle';
+import AddVehicle from './Components/Vehicle/AddVehicle';
+import UpdateVehicle from './Components/Vehicle/UpdateVehicle';
 
 
   // Inventroy Management System
@@ -341,33 +338,31 @@ const router = createBrowserRouter([
 
 
       {
-        path: "/employee",
+        path: '/employee',
         element: <Outlet />,
         children: [
+
           {
             path: "",
-            element: <Employee />,
+            element: <IndexEmployee />,
+            children: [
+              {
+                path: "/employee/employeedata",
+                element: <EmployeeData />,
+              },
+              {
+                path: "/employee/uniqueemployee/:id",
+                element: <UniqueEmployee />,
+              },
+              {
+                path: "/employee/updateemployee/:id",
+                element: <UpdateEmployee />,
+              },
+            ],
           },
-          {
-            path: "addemployee",
-            element: <AddEmployee />
-          },
-          {
-            path: "allEmployees",
-            element: <AllEmployees />
-          },
-          
-          {
-            path: "updateEmployee",
-            element: <UpdateEmployee />
-          },
-          {
-            path: "/employee/updateEmployee/:id",
-            element: <UpdateEmployee />
-          },
-          
-        ]
+        ],
       },
+
 
       /* 
       {
