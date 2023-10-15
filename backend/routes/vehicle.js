@@ -68,7 +68,7 @@ router.route("/update/:id").put(async (req, res) => {
     transactiontype,
     vehiclestatus,
     licenseplate,
-    location,
+    location, 
     vehiclecolor,
   } = req.body;
 

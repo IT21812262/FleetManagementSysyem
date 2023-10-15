@@ -110,57 +110,24 @@ export default function AddVehicle() {
         </div>
 
         <div className="form-group">
-          <label>Vehicle Type</label>
-          {/* Radio buttons for vehicle type */}
-          <div>
-            <input
-              type="radio"
-              id="car"
-              name="vehicleType"
-              value="Car"
-              checked={vehicleType === "Car"}
-              onChange={() => setVehicleType("Car")}
-            />
-            <label htmlFor="car">Car</label>
-          </div>
-          <div>
-            <input
-              type="radio"
-              id="van"
-              name="vehicleType"
-              value="Van"
-              checked={vehicleType === "Van"}
-              onChange={() => setVehicleType("Van")}
-            />
-            <label htmlFor="van">Van</label>
-          </div>
-          <div>
-            <input
-              type="radio"
-              id="lorry"
-              name="vehicleType"
-              value="Lorry"
-              checked={vehicleType === "Lorry"}
-              onChange={() => setVehicleType("Lorry")}
-            />
-            <label htmlFor="lorry">Lorry</label>
-          </div>
-          <div>
-            <input
-              type="radio"
-              id="truck"
-              name="vehicleType"
-              value="Truck"
-              checked={vehicleType === "Truck"}
-              onChange={() => setVehicleType("Truck")}
-            />
-            <label htmlFor="truck">Truck</label>
-          </div>
+          <label htmlFor="vehicleType">Vehicle Type</label>
+          <select
+            className="form-control"
+            id="vehicleType"
+            name="vehicleType"
+            value={vehicleType}
+            onChange={(e) => setVehicleType(e.target.value)}
+          >
+            <option value="">Select Vehicle Type</option>
+            <option value="Car">Car</option>
+            <option value="Van">Van</option>
+            <option value="Lorry">Lorry</option>
+            <option value="Truck">Truck</option>
+          </select>
         </div>
 
         <div className="form-group">
           <label htmlFor="fuelType">Fuel Type</label>
-          {/* Dropdown menu for selecting fuel type */}
           <select
             className="form-control"
             id="fuelType"
@@ -168,10 +135,12 @@ export default function AddVehicle() {
             value={fuelType}
             onChange={(e) => setFuelType(e.target.value)}
           >
+            <option value="">Select Fuel Type</option>
             <option value="Petrol">Petrol</option>
             <option value="Diesel">Diesel</option>
           </select>
         </div>
+
 
         <div className="form-group">
           <label htmlFor="manufactureYear">Manufacture Year</label>
