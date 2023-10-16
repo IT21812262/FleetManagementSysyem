@@ -67,6 +67,7 @@ export default function UpdateMaintenanceJob() {
               "& > div": { gridColumn: "span 4" },
             }}
           >
+           <Box display="flex" justifyContent="end" mt="20px" gap="30px"></Box>
             <TextField
               fullWidth
               variant="outlined"
@@ -77,7 +78,8 @@ export default function UpdateMaintenanceJob() {
               error={!!errors.jobID}
               helperText={errors.jobID}
             />
-
+          </Box>
+          <Box display="flex" justifyContent="end" mt="20px" gap="30px">
             <TextField
               fullWidth
               variant="outlined"
@@ -99,7 +101,8 @@ export default function UpdateMaintenanceJob() {
               error={!!errors.vehicleNo}
               helperText={errors.vehicleNo}
             />
-
+          </Box>
+          <Box display="flex" justifyContent="end" mt="20px" gap="30px">
             <FormControl fullWidth variant="outlined">
               <InputLabel id="priority-label">Priority</InputLabel>
               <Select
@@ -124,6 +127,7 @@ export default function UpdateMaintenanceJob() {
                 label="DATE REPORT"
                 variant="outlined"
                 type="date"
+                InputLabelProps={{shrink:true}}
                 value={jobData.Date_report}
                 onChange={(e) => handleInputChange(e, "Date_report")}
                 error={!!errors.Date_report}
@@ -142,7 +146,8 @@ export default function UpdateMaintenanceJob() {
             error={!!errors.description}
             helperText={errors.description}
           />
-       
+       </Box>
+        <Box display="flex" justifyContent="end" mt="20px" gap="30px">
        <TextField
             fullWidth
             variant="outlined"            
@@ -160,7 +165,7 @@ export default function UpdateMaintenanceJob() {
             label="DATE COMPLETE"
             variant="outlined"
             type="date"
-            value={jobData.Date_complete}
+            value={jobData.Date_complete?.split('T')[0]}
             onChange={(e) => handleInputChange(e, "Date_complete")}
             error={!!errors.Date_complete}
             helperText={errors.Date_complete}
