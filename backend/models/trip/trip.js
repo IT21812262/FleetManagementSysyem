@@ -48,12 +48,12 @@ const tripSchema = new Schema({
     },
 
     arrivaltime: {
-        type: Number,
+        type: Date,
         required: true
     },
 
     departuretime: {
-        type: Number,
+        type: Date,
         required: true
     },
 

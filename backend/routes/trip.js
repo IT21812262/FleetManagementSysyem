@@ -12,8 +12,8 @@ router.route("/add").post((req,res)=>{
     const startpoint = req.body.startpoint;
     const destination = req.body.destination;
     const tripgoods = req.body.tripgoods;
-    const arrivaltime = Number(req.body.arrivaltime);
-    const departuretime = Number(req.body.departuretime);
+    const arrivaltime = Date(req.body.arrivaltime);
+    const departuretime = Date(req.body.departuretime);
     const startfuel = Number(req.body.startfuel);
     const endfuel = Number(req.body.endfuel);
 
