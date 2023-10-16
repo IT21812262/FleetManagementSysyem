@@ -52,7 +52,11 @@ const rentSchema = new Schema({
     rental : {
         type : Number,
         required : false
-    }
+    },
+    total_rental: {
+        type: Number,
+        required: false, // Change this to true if it's required
+    },
 
 })
 
