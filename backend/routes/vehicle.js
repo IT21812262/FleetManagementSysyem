@@ -57,6 +57,7 @@ router.route("/").get((req, res) => {
 });
 
 // Route to update a vehicle by ID
+// Route to update a vehicle by ID
 router.route("/update/:id").put(async (req, res) => {
   const vehicleId = req.params.id;
   const {
@@ -68,7 +69,7 @@ router.route("/update/:id").put(async (req, res) => {
     transactiontype,
     vehiclestatus,
     licenseplate,
-    location, 
+    location,
     vehiclecolor,
   } = req.body;
 
@@ -87,7 +88,7 @@ router.route("/update/:id").put(async (req, res) => {
 
   try {
     // Find and update the vehicle by ID
-    await Manager.findByIdAndUpdate(vehicleId, updateManager);
+    await Manager.findOneAndUpdate({ vehicleid: vehicleId }, updateManager);
     res.status(200).json({ status: "Vehicle updated" });
   } catch (err) {
     console.log(err);
@@ -98,13 +99,14 @@ router.route("/update/:id").put(async (req, res) => {
   }
 });
 
+
 // Route to delete a vehicle by ID
 router.route("/delete/:id").delete(async (req, res) => {
-  const vId = req.params.id;
+  const vehicleId = req.params.id;
 
   try {
     // Find and delete the vehicle by ID
-    await Manager.findByIdAndDelete(vId);
+    await Manager.findOneAndDelete(vehicleId);
     res.status(200).json({ status: "Vehicle deleted" });
   } catch (err) {
     console.log(err.message);
@@ -117,8 +119,8 @@ router.route("/delete/:id").delete(async (req, res) => {
 
 // Route to get a single vehicle by ID
 router.route("/get/:id").get(async (req, res) => {
-  let Mid = req.params.id;
-  const user = await Manager.findById(Mid)
+  let vehicleId = req.params.id;
+  const user = await Manager.findOne({vehicleid:vehicleId})
   .then((manager) =>{
     res.status(200).send({status: "Manager Fetched",manager});
   })

@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const managerSchema = new Schema({
     vehicleid: {
         type: String,
+        unique:true,
         required: true
     },
     vehicletype: {
@@ -33,7 +34,7 @@ const managerSchema = new Schema({
     },
     licenseplate: {
         type: String,
-        required: true
+        required: false
     },
     location: {
         type: String,
