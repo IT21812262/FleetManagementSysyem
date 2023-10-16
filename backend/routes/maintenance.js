@@ -13,6 +13,7 @@ router.route("/add").post((req,res)=>{
     const description = req.body.description;
     const parts_used = req.body.parts_used;
     const Date_complete = Date(req.body.Date_complete);
+    console.log("Dname", dname);
 
     const newcorrectiveMaintence = new correctiveMaintence({
     

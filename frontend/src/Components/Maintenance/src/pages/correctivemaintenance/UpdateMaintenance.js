@@ -3,6 +3,7 @@ import axios from "axios";
 import { Box, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useParams } from "react-router-dom";
 import { Formik } from "formik";
+import { format } from 'date-fns'; // Import the format function from date-fns
 import Header from "../../components/Header";
 
 export default function UpdateMaintenanceJob() {
@@ -22,6 +23,18 @@ export default function UpdateMaintenanceJob() {
 
     fetchJobData();
   }, [id]);
+
+  const getCurrentDate = () => {
+    return format(new Date(), 'yyyy-MM-dd'); // Format it as 'YYYY-MM-DD'
+  };
+  const validateDateComplete = (dateComplete) => {
+    const currentDate = getCurrentDate();
+    if (dateComplete > currentDate) {
+      setErrors({ ...errors, Date_complete: "Date Complete cannot be in the future" });
+      return false;
+    }
+    return true;
+  };
   const validateVehicleNumber = (vehicleNo) => {
     const vehicleNumberRegex = /^[A-Z0-9]{2,3}-[0-9]{4}$/;
     return vehicleNumberRegex.test(vehicleNo);
@@ -43,6 +56,9 @@ export default function UpdateMaintenanceJob() {
     if (!validateVehicleNumber(jobData.vehicleNo)) {
       setErrors({ ...errors, vehicleNo: "Invalid vehicle number format" });
       return;
+      if (!validateDateComplete(jobData.Date_complete)) {
+        return;
+      }
     }
 
     try {
@@ -80,13 +96,14 @@ export default function UpdateMaintenanceJob() {
             sx={{
               "& > div": { gridColumn: "span 4" },
             }}
-          >
-           <Box display="flex" justifyContent="end" mt="20px" gap="30px"></Box>
+          />
+           <Box display="flex" justifyContent="end" mt="20px" gap="30px">
             <TextField
               fullWidth
               variant="outlined"
-              label=""
+              label="Job ID"
               id="jobID"
+              InputLabelProps={{ shrink: true }}
               onChange={handleInputChange}
               value={jobData.jobID}
               error={!!errors.jobID}
@@ -98,8 +115,9 @@ export default function UpdateMaintenanceJob() {
             <TextField
               fullWidth
               variant="outlined"
-              label=""
+              label="Driver ID"
               id="DID"
+              InputLabelProps={{ shrink: true }}
               onChange={handleInputChange}
               value={jobData.DID}
               error={!!errors.DID}
@@ -109,9 +127,10 @@ export default function UpdateMaintenanceJob() {
 
             <TextField
               fullWidth
-              variant="outlined"
-              label=""
               id="vehicleNo"
+              label="Vehicle Number"
+              variant="outlined"
+              InputLabelProps={{ shrink: true }}
               onChange={handleInputChange}
               value={jobData.vehicleNo}
               error={!!errors.vehicleNo}
@@ -125,6 +144,7 @@ export default function UpdateMaintenanceJob() {
               variant="outlined"
               label="Status"
               id="priority"
+              InputLabelProps={{ shrink: true }}
               onChange={handleInputChange}
               value={jobData.priority}
               error={!!errors.priority}
@@ -152,8 +172,9 @@ export default function UpdateMaintenanceJob() {
         <TextField
             fullWidth
             variant="outlined"            
-           label="DESCRIPTION"
+           label="Description"
             id="description"
+            InputLabelProps={{ shrink: true }}
             onChange={handleInputChange}
             value={jobData.description}
             error={!!errors.description}
@@ -165,7 +186,8 @@ export default function UpdateMaintenanceJob() {
             fullWidth
             variant="outlined"            
            label="PARTS USED"
-            id="parts_used"
+            id="parts_used" 
+            InputLabelProps={{ shrink: true }}
             onChange={handleInputChange}
             value={jobData.parts_used}
             error={!!errors.parts_used}
@@ -178,6 +200,7 @@ export default function UpdateMaintenanceJob() {
             label="DATE COMPLETE"
             variant="outlined"
             type="date"
+            InputLabelProps={{ shrink: true }}
             value={jobData.Date_complete?.split('T')[0]}
             onChange={(e) => handleInputChange(e, "Date_complete")}
             error={!!errors.Date_complete}

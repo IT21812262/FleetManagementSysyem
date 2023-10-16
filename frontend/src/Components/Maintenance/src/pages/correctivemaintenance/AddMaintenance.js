@@ -100,7 +100,6 @@ const AddCorrectiveMaintenance = ({ onClose }) => {
           setPriority("");
           setDescription("");
           setPartsUsed("");
-          setDateComplete("");
         })
         .catch((err) => {
           alert(err);
@@ -157,7 +156,7 @@ const AddCorrectiveMaintenance = ({ onClose }) => {
           label="Driver Name"
           value={Dname}
           onChange={(e) => setDname(e.target.value)}
-          disabled
+          
         />
 
           <TextField
