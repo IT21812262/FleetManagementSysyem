@@ -23,6 +23,7 @@ import ProgressCircle from "../../components/ProgressCircle";
 import DieselTank from "../../components/DieselTank";
 import PetrolTank from "../../components/PetrolTank";
 import StockTable from "../../components/StockTable";
+import PieChart from "../../components/PieChart";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -71,7 +72,7 @@ const Dashboard = () => {
             padding="50px"
             borderRadius= "15px"
           >
-          <DieselTank />
+          <PieChart />
           
           </Box>
         </Grid>
