@@ -111,23 +111,16 @@ export default function UpdateMaintenanceJob() {
             />
           </Box>
           <Box display="flex" justifyContent="end" mt="20px" gap="30px">
-          <FormControl fullWidth variant="filled">
-            <InputLabel id="priority-label">Priority</InputLabel>
-            <Select
-              labelId="priority-label"
+          <TextField
+              fullWidth
+              variant="outlined"
+              label="Status"
               id="priority"
-              required
-              value={jobData.priority}
               onChange={handleInputChange}
-              error={errors.priority}
-              helperText={errors.priority && "Priority is required"}
-            >
-              <MenuItem value="">Select Priority</MenuItem>
-              <MenuItem value="Low Priority">Low Priority</MenuItem>
-              <MenuItem value="Medium Priority">Medium Priority</MenuItem>
-              <MenuItem value="High Priority">High Priority</MenuItem>
-            </Select>
-          </FormControl>
+              value={jobData.priority}
+              error={!!errors.priority}
+              helperText={errors.priority}
+            />
 
             
 

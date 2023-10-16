@@ -91,20 +91,27 @@ const Maintenance = () => {
 
     const columns = [
       "Job ID",
+      "DID",
+      "Dname",
       "Priority",
       "Vehicle No",
       "Date_report",
       "Description",
-      "Parts Used"
+      "Parts Used",
+      "Date Complete"
     ];
 
     const rows = filterMaintenanceJobs().map((job) => [
       job.jobID,
+      job.DID,
+      job.Dname,
       job.priority,
       job.vehicleNo,
       job.Date_report,
       job.description,
-      job.parts_used
+      job.parts_used,
+      job.Date_complete
+
     ]);
 
     let y = 30; // Initial Y position
