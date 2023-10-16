@@ -50,13 +50,13 @@ import UpdateFuelstock  from "./Components/Fuel/src/pages/fuelstock/UpdateFuelst
   import UpdateEmployee from './Components/Employee/UpdateEmployee';
 
 
-  //Vehicle
+ // Vehicle Management System
+ import IndexVehicle from './Components/Vehicle/src/App';
+ import VehicleData from './Components/Vehicle/src/pages/vehicledata/index';
 
-  import Vehicle from './Components/Vehicle/Vehicle';
-  import AllVehicles from './Components/Vehicle/AllVehicle';
-  import AddVehicle from './Components/Vehicle/AddVehicle';
-  import UpdateVehicle from './Components/Vehicle/UpdateVehicle';
-
+ import UniqueVehicle from "./Components/Vehicle/src/pages/vehicledata/UniqueVehicle";
+ import UpdateVehicle from "./Components/Vehicle/src/pages/vehicledata/UpdateVehicle";
+ 
 
   // Inventroy Management System
 import IndexInventory from './Components/Inventory/src/App';
@@ -309,33 +309,29 @@ const router = createBrowserRouter([
 
 
       {
-        path: "/vehicle",
-
+        path: '/vehicle',
         element: <Outlet />,
         children: [
+
           {
             path: "",
-
-            element: <Vehicle />,
+            element: <IndexVehicle />,
+            children: [
+              {
+                path: "/vehicle/vehicledata",
+                element: <VehicleData />,
+              },
+              
+              {
+                path: "/vehicle/uniquevehicle/:id",
+                element: <UniqueVehicle />,
+              },
+              {
+                path: "/vehicle/updatevehicle/:id",
+                element: <UpdateVehicle />,
+              },
+            ],
           },
-          {
-            path: "addvehicle",
-            element: <AddVehicle />
-          },
-          {
-            path: "allVehicles",
-            element: <AllVehicles />
-          },
-          
-          {
-            path: "updateVehicle",
-            element: <UpdateVehicle />
-          },
-          {
-            path: "/vehicle/updateVehicle/:id",
-            element: <UpdateVehicle />
-          },
-        
         ],
       },
 
