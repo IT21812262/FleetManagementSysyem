@@ -15,13 +15,13 @@ const Supplier = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const formatDate = (dateStr) => {
+ /*  const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
-  };
+  }; */
 
   const [isPopupVisible, setPopupVisible] = useState(false);
   
@@ -33,7 +33,10 @@ const Supplier = () => {
     setPopupVisible(false);
   };
 
-  
+  const extractDateOnly = (dateTimeStr) => {
+    const date = new Date(dateTimeStr);
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+  }
   //const [selectedRow, setSelectedRow] = useState(null);
 
   const [suppliers, setSuppliers] = useState([]);
@@ -65,8 +68,8 @@ const Supplier = () => {
     quntity:supplier.quntity,
     unit_price:supplier.unit_price,
     total_price:supplier.total_price,
-    orderd_date:supplier.orderd_date,
-    manufatured_date:supplier.manufatured_date,
+    orderd_date:extractDateOnly(supplier.orderd_date),
+    manufatured_date:extractDateOnly(supplier.manufatured_date),
     invoice_number:supplier.invoice_number,
     
   }));
@@ -355,10 +358,7 @@ const handleDownloadPdf = () => {
     "Invoice Number"
   ];
 
-  const extractDateOnly = (dateTimeStr) => {
-    const date = new Date(dateTimeStr);
-    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-  }
+  
 
   const rows1 = filteredSuppliers.map((supplier) => [
     supplier.supplier_id,
