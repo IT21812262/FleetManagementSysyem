@@ -18,13 +18,13 @@ import UpdateSupplier  from "./Components/Supplier/src/pages/supplierdata/Update
 
 import UniqueNotification from "./Components/Supplier/src/pages/notifications/UniqueNotification";
 
-//Rent Management System
+// Rent Management System
+import IndexRent from './Components/Rent/src/App';
+import RentData from './Components/Rent/src/pages/rentdata/index';
 
-import Rent from './Components/Rent/Rent'; // Add this import
-import AddRent from './Components/Rent/AddRent'; // Add this import
-import AllRent from './Components/Rent/AllRent'; // Add this import
-import UpdateRent from './Components/Rent/UpdateRent';
-import UniqueRent from './Components/Rent/UniqueRent';
+import UniqueRent from "./Components/Rent/src/pages/rentdata/UniqueRent";
+import UpdateRent  from "./Components/Rent/src/pages/rentdata/UpdateRent";
+ 
 
 // Fuel Management System
 import Index from './Components/Fuel/src/App';
@@ -40,10 +40,13 @@ import UpdateFuelentry  from "./Components/Fuel/src/pages/fuelentry/UpdateFuelen
 import UniqueFuelstock from "./Components/Fuel/src/pages/fuelstock/UniqueFuelstock";
 import UpdateFuelstock  from "./Components/Fuel/src/pages/fuelstock/UpdateFuelstock";
 
+// Employee Management System
+import IndexEmployee from './Components/Employee/src/App';
+import EmployeeData from './Components/Employee/src/pages/employeedata/index';
 
-  //Employee
+import UniqueEmployee from "./Components/Employee/src/pages/employeedata/UniqueEmployee";
+import UpdateEmployee  from "./Components/Employee/src/pages/employeedata/UpdateEmployee";
 
-  import Employee from './Components/Employee/Employee';
 
   import AddEmployee from './Components/Employee/AddEmployee';
   import AllEmployees from './Components/Employee/AllEmployee';
@@ -53,6 +56,13 @@ import UpdateFuelstock  from "./Components/Fuel/src/pages/fuelstock/UpdateFuelst
  // Vehicle Management System
  import IndexVehicle from './Components/Vehicle/src/App';
  import VehicleData from './Components/Vehicle/src/pages/vehicledata/index';
+
+//Vehicle
+import Vehicle from './Components/Vehicle/Vehicle';
+import AllVehicles from './Components/Vehicle/AllVehicle';
+import AddVehicle from './Components/Vehicle/AddVehicle';
+import UpdateVehicle from './Components/Vehicle/UpdateVehicle';
+
 
  import UniqueVehicle from "./Components/Vehicle/src/pages/vehicledata/UniqueVehicle";
  import UpdateVehicle from "./Components/Vehicle/src/pages/vehicledata/UpdateVehicle";
@@ -125,38 +135,30 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/rent", // Add Rent route
+        path: '/rent',
         element: <Outlet />,
         children: [
+
           {
             path: "",
-            element: <Rent />,
+            element: <IndexRent />,
+            children: [
+              {
+                path: "/rent/rentdata",
+                element: <RentData />,
+              },
+              
+              
+              {
+                path: "/rent/uniquerent/:id",
+                element: <UniqueRent />,
+              },
+              {
+                path: "/rent/updaterent/:id",
+                element: <UpdateRent />,
+              },
+            ],
           },
-          {
-            path: "addRent",
-            element: <AddRent />,
-          },
-          {
-            path: "allRent",
-            element: <AllRent />,
-          },
-          {
-            path: "updateRent",
-            element: <UpdateRent />,
-          },
-          {
-            path: "uniqueRent",
-            element: <UniqueRent />
-          },
-          {
-            path: "updateRent/:id", // Add the ":id" parameter
-            element: <UpdateRent />,
-          },
-          {
-            path: "/rent/uniqueRent/:id",
-            element: <UniqueRent />
-          },
-          
         ],
       },
       {
@@ -337,33 +339,31 @@ const router = createBrowserRouter([
 
 
       {
-        path: "/employee",
+        path: '/employee',
         element: <Outlet />,
         children: [
+
           {
             path: "",
-            element: <Employee />,
+            element: <IndexEmployee />,
+            children: [
+              {
+                path: "/employee/employeedata",
+                element: <EmployeeData />,
+              },
+              {
+                path: "/employee/uniqueemployee/:id",
+                element: <UniqueEmployee />,
+              },
+              {
+                path: "/employee/updateemployee/:id",
+                element: <UpdateEmployee />,
+              },
+            ],
           },
-          {
-            path: "addemployee",
-            element: <AddEmployee />
-          },
-          {
-            path: "allEmployees",
-            element: <AllEmployees />
-          },
-          
-          {
-            path: "updateEmployee",
-            element: <UpdateEmployee />
-          },
-          {
-            path: "/employee/updateEmployee/:id",
-            element: <UpdateEmployee />
-          },
-          
-        ]
+        ],
       },
+
 
       /* 
       {

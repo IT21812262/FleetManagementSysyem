@@ -26,3 +26,17 @@
     color: white;           /* Set text color to white */
     /* Add any other styles you want for the link here */
   }
+  .high-priority {
+    background-color: #FF0000; /* Red for High Priority */
+  }
+  
+  .medium-priority {
+    background-color: #FFA500; /* Orange for Medium Priority */
+  }
+  
+  .low-priority {
+    background-color: #FFFF00; /* Yellow for Low Priority */
+  }
+  
+
+  

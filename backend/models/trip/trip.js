@@ -57,6 +57,16 @@ const tripSchema = new Schema({
         required: true
     },
 
+    startfuel:{
+        type: Number,
+        required: true
+    },
+
+    endfuel:{
+        type: Number,
+        required: true
+    }
+
 })
 
 const trip = mongoose.model("trip", tripSchema)

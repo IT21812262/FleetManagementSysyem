@@ -14,6 +14,8 @@ router.route("/add").post((req,res)=>{
     const tripgoods = req.body.tripgoods;
     const arrivaltime = Number(req.body.arrivaltime);
     const departuretime = Number(req.body.departuretime);
+    const startfuel = Number(req.body.startfuel);
+    const endfuel = Number(req.body.endfuel);
 
     const newtrip = new trip({
 
@@ -27,7 +29,9 @@ router.route("/add").post((req,res)=>{
         destination,
         tripgoods,
         arrivaltime,
-        departuretime
+        departuretime,
+        startfuel,
+        endfuel
 
     })
 
@@ -64,7 +68,9 @@ router.route("/update/:id").put(async(req,res)=>{
         destination,
         tripgoods,
         arrivaltime,
-        departuretime} = req.body; 
+        departuretime,
+        startfuel,
+        endfuel} = req.body; 
 
     const updateTrip = {
         tripname,
@@ -76,7 +82,9 @@ router.route("/update/:id").put(async(req,res)=>{
         destination,
         tripgoods,
         arrivaltime,
-        departuretime
+        departuretime,
+        startfuel,
+        endfuel
     }
 
     const update = await trip.findOneAndUpdate({tripid : tripId}, updateTrip).then(()=>{

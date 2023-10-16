@@ -1,360 +1,176 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Button, TextField } from '@mui/material';
-import { useLocation } from "react-router-dom";
+import { Box, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { useParams } from "react-router-dom";
 import { Formik } from "formik";
-import * as yup from 'yup';
 import Header from "../../components/Header";
-import { useNavigate } from 'react-router-dom';
 
-import "./UpdateMaintenance.css";
-
-const UpdateMaintenance = () => {
-  const location = useLocation();
-
-  const [maintenanceData, setMaintenanceData] = useState(
-    location.state?.maintenanceData || {
-      jobID: "",
-      DID: "",
-      vehicleNo: "",
-      Date_report: "",
-      priority: "",
-      description: "",
-      parts_used: "",
-      Date_complete: "",
-      latitude: "",
-      longitude: ""
-    }
-  );
-
+export default function UpdateMaintenanceJob() {
+  const { id } = useParams();
+  const [jobData, setJobData] = useState({});
   const [errors, setErrors] = useState({});
-  const [searchQ, setSearchQ] = useState("");
-
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    let newValue = value;
-
-    setMaintenanceData((prevData) => ({
-      ...prevData,
-      [id]: newValue,
-    }));
-
-    validateInput(id, newValue);
-  };
-
-  const validateInput = (id, value) => {
-    let error = "";
-
-    switch (id) {
-
-      case "invoice_no":
-        error = value.length !== 6 ? "Invoice No must be 6 characters" : "";
-        break;
-
-      case "stocked_fuel_type":
-        error = value.trim() === "" ? "Stocked Fuel Type is required" : "";
-        break;
-
-      case "stocked_fuel_quantity":
-        error = isNaN(value) ? "Stocked Fuel Quantity should contain only numbers" : "";
-        break;
-      
-      case "per_leter_cost":
-        error = !/^\d+(\.\d+)?$/.test(value) ? "Unit Price should be a valid float value" : "";
-        break;    
-
-      case "stocked_fuel_date":
-        if (!value) {
-            error = "Stocked Fuel Date is required";
-        } else {
-            const date = new Date(value);
-            if (isNaN(date.getTime())) {
-            error = "Invalid date format";
-            }
-        }
-        break;  
-            
-      default:
-        break;
-
-    }
-    setErrors((prevErrors) => ({ ...prevErrors, [id]: error }));
-  };
-
- 
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const hasErrors = Object.values(errors).some((error) => error !== "");
-
-    if (hasErrors) {
-      alert("Please correct the errors before updating.");
-      return; // Stop the form submission
-    }
-
-    const newMaintenance = { ...maintenanceData };
-
-    if (newMaintenance.jobID) {
-      axios
-        .put(`http://localhost:8411/corrective/update/${newMaintenance.jobID}`, newMaintenance)
-        .then((response) => {
-          resetForm();
-          //alert("Fuel entry successfully updated.");
-          window.location.href = "/fuel/fuelstock";
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    } else {
-      alert("Invoice No is required.");
-    }
-    //alert("Insert");
-    const {
-      jobID,
-      DID,
-      vehicleNo,
-      Date_report,
-      priority,
-      description,
-      parts_used,
-      Date_complete,
-      latitude,
-      longitude
-    } = maintenanceData;
-
-    if (maintenanceData.jobID) {
-      const newMaintenance = {
-        jobID,
-        DID,
-        vehicleNo,
-        Date_report,
-        priority,
-        description,
-        parts_used,
-        Date_complete,
-        latitude,
-        longitude
-      };
-
-      axios
-        .put(`http://localhost:8411/corrective/update/${jobID}`, newMaintenance)
-        .then((response) => {
-          resetForm();
-          alert("Fuel stock successfully updated.");
-          window.location.href = "/fuel/allFuelstocks";
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    } else {
-      alert("Invoice No is required.");
-    }
-  };
 
   useEffect(() => {
-    const fetchFuelstockData = async () => {
+    const fetchJobData = async () => {
       try {
-        if (searchQ) {
-          const response = await axios.get(
-            `http://localhost:8411/corrective/get/${searchQ}`
-          );
-
-          if (response.data.fuelstock) {
-            setMaintenanceData(response.data.fuelstock);
-          }
-        }
+        const response = await axios.get(`http://localhost:8411/corrective/get/${id}`);
+        setJobData(response.data.correctiveMaintence);
       } catch (error) {
-        alert("Error fetching fuel stock: " + error.message);
+        alert('Error fetching job data:', error.message);
       }
     };
 
-    fetchFuelstockData();
-  }, [searchQ]);
+    fetchJobData();
+  }, [id]);
 
-  const resetForm = () => {
-    setMaintenanceData({
-      jobID: "",
-      DID: "",
-      vehicleNo: "",
-      Date_report: "",
-      priority: "",
-      description: "",
-      parts_used: "",
-      Date_complete: "",
-      latitude: "",
-      longitude: ""
-    });
-    setErrors({});
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setJobData({ ...jobData, [id]: value });
   };
 
-  const linkStyle = {
-    textDecoration: "none", // Remove underline
-    color: "white",       // Set text color to white
-  };
-  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // Use navigate function to programmatically navigate to a different route
-  const handleButtonClick = () => {
-    navigate('/fuel/fuelstock');
+    try {
+      const response = await axios.put(
+        `http://localhost:8411/corrective/update/${id}`,
+        jobData
+      );
+
+      if (response.status === 200) {
+        alert("Job successfully updated.");
+        window.location.href = "/maintenance";
+      } else {
+        alert("Failed to update job.");
+      }
+    } catch (error) {
+      alert('Error updating job:', error.message);
+    }
   };
+
   return (
     <Box m="20px">
-      
-      <Formik
-      
-        onSubmit={handleSubmit}
-      >
-        
+      <Formik onSubmit={handleSubmit}>
         <form className="updateMaintenanceForm" onSubmit={handleSubmit}>
-        
-        {maintenanceData.jobID && (
-      <Header
-        title={`EDIT MAINTENANCE DATA DATA FOR ${maintenanceData.jobID}`}
-        subtitle="Update Maintenance Data"
-      />
-    )}
-   
-   <TextField
-          fullWidth
-          variant="filled"
-          type="text"
-          label="Enter Job ID to Update"
-          id="jobID"
-          value={searchQ}
-          onChange={(e) => setSearchQ(e.target.value)}
-          placeholder="Enter Job ID"
-          name="jobID"
-          sx={{ gridColumn: "span 2" }}
-        />
+          {jobData.jobID && (
+            <Header
+              title={`EDIT MAINTENANCE DATA FOR ${jobData.jobID}`}
+              subtitle="Update Maintenance Data"
+            />
+          )}
 
-        <Box
-          display="grid"
-          gap=""
-          gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-          sx={{
-            "& > div": { gridColumn: "span 4" },
-          }}
-        >
-          <TextField
+          <Box
+            display="grid"
+            gap=""
+            gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+            sx={{
+              "& > div": { gridColumn: "span 4" },
+            }}
+          >
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="JOB ID"
+              id="jobID"
+              onChange={handleInputChange}
+              value={jobData.jobID}
+              error={!!errors.jobID}
+              helperText={errors.jobID}
+            />
+
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="DID"
+              id="DID"
+              onChange={handleInputChange}
+              value={jobData.DID}
+              error={!!errors.DID}
+              helperText={errors.DID}
+            />
+
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="VEHICLE NUMBER"
+              id="vehicleNo"
+              onChange={handleInputChange}
+              value={jobData.vehicleNo}
+              error={!!errors.vehicleNo}
+              helperText={errors.vehicleNo}
+            />
+
+            <FormControl fullWidth variant="outlined">
+              <InputLabel id="priority-label">Priority</InputLabel>
+              <Select
+                labelId="priority-label"
+                id="priority"
+                name="priority"
+                onChange={handleInputChange}
+                value={jobData.priority}
+              >
+                <MenuItem value="">Select Priority</MenuItem>
+                <MenuItem value="Low Priority">Low Priority</MenuItem>
+                <MenuItem value="Medium Priority">Medium Priority</MenuItem>
+                <MenuItem value="High Priority">High Priority</MenuItem>
+              </Select>
+            </FormControl>
+
+            
+
+            <TextField
+                fullWidth
+                id="Date_report"
+                label="DATE REPORT"
+                variant="outlined"
+                type="date"
+                value={jobData.Date_report}
+                onChange={(e) => handleInputChange(e, "Date_report")}
+                error={!!errors.Date_report}
+                helperText={errors.Date_report}
+              />
+        
+       
+        
+        <TextField
             fullWidth
-            variant="filled"
-            type="text"
-            label="JOB ID"
-            id="jobID"
-            onChange={handleInputChange}
-            value={maintenanceData.jobID}
-            name="jobID"
-            sx={{ gridColumn: "span 2" }}
-          />
-          <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="DID"
-            id="DID"
-            onChange={(e) => handleInputChange(e, "DID")}
-            value={maintenanceData.DID}
-            name="DID"
-            sx={{ gridColumn: "span 2" }}
-          />
-        </Box>
-        <Box
-          display="grid"
-          gap=""
-          gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-          sx={{
-            "& > div": { gridColumn: "span 4" },
-          }}
-        >
-          <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="VEHICLE NO"
-            id="vehicleNo"
-            onChange={(e) => handleInputChange(e, "vehicleNo")}
-            value={maintenanceData.vehicleNo}
-            name="vehicleNo"
-            sx={{ gridColumn: "span 2" }}
-          />
-          <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="DATE REPORT"
-            id="Date_report"
-            onChange={(e) => handleInputChange(e, "Date_report")}
-            value={maintenanceData.Date_report}
-            name="Date_report"
-            sx={{ gridColumn: "span 2" }}
-          />
-        </Box>
-        <Box
-          display="grid"
-          gap=""
-          gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-          sx={{
-            "& > div": { gridColumn: "span 4" },
-          }}
-        >
-          <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="PRIORITY"
-            id="priority"
-            onChange={(e) => handleInputChange(e, "priority")}
-            value={maintenanceData.priority}
-            name="priority"
-            sx={{ gridColumn: "span 2" }}
-          />
-          <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="DESCRIPTION"
+            variant="outlined"            
+           label="DESCRIPTION"
             id="description"
-            onChange={(e) => handleInputChange(e, "description")}
-            value={maintenanceData.description}
-            name="description"
-            sx={{ gridColumn: "span 2" }}
+            onChange={handleInputChange}
+            value={jobData.description}
+            error={!!errors.description}
+            helperText={errors.description}
           />
-        </Box>
-        <Box
-          display="grid"
-          gap=""
-          gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-          sx={{
-            "& > div": { gridColumn: "span 4" },
-          }}
-        >
-          <TextField
+       
+       <TextField
             fullWidth
-            variant="filled"
-            type="text"
-            label="PARTS USED"
+            variant="outlined"            
+           label="PARTS USED"
             id="parts_used"
-            onChange={(e) => handleInputChange(e, "parts_used")}
-            value={maintenanceData.parts_used}
-            name="parts_used"
-            sx={{ gridColumn: "span 2" }}
+            onChange={handleInputChange}
+            value={jobData.parts_used}
+            error={!!errors.parts_used}
+            helperText={errors.parts_used}
           />
+          
           <TextField
             fullWidth
-            variant="filled"
-            type="text"
-            label="DATE COMPLETE"
             id="Date_complete"
+            label="DATE COMPLETE"
+            variant="outlined"
+            type="date"
+            value={jobData.Date_complete}
             onChange={(e) => handleInputChange(e, "Date_complete")}
-            value={maintenanceData.Date_complete}
-            name="Date_complete"
-            sx={{ gridColumn: "span 2" }}
-          />
+            error={!!errors.Date_complete}
+            helperText={errors.Date_complete}
+      />
+
           </Box>
+
           <Box display="flex" justifyContent="end" mt="20px">
             <Button type="submit" color="secondary" variant="contained" fullWidth>
-              UPDATE FUEL STOCK
+              UPDATE MAINTENANCE
             </Button>
           </Box>
 
@@ -364,14 +180,13 @@ const UpdateMaintenance = () => {
               color="btnBack"
               variant="contained"
               fullWidth
-              onClick={handleButtonClick}>
-              BACK TO FUEL STOCK MANAGER
+              onClick={handleSubmit}
+            >
+              BACK TO MAINTENANCE MANAGER
             </Button>
           </Box>
         </form>
       </Formik>
     </Box>
   );
-};
-
-export default UpdateMaintenance;
+}

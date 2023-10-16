@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./AddRent.css";
-//import { useLocation } from "react-router-dom";
 
 export default function AddRent() {
   const [vehicle_no, setVehicleNo] = useState("");
@@ -16,8 +15,24 @@ export default function AddRent() {
   const [owner_phone, setOwnerPhone] = useState("");
   const [owner_email, setOwnerEmail] = useState("");
   const [rental, setRental] = useState("");
-
+  const [total_rent, setTotalRent] = useState(0); // Initialize total_rent to 0
   const [errors, setErrors] = useState({});
+  const [isVehicleNoUnique, setIsVehicleNoUnique] = useState(true);
+
+  const checkVehicleNoUniqueness = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8411/rent/check-vehicle-no/${vehicle_no}`
+      );
+      setIsVehicleNoUnique(response.data.isUnique);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    calculateTotalRent();
+  }, [return_date, receive_date, rental]);
 
   const validate = () => {
     const newErrors = {};
@@ -38,7 +53,7 @@ export default function AddRent() {
       newErrors.vehicle_model = "Vehicle Model is required";
     }
     if (!milage) {
-      newErrors.milage = "Milage is required";
+      newErrors.milage = "Mileage is required";
     }
     if (!description) {
       newErrors.description = "Description is required";
@@ -54,25 +69,59 @@ export default function AddRent() {
     }
 
     // Validation for receive_date and return_date
-const currentDate = new Date();
-const currentDateString = currentDate.toISOString().split("T")[0];
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split("T")[0];
 
-if (receive_date && receive_date < currentDateString) {
-  newErrors.receive_date = "Receive Date cannot be in the past";
-}
+    if (receive_date && receive_date < currentDateString) {
+      newErrors.receive_date = "Receive Date cannot be in the past";
+    }
 
-if (return_date && return_date < currentDateString) {
-  newErrors.return_date = "Return Date cannot be in the past";
-}
+    if (return_date && return_date < receive_date) {
+      newErrors.return_date = "Return Date must be after Receive Date";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  const calculateTotalRent = () => {
+    if (return_date && receive_date && rental) {
+      const returnDate = new Date(return_date);
+      const receiveDate = new Date(receive_date);
+      const rentalAmount = parseFloat(rental);
+
+      if (!isNaN(rentalAmount)) {
+        const daysDifference = (returnDate - receiveDate) / (1000 * 60 * 60 * 24);
+        const totalRentAmount = daysDifference * rentalAmount;
+
+        setTotalRent(totalRentAmount.toFixed(2));
+      } else {
+        // Set total_rent to 0 if rentalAmount is NaN
+        setTotalRent(0);
+      }
+    } else {
+      // Set total_rent to 0 if any of the required values is missing
+      setTotalRent(0);
+    }
+  };
+
   const sendData = (e) => {
     e.preventDefault();
 
-    if (validate()) {
+    if (validate() && isVehicleNoUnique) {
+      let totalRentAmount = 0;
+
+      if (return_date && receive_date && rental) {
+        const returnDate = new Date(return_date);
+        const receiveDate = new Date(receive_date);
+        const rentalAmount = parseFloat(rental);
+
+        if (!isNaN(rentalAmount)) {
+          const daysDifference = (returnDate - receiveDate) / (1000 * 60 * 60 * 24);
+          totalRentAmount = daysDifference * rentalAmount;
+        }
+      }
+
       const newRent = {
         vehicle_no,
         brand,
@@ -86,14 +135,13 @@ if (return_date && return_date < currentDateString) {
         owner_phone,
         owner_email,
         rental,
+        total_rental: totalRentAmount.toFixed(2),
       };
 
       axios
         .post("http://localhost:8411/rent/add", newRent)
         .then((response) => {
           alert("Rent Successfully added");
-          // Reset state variables here...
-          window.location.href="/rent/allRent";
           setVehicleNo("");
           setBrand("");
           setVehicleModel("");
@@ -106,6 +154,7 @@ if (return_date && return_date < currentDateString) {
           setOwnerPhone("");
           setOwnerEmail("");
           setRental("");
+          setTotalRent(0);
         })
         .catch((err) => {
           alert(err);
@@ -114,14 +163,10 @@ if (return_date && return_date < currentDateString) {
   };
 
   const handleInputChange = (e) => {
-    // Clear the error for the current input field
-    const { name } = e.target;
+    const { name, value } = e.target;
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
 
-    // Update the state with the new value
-    const value = e.target.value;
-    const inputName = e.target.name;
-    switch (inputName) {
+    switch (name) {
       case "vehicle_no":
         setVehicleNo(value);
         break;
@@ -176,10 +221,16 @@ if (return_date && return_date < currentDateString) {
             placeholder="Enter Vehicle Number Eg: LC-0000"
             value={vehicle_no}
             onChange={handleInputChange}
+            onBlur={checkVehicleNoUniqueness}
           />
           {errors.vehicle_no && (
             <div className="error" style={{ color: "red" }}>
               {errors.vehicle_no}
+            </div>
+          )}
+          {!isVehicleNoUnique && (
+            <div className="error" style={{ color: "red" }}>
+              Vehicle Number already exists
             </div>
           )}
         </div>
@@ -224,7 +275,7 @@ if (return_date && return_date < currentDateString) {
             className="form-control"
             id="milage"
             name="milage"
-            placeholder="Enter Milage"
+            placeholder="Enter Mileage"
             value={milage}
             onChange={handleInputChange}
           />
@@ -347,7 +398,7 @@ if (return_date && return_date < currentDateString) {
           )}
         </div>
         <div className="form-group">
-          <label htmlFor="rental">Rental</label>
+          <label htmlFor="rental">Rental Per Day</label>
           <input
             type="number"
             className="form-control"
@@ -356,6 +407,18 @@ if (return_date && return_date < currentDateString) {
             placeholder="Enter Rental"
             value={rental}
             onChange={handleInputChange}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="total_rental">Total Rental</label>
+          <input
+            type="number"
+            className="form-control"
+            id="total_rental"
+            name="total_rental"
+            placeholder="Total Rental"
+            value={total_rent}
+            readOnly
           />
         </div>
         <button type="submit" className="btn btn-primary">

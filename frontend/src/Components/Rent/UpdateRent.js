@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -22,10 +22,34 @@ export default function UpdateRent() {
         owner_phone: "",
         owner_email: "",
         rental: "",
+        total_rental: "", // Add total_rental field
       };
 
   const [rent, setRent] = useState(initialRent);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    calculateTotalRent();
+  }, [rent.receive_date, rent.return_date, rent.rental]);
+
+  const calculateTotalRent = () => {
+    if (rent.return_date && rent.receive_date && rent.rental) {
+      const returnDate = new Date(rent.return_date);
+      const receiveDate = new Date(rent.receive_date);
+      const rentalAmount = parseFloat(rent.rental);
+
+      if (!isNaN(rentalAmount)) {
+        const daysDifference = (returnDate - receiveDate) / (1000 * 60 * 60 * 24);
+        const totalRentAmount = daysDifference * rentalAmount;
+
+        setRent({ ...rent, total_rental: totalRentAmount.toFixed(2) });
+      } else {
+        setRent({ ...rent, total_rental: "" });
+      }
+    } else {
+      setRent({ ...rent, total_rental: "" });
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,29 +77,33 @@ export default function UpdateRent() {
     if (!rent.owner_name) {
       newErrors.owner_name = "Owner Name is required";
     }
-   /*  if (!rent.owner_phone || !rent.owner_phone.match(/^\d{10}$/)) {
+    /*  if (!rent.owner_phone || !rent.owner_phone.match(/^\d{10}$/)) {
       newErrors.owner_phone = "Owner Phone must be 10 digits";
     } */
     if (!rent.owner_email || !rent.owner_email.match(/^\S+@\S+\.\S+$/)) {
       newErrors.owner_email = "Invalid email format";
     }
 
-    // Validation for receive_date and return_date
+    if (rent.receive_date && rent.return_date && rent.receive_date > rent.return_date) {
+      newErrors.return_date = "Return Date cannot be before Receive Date";
+    }
+    
     const currentDate = new Date();
     const currentDateString = currentDate.toISOString().split("T")[0];
-
-    /* if (rent.receive_date && rent.receive_date < currentDateString) {
+    
+    if (rent.receive_date && rent.receive_date < currentDateString) {
       newErrors.receive_date = "Receive Date cannot be in the past";
-    } */
+    }
 
+    // Check if return_date is before today
     if (rent.return_date && rent.return_date < currentDateString) {
       newErrors.return_date = "Return Date cannot be in the past";
     }
 
+    setErrors(newErrors);
+
     // Check if there are any validation errors
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-    } else {
+    if (Object.keys(newErrors).length === 0) {
       try {
         await axios.put(`http://localhost:8411/rent/update/${rent.vehicle_no}`, rent);
         alert("Rent record updated successfully!");
@@ -139,7 +167,7 @@ export default function UpdateRent() {
             className="form-control"
             id="milage"
             name="milage"
-            placeholder="Enter Milage"
+            placeholder="Enter Mileage"
             value={rent.milage}
             onChange={handleInputChange}
           />
@@ -234,7 +262,7 @@ export default function UpdateRent() {
           )}
         </div>
         <div className="form-group">
-          <label htmlFor="rental">Rental</label>
+          <label htmlFor="rental">Rental Per Day</label>
           <input
             type="number"
             className="form-control"
@@ -245,6 +273,18 @@ export default function UpdateRent() {
             onChange={handleInputChange}
           />
           {errors.rental && <div className="text-danger">{errors.rental}</div>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="total_rental">Total Rental</label>
+          <input
+            type="number"
+            className="form-control"
+            id="total_rental"
+            name="total_rental"
+            placeholder="Total Rental"
+            value={rent.total_rental}
+            readOnly // Make it read-only
+          />
         </div>
         <button type="submit" className="btn btn-primary">
           Update

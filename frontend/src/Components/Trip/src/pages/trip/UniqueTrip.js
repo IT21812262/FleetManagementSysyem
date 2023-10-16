@@ -1,9 +1,28 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
-//import "./UniqueTrip.css"; // You can create a CSS file for UniqueTrip styles
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
+import { Formik, Field, ErrorMessage } from "formik";
+import * as yup from "yup";
+import Header from "../../components/Header";
+import { useNavigate } from "react-router-dom";
+import { Grid } from "@mui/material";
+import { useTheme } from "@mui/material";
+import { tokens } from "../../theme";
 
-export default function UniqueTrip() {
+const UniqueTrip = ({ onClose }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   const { id } = useParams();
   const [trip, setTrip] = useState(null);
   const [searchQ, setSearchQ] = useState("");
@@ -55,48 +74,116 @@ export default function UniqueTrip() {
   };
 
   return (
-    <div className="container">
-      <h1>Unique Trip</h1>
+    <Box m="20px">
+      <Formik
+        initialValues={{ searchQ: "" }}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
+            {trip && (
+              <Header
+                title={`UNIQUE TRIP FOR ${trip.tripid}`}
+                subtitle="View a unique trip data"
+              />
+            )}
+            <Box mt={2}>
+              <Field
+                as={TextField}
+                fullWidth
+                variant="filled"
+                label="ENTER TRIP ID"
+                name="searchQ"
+                error={false}
+              />
+              <ErrorMessage name="searchQ">
+                {(msg) => <Typography color="error">{msg}</Typography>}
+              </ErrorMessage>
+            </Box>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={searchQ}
-          onChange={handleSearchQ}
-          placeholder="Enter Trip ID"
-        />
-        <button type="submit">Fetch Trip Data</button>
-      </form>
+            <Box mt={2} display="flex" justifyContent="space-between">
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                disabled={isSubmitting}
+              >
+                FETCH TRIP DATA
+              </Button>
+              <Button
+                type="button"
+                color="secondary"
+                variant="contained"
+                onClick={() => handleDelete(trip.tripid)}
+                disabled={isSubmitting}
+              >
+                DELETE TRIP
+              </Button>
+            </Box>
 
-      {trip ? (
-        <ul>
-          <li key={trip.tripid}>
-            Trip ID: {trip.tripid}<br />
-            Trip Name: {trip.tripname}<br />
-            Trip Duration: {trip.tripduration} hours<br />
-            Trip Distance: {trip.tripdistance} km<br />
-            Vehicle Number: {trip.vehicleno}<br />
-            Driver ID: {trip.driverid}<br />
-            Starting Point: {trip.startpoint}<br />
-            Destination: {trip.destination}<br />
-            Trip Goods: {trip.tripgoods}<br />
-            Arrival Time: {trip.arrivaltime} hours<br />
-            Departure Time: {trip.departuretime} hours<br />
-            Start Fuel: {trip.startfuel} Litres<br />
-            End Fuel: {trip.endfuel} litres<br />
-            {/* You can add more attributes as needed */}
-            <Link to="/trip/allTrip">
-              <button type="button">Cancel</button>
-            </Link>
-            <button onClick={() => handleDelete(trip.tripid)} className="button2"> Delete Trip</button>
-          </li>
-        </ul>
-      ) : (
-        <p>No trip found with the specified ID.</p>
-      )}
+            {trip ? (
+              <Paper elevation={3} style={{ marginTop: '20px', padding: '20px', backgroundColor: colors.primary[400] }}>
 
-      {/* Link to All Trips page */}
-      <Link to="/trip/allTrip">All Trips</Link>
-    </div>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <List>
+                      <ListItem>
+                        <ListItemText primary="Trip ID" secondary={trip.tripid} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Trip Name" secondary={trip.tripname} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Trip Duration" secondary={`${trip.tripduration} hours`} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Trip Distance" secondary={`${trip.tripdistance} km`} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Vehicle Number" secondary={trip.vehicleno} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Driver ID" secondary={trip.driverid} />
+                      </ListItem>
+                    </List>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <List>
+                      <ListItem>
+                        <ListItemText primary="Starting Point" secondary={trip.startpoint} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Destination" secondary={trip.destination} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Trip Goods" secondary={trip.tripgoods} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Arrival Time" secondary={`${trip.arrivaltime} hours`} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Departure Time" secondary={`${trip.departuretime} hours`} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Start Fuel" secondary={`${trip.startfuel} Litres`} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="End Fuel" secondary={`${trip.endfuel} litres`} />
+                      </ListItem>
+                    </List>
+                  </Grid>
+                </Grid>
+              </Paper>
+            ) : (
+              <Typography variant="h6" color="textSecondary" style={{ marginTop: '20px' }}>
+                No trip found with the specified Trip ID.
+              </Typography>
+            )}
+          </form>
+        )}
+      </Formik>
+    </Box>
   );
-}
+};
+
+export default UniqueTrip;

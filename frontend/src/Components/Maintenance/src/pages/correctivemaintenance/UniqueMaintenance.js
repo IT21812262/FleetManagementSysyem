@@ -43,7 +43,7 @@ export default function UniqueMaintenanceJob() {
       }
     }
   };
-  const textSize = {
+  const textStyle = {
     fontSize: '20px'
   };
   const formatDate = (dateStr) => {
@@ -56,7 +56,7 @@ export default function UniqueMaintenanceJob() {
 
   return (
     <Box m="20px">
-      <Typography variant="h4" component="h1" style={textSize}><b>Corrective Maintenance Job</b></Typography>
+      <Typography variant="h4" component="h1" style={textStyle}><b>Corrective Maintenance Job</b></Typography>
 
       {job ? (
         <Paper elevation={3} style={{ marginTop: '20px', padding: '20px' }}>

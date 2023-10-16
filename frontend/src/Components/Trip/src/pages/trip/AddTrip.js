@@ -1,7 +1,69 @@
 import React, { useState } from "react";
 import axios from "axios";
-//import "./AddTrip.css";
-export default function AddTrip() {
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { Formik } from "formik";
+import * as yup from "yup";
+import Header from "../../components/Header";
+
+const AddTrip = ({ onClose }) => {
+  const initialValues = {
+    tripid: 0, // Set the initial value as a number (e.g., 0)
+    tripname: "",
+    tripduration: "",
+    tripdistance: "",
+    vehicleno: "",
+    driverid: "",
+    startpoint: "",
+    destination: "",
+    tripgoods: "",
+    arrivaltime: "",
+    departuretime: "",
+    startfuel: "",
+    endfuel: "",
+    fuelUsed: "",
+  };
+
+  const validationSchema = yup.object().shape({
+    tripid: yup
+      .number()
+      .integer("Trip ID must be an integer")
+      .positive("Trip ID must be a positive number")
+      .required("Trip ID is required"),
+    tripname: yup
+      .string()
+      .max(10, "Trip Name must have a maximum of 10 characters")
+      .required("Trip Name is required"),
+    tripduration: yup
+      .number()
+      .positive("Trip Duration should be a positive number")
+      .max(100, "Trip Duration should not exceed 50 hours")
+      .required("Trip Duration is required"),
+    tripdistance: yup
+      .number()
+      .positive("Trip Distance should be a positive number")
+      .max(600, "Trip Distance should not exceed 300 kilometers")
+      .required("Trip Distance is required"),
+    vehicleno: yup
+      .string()
+      .matches(/^\d{6}$/, "Vehicle Number must have 6 numbers")
+      .required("Vehicle Number is required"),
+    driverid: yup.string().required("Driver ID is required"),
+    startpoint: yup.string().required("Starting Point is required"),
+    destination: yup.string().required("Destination is required"),
+    tripgoods: yup.string().required("Trip Goods is required"),
+    arrivaltime: yup
+      .number()
+      .positive("Arrival Time should be a positive number")
+      .required("Arrival Time is required"),
+    departuretime: yup
+      .number()
+      .positive("Departure Time should be a positive number")
+      .required("Departure Time is required"),
+    startfuel: yup.number().required("Start Fuel is required"),
+    endfuel: yup.number().required("End Fuel is required"),
+    fuelUsed: yup.number().required("Fuel Used is required"),
+  });
+
   const [tripid, setTripid] = useState("");
   const [tripname, setTripname] = useState("");
   const [tripduration, setTripduration] = useState("");
@@ -13,56 +75,87 @@ export default function AddTrip() {
   const [tripgoods, setTripgoods] = useState("");
   const [arrivaltime, setArrivaltime] = useState("");
   const [departuretime, setDeparturetime] = useState("");
-
+  const [startfuel, setStartfuel] = useState("");
+  const [endfuel, setEndfuel] = useState("");
+  const [fuelUsed, setFuelUsed] = useState("");
   const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   function validateForm() {
     const errors = {};
 
+    // Validate Trip ID
     if (!tripid) {
       errors.tripid = "Trip ID is required";
+    } else if (!/^[A-Za-z]{2}\d{4}$/.test(tripid)) {
+      errors.tripid = "Trip ID must start with 2 letters and end with 4 numbers";
     }
 
+    // Validate Trip Name
     if (!tripname) {
       errors.tripname = "Trip Name is required";
+    } else if (tripname.length > 10) {
+      errors.tripname = "Trip Name must have a maximum of 10 characters";
     }
 
+    // Validate Trip Duration
     if (!tripduration) {
       errors.tripduration = "Trip Duration is required";
-    } else if (isNaN(tripduration) || parseFloat(tripduration) <= 0) {
-      errors.tripduration = "Trip Duration should be a positive number";
+    } else if (
+      isNaN(tripduration) ||
+      parseFloat(tripduration) <= 0 ||
+      parseFloat(tripduration) > 50
+    ) {
+      errors.tripduration =
+        "Trip Duration should be a positive number and not exceed 50 hours";
     }
 
+    // Validate Trip Distance
     if (!tripdistance) {
       errors.tripdistance = "Trip Distance is required";
-    } else if (isNaN(tripdistance) || parseFloat(tripdistance) <= 0) {
-      errors.tripdistance = "Trip Distance should be a positive number";
+    } else if (
+      isNaN(tripdistance) ||
+      parseFloat(tripdistance) <= 0 ||
+      parseFloat(tripdistance) > 300
+    ) {
+      errors.tripdistance =
+        "Trip Distance should be a positive number and not exceed 300 kilometers";
     }
 
+    // Validate Vehicle Number
     if (!vehicleno) {
       errors.vehicleno = "Vehicle Number is required";
+    } else if (!/^\d{6}$/.test(vehicleno)) {
+      errors.vehicleno = "Vehicle Number must have 6 numbers";
     }
 
+    // Validate Driver ID
     if (!driverid) {
       errors.driverid = "Driver ID is required";
     }
 
+    // Validate Starting Point
     if (!startpoint) {
       errors.startpoint = "Starting Point is required";
     }
 
+    // Validate Destination
     if (!destination) {
       errors.destination = "Destination is required";
     }
 
+    // Validate Trip Goods
     if (!tripgoods) {
       errors.tripgoods = "Trip Goods is required";
     }
 
+    // Validate Arrival Time
     if (!arrivaltime) {
       errors.arrivaltime = "Arrival Time is required";
     }
 
+    // Validate Departure Time
     if (!departuretime) {
       errors.departuretime = "Departure Time is required";
     }
@@ -71,11 +164,12 @@ export default function AddTrip() {
     return Object.keys(errors).length === 0;
   }
 
-  function sendData(e) {
+  function sentData(e) {
     e.preventDefault();
 
     if (validateForm()) {
       alert("Insert");
+
       const newTrip = {
         tripid,
         tripname,
@@ -88,14 +182,16 @@ export default function AddTrip() {
         tripgoods,
         arrivaltime: parseFloat(arrivaltime),
         departuretime: parseFloat(departuretime),
+        startfuel: parseFloat(startfuel),
+        endfuel: parseFloat(endfuel),
+        fuelUsed: parseFloat(fuelUsed),
       };
 
       axios
         .post("http://localhost:8411/trip/add", newTrip)
         .then((response) => {
-          alert("Trip Successfully added");
-          window.location.href = "/tripdata";
-
+          alert("Trip added successfully");
+          window.location.href = "/tripdata"
           window.location.reload();
           // Reset form fields
           setTripid("");
@@ -109,6 +205,9 @@ export default function AddTrip() {
           setTripgoods("");
           setArrivaltime("");
           setDeparturetime("");
+          setStartfuel("");
+          setEndfuel("");
+          setFuelUsed("");
         })
         .catch((err) => {
           alert(err);
@@ -116,298 +215,229 @@ export default function AddTrip() {
     }
   }
 
-  const containerStyle = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-  };
-
-  const formStyle = {
-    width: "90%",
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: "20px",
-  };
-
-  const inputStyle = {
-    width: "100%",
-    padding: "10px",
-    border: "1px solid #ccc",
-    borderRadius: "5px",
-  };
-
-  const alertStyle = {
-    gridColumn: "span 3",
-    marginBottom: "15px",
-  };
-
-  const buttonStyle = {
-    gridColumn: "span 3",
-    padding: "10px 10px",
-    backgroundColor: "#007BFF",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-  };
-
   return (
-    <div className="container" style={containerStyle}>
-      <form onSubmit={sendData} style={formStyle}>
-        {errors.tripid && (
-          <div className="alert alert-danger" style={alertStyle}>
-            {errors.tripid}
-          </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="tripid">Trip ID</label>
-          <input
-            type="text"
-            className={`form-control ${errors.tripid ? "is-invalid" : ""}`}
-            id="tripid"
-            placeholder="Enter Trip ID"
-            style={inputStyle}
-            value={tripid}
-            onChange={(e) => {
-              setTripid(e.target.value);
-              setErrors({ ...errors, tripid: null });
-            }}
-          />
-        </div>
+    <Box m="20px">
+      <Header title="ADD NEW TRIP" subtitle="Adding a new trip to Fleet" />
+      <button className="close-button" onClick={onClose}>
+        Close
+      </button>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={sentData} 
+      >
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
+            <Box
+              display="grid"
+              gap="30px"
+              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              sx={{
+                "& > div": { gridColumn: "span 1" },
+              }}
+            >
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="TRIP ID"
+                name="tripid"
+                value={values.tripid}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.tripid && errors.tripid}
+                helperText={touched.tripid && errors.tripid}
+              />
 
-        {errors.tripname && (
-          <div className="alert alert-danger" style={alertStyle}>
-            {errors.tripname}
-          </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="tripname">Trip Name</label>
-          <input
-            type="text"
-            className={`form-control ${errors.tripname ? "is-invalid" : ""}`}
-            id="tripname"
-            placeholder="Enter Trip Name"
-            style={inputStyle}
-            value={tripname}
-            onChange={(e) => {
-              setTripname(e.target.value);
-              setErrors({ ...errors, tripname: null });
-            }}
-          />
-        </div>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="TRIP NAME"
+                name="tripname"
+                value={values.tripname}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.tripname && errors.tripname}
+                helperText={touched.tripname && errors.tripname}
+              />
 
-        {errors.tripduration && (
-          <div className="alert alert-danger" style={alertStyle}>
-            {errors.tripduration}
-          </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="tripduration">Trip Duration (hours)</label>
-          <input
-            type="number"
-            className={`form-control ${
-              errors.tripduration ? "is-invalid" : ""
-            }`}
-            id="tripduration"
-            placeholder="Enter Trip Duration"
-            style={inputStyle}
-            value={tripduration}
-            onChange={(e) => {
-              setTripduration(e.target.value);
-              setErrors({ ...errors, tripduration: null });
-            }}
-          />
-        </div>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="TRIP DURATION"
+                name="tripduration"
+                value={values.tripduration}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.tripduration && errors.tripduration}
+                helperText={touched.tripduration && errors.tripduration}
+              />
 
-        {errors.tripdistance && (
-          <div className="alert alert-danger" style={alertStyle}>
-            {errors.tripdistance}
-          </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="tripdistance">Trip Distance (km)</label>
-          <input
-            type="number"
-            className={`form-control ${
-              errors.tripdistance ? "is-invalid" : ""
-            }`}
-            id="tripdistance"
-            placeholder="Enter Trip Distance"
-            style={inputStyle}
-            value={tripdistance}
-            onChange={(e) => {
-              setTripdistance(e.target.value);
-              setErrors({ ...errors, tripdistance: null });
-            }}
-          />
-        </div>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="TRIP DISTANCE"
+                name="tripdistance"
+                value={values.tripdistance}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.tripdistance && errors.tripdistance}
+                helperText={touched.tripdistance && errors.tripdistance}
+              />
 
-        {errors.vehicleno && (
-          <div className="alert alert-danger" style={alertStyle}>
-            {errors.vehicleno}
-          </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="vehicleno">Vehicle Number</label>
-          <input
-            type="text"
-            className={`form-control ${
-              errors.vehicleno ? "is-invalid" : ""
-            }`}
-            id="vehicleno"
-            placeholder="Enter Vehicle Number"
-            style={inputStyle}
-            value={vehicleno}
-            onChange={(e) => {
-              setVehicleno(e.target.value);
-              setErrors({ ...errors, vehicleno: null });
-            }}
-          />
-        </div>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="VEHICLE NO"
+                name="vehicleno"
+                value={values.vehicleno}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.vehicleno && errors.vehicleno}
+                helperText={touched.vehicleno && errors.vehicleno}
+              />
 
-        {errors.driverid && (
-          <div className="alert alert-danger" style={alertStyle}>
-            {errors.driverid}
-          </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="driverid">Driver ID</label>
-          <input
-            type="text"
-            className={`form-control ${
-              errors.driverid ? "is-invalid" : ""
-            }`}
-            id="driverid"
-            placeholder="Enter Driver ID"
-            style={inputStyle}
-            value={driverid}
-            onChange={(e) => {
-              setDriverid(e.target.value);
-              setErrors({ ...errors, driverid: null });
-            }}
-          />
-        </div>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="DRIVER ID"
+                name="driverid"
+                value={values.driverid}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.driverid && errors.driverid}
+                helperText={touched.driverid && errors.driverid}
+              />
 
-        {errors.startpoint && (
-          <div className="alert alert-danger" style={alertStyle}>
-            {errors.startpoint}
-          </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="startpoint">Starting Point</label>
-          <input
-            type="text"
-            className={`form-control ${
-              errors.startpoint ? "is-invalid" : ""
-            }`}
-            id="startpoint"
-            placeholder="Enter Starting Point"
-            style={inputStyle}
-            value={startpoint}
-            onChange={(e) => {
-              setStartpoint(e.target.value);
-              setErrors({ ...errors, startpoint: null });
-            }}
-          />
-        </div>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="START POINT"
+                name="startpoint"
+                value={values.startpoint}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.startpoint && errors.startpoint}
+                helperText={touched.startpoint && errors.startpoint}
+              />
 
-        {errors.destination && (
-          <div className="alert alert-danger" style={alertStyle}>
-            {errors.destination}
-          </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="destination">Destination</label>
-          <input
-            type="text"
-            className={`form-control ${
-              errors.destination ? "is-invalid" : ""
-            }`}
-            id="destination"
-            placeholder="Enter Destination"
-            style={inputStyle}
-            value={destination}
-            onChange={(e) => {
-              setDestination(e.target.value);
-              setErrors({ ...errors, destination: null });
-            }}
-          />
-        </div>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="DESTINATION"
+                name="destination"
+                value={values.destination}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.destination && errors.destination}
+                helperText={touched.destination && errors.destination}
+              />
 
-        {errors.tripgoods && (
-          <div className="alert alert-danger" style={alertStyle}>
-            {errors.tripgoods}
-          </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="tripgoods">Trip Goods</label>
-          <input
-            type="text"
-            className={`form-control ${
-              errors.tripgoods ? "is-invalid" : ""
-            }`}
-            id="tripgoods"
-            placeholder="Enter Trip Goods"
-            style={inputStyle}
-            value={tripgoods}
-            onChange={(e) => {
-              setTripgoods(e.target.value);
-              setErrors({ ...errors, tripgoods: null });
-            }}
-          />
-        </div>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="TRIP GOODS"
+                name="tripgoods"
+                value={values.tripgoods}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.tripgoods && errors.tripgoods}
+                helperText={touched.tripgoods && errors.tripgoods}
+              />
 
-        {errors.arrivaltime && (
-          <div className="alert alert-danger" style={alertStyle}>
-            {errors.arrivaltime}
-          </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="arrivaltime">Arrival Time</label>
-          <input
-            type="number"
-            className={`form-control ${
-              errors.arrivaltime ? "is-invalid" : ""
-            }`}
-            id="arrivaltime"
-            placeholder="Enter Arrival Time"
-            style={inputStyle}
-            value={arrivaltime}
-            onChange={(e) => {
-              setArrivaltime(e.target.value);
-              setErrors({ ...errors, arrivaltime: null });
-            }}
-          />
-        </div>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="ARRIVAL TIME"
+                name="arrivaltime"
+                value={values.arrivaltime}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.arrivaltime && errors.arrivaltime}
+                helperText={touched.arrivaltime && errors.arrivaltime}
+              />
 
-        {errors.departuretime && (
-          <div className="alert alert-danger" style={alertStyle}>
-            {errors.departuretime}
-          </div>
-        )}
-        <div className="form-group">
-          <label htmlFor="departuretime">Departure Time</label>
-          <input
-            type="number"
-            className={`form-control ${
-              errors.departuretime ? "is-invalid" : ""
-            }`}
-            id="departuretime"
-            placeholder="Enter Departure Time"
-            style={inputStyle}
-            value={departuretime}
-            onChange={(e) => {
-              setDeparturetime(e.target.value);
-              setErrors({ ...errors, departuretime: null });
-            }}
-          />
-        </div>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="DEPARTURE TIME"
+                name="departuretime"
+                value={values.departuretime}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.departuretime && errors.departuretime}
+                helperText={touched.departuretime && errors.departuretime}
+              />
 
-        <button type="submit" className="btn btn-primary" style={buttonStyle}>
-          Submit
-        </button>
-      </form>
-    </div>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="START FUEL"
+                name="startfuel"
+                value={values.startfuel}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.startfuel && errors.startfuel}
+                helperText={touched.startfuel && errors.startfuel}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="END FUEL"
+                name="endfuel"
+                value={values.endfuel}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.endfuel && errors.endfuel}
+                helperText={touched.endfuel && errors.endfuel}
+              />
+
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="FUEL USED"
+                name="fuelUsed"
+                value={values.fuelUsed}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.fuelUsed && errors.fuelUsed}
+                helperText={touched.fuelUsed && errors.fuelUsed}
+              />
+            </Box>
+            <Box display="flex" justifyContent="end" mt="20px">
+              <Button type="submit" color="secondary" variant="contained">
+                ADD NEW TRIP
+              </Button>
+            </Box>
+            {successMessage && (
+              <Typography variant="success" sx={{ marginTop: 2 }}>
+                {successMessage}
+              </Typography>
+            )}
+            {errorMessage && (
+              <Typography variant="error" sx={{ marginTop: 2 }}>
+                {errorMessage}
+              </Typography>
+            )}
+          </form>
+        )}
+      </Formik>
+    </Box>
   );
-}
+};
+
+export default AddTrip;
