@@ -89,22 +89,35 @@ const Maintenance = () => {
     doc.setFontSize(10);
     doc.text(`Generated on: ${formattedDate}`, doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 10);
 
+    const formatDate = (dateStr) => {
+      const date = new Date(dateStr);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
     const columns = [
       "Job ID",
+      "DID",
       "Priority",
       "Vehicle No",
       "Date_report",
       "Description",
-      "Parts Used"
+      "Parts Used",
+      "Date Complete"
     ];
 
     const rows = filterMaintenanceJobs().map((job) => [
       job.jobID,
+      job.DID,
       job.priority,
       job.vehicleNo,
-      job.Date_report,
+      formatDate(job.Date_report),
       job.description,
-      job.parts_used
+      job.parts_used,
+      formatDate(job.Date_report)
+
     ]);
 
     let y = 30; // Initial Y position

@@ -27,6 +27,12 @@ export default function UpdateMaintenanceJob() {
     return vehicleNumberRegex.test(vehicleNo);
   };
 
+  // const formatDate = (dateStr) => {
+  //   const date = new Date(dateStr);
+  //   const formattedDate = date.toLocaleDateString(); // Format the date as needed
+  //   return formattedDate;
+  // };
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setJobData({ ...jobData, [id]: value });
@@ -79,70 +85,67 @@ export default function UpdateMaintenanceJob() {
             <TextField
               fullWidth
               variant="outlined"
-              label="JOB ID"
+              label=""
               id="jobID"
               onChange={handleInputChange}
               value={jobData.jobID}
               error={!!errors.jobID}
               helperText={errors.jobID}
+              disabled
             />
           </Box>
           <Box display="flex" justifyContent="end" mt="20px" gap="30px">
             <TextField
               fullWidth
               variant="outlined"
-              label="DID"
+              label=""
               id="DID"
               onChange={handleInputChange}
               value={jobData.DID}
               error={!!errors.DID}
               helperText={errors.DID}
+              disabled
             />
 
             <TextField
               fullWidth
               variant="outlined"
-              label="VEHICLE NUMBER"
+              label=""
               id="vehicleNo"
               onChange={handleInputChange}
               value={jobData.vehicleNo}
               error={!!errors.vehicleNo}
               helperText={errors.vehicleNo}
+              disabled
             />
           </Box>
           <Box display="flex" justifyContent="end" mt="20px" gap="30px">
-          <FormControl fullWidth variant="filled">
-            <InputLabel id="priority-label">Priority</InputLabel>
-            <Select
-              labelId="priority-label"
+          <TextField
+              fullWidth
+              variant="outlined"
+              label="Status"
               id="priority"
-              required
-              value={jobData.priority}
               onChange={handleInputChange}
-              error={errors.priority}
-              helperText={errors.priority && "Priority is required"}
-            >
-              <MenuItem value="">Select Priority</MenuItem>
-              <MenuItem value="Low Priority">Low Priority</MenuItem>
-              <MenuItem value="Medium Priority">Medium Priority</MenuItem>
-              <MenuItem value="High Priority">High Priority</MenuItem>
-            </Select>
-          </FormControl>
+              value={jobData.priority}
+              error={!!errors.priority}
+              helperText={errors.priority}
+            />
 
             
 
-            <TextField
-                fullWidth
-                id="Date_report"
-                label="DATE REPORT"
-                variant="outlined"
-                type="date"
-                InputLabelProps={{shrink:true}}
-                value={jobData.Date_report}
-                onChange={(e) => handleInputChange(e, "Date_report")}
-                error={!!errors.Date_report}
-                helperText={errors.Date_report}
-              />
+          <TextField
+            fullWidth
+            id="Date_report"
+            label="Date Report"
+            variant="outlined"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            value={jobData.Date_report?.split('T')[0]}
+            onChange={(e) => handleInputChange(e, "Date_report")}
+            error={!!errors.Date_report}
+            helperText={errors.Date_report}
+          />
+          
         
        
         
