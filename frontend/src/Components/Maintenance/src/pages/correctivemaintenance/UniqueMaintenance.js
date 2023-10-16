@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import "./UniqueMaintenanceJob.css";
+import { Box, Button, Typography, Paper, List, ListItem, ListItemText, Link as MUILink } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export default function UniqueMaintenanceJob() {
   const { id } = useParams();
   const [job, setJob] = useState(null);
+  const navigate = useNavigate();
 
   const mapContainerStyle = {
     width: '100%',
@@ -29,55 +31,50 @@ export default function UniqueMaintenanceJob() {
   }, [id]);
   
   const handleDelete = async (jobID) => {
-    // Display a confirmation dialog before deleting
     const confirmDelete = window.confirm("Are you sure you want to delete this maintenance job?");
     
     if (confirmDelete) {
       try {
         await axios.delete(`http://localhost:8411/corrective/delete/${jobID}`);
         alert('Maintenance job deleted successfully.');
-        window.location.href = "/maintenance";
+        navigate("/maintenance");
       } catch (error) {
         alert('Error deleting maintenance job:', error.message);
       }
     }
   };
+  const textStyle = {
+    fontSize: '20px'
+  };
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   return (
-    <div className="containeryt">
-      <h1><b>Corrective Maintenance Job</b></h1>
+    <Box m="20px">
+      <Typography variant="h4" component="h1" style={textStyle}><b>Corrective Maintenance Job</b></Typography>
 
       {job ? (
-        <ul>
-          <li key={job.jobID}>
-            <b>Job ID:</b> {job.jobID}<br />
-            <b>Priority:</b> {job.priority}<br />
-            <b>Vehicle Number:</b> {job.vehicleNo}<br />
-            <b>Date Report:</b> {job.Date_report}<br />
-            <b>Description:</b> {job.description}<br />
-            <b>Parts Used:</b> {job.parts_used}<br />
-            {/* Date Complete: {job.Date_complete}<br /> */}
-            <h2>Error Reported Location</h2>
-          <LoadScript googleMapsApiKey="AIzaSyAz27qe4QY9J6XxL_8VmOW4AiA8xr4uuUU">
-            <GoogleMap
-              mapContainerStyle={mapContainerStyle}
-              center={{ lat: parseFloat(job.latitude), lng: parseFloat(job.longitude) }}
-              zoom={20}
-            >
-              <Marker position={{ lat: parseFloat(job.latitude), lng: parseFloat(job.longitude) }} />
-            </GoogleMap>
-          </LoadScript>
-            <button onClick={() => handleDelete(job.jobID)}>Delete Job</button>
-            <Link to={`maintenance/update/${job.jobID}`} className="btn btn-primary">
-              Update Job
-            </Link>
-          </li>
-          
-        </ul>
-        
+        <Paper elevation={3} style={{ marginTop: '20px', padding: '20px' }}>
+          <List>
+            <ListItem><ListItemText primary="Job ID" secondary={job.jobID} /></ListItem>
+            <ListItem><ListItemText primary="Priority" secondary={job.priority} /></ListItem>
+            <ListItem><ListItemText primary="Vehicle Number" secondary={job.vehicleNo} /></ListItem>
+            <ListItem><ListItemText primary="Date Report" secondary={formatDate(job.Date_report)} /></ListItem>
+            <ListItem><ListItemText primary="Description" secondary={job.description} /></ListItem>
+            <ListItem><ListItemText primary="Parts Used" secondary={job.parts_used} /></ListItem>
+          </List>
+          <Box mt={2}>
+            <Button variant="contained" color="error" onClick={() => handleDelete(job.jobID)}>Delete Job</Button>
+          </Box>
+        </Paper>
       ) : (
-        <p>No maintenance job found with the specified ID.</p>
+        <Typography variant="h6">No maintenance job found with the specified ID.</Typography>
       )}
-    </div>
+    </Box>
   );
 }

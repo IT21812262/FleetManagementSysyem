@@ -46,7 +46,7 @@ router.route("/display").get((req,res)=>{
 // Update data in the database
 router.route("/update/:id").put(async (req, res) => {
     let jId = req.params.id;
-    const { jobID,DID,vehicleNo,Date_report,priority, description, parts_used,Date_complete } = req.body;
+    const { jobID,DID,vehicleNo,Date_report,priority, description, parts_used,Date_complete,latitude,longitude } = req.body;
   
     const updatecorrectiveMaintence = {
         jobID,
@@ -56,7 +56,9 @@ router.route("/update/:id").put(async (req, res) => {
         priority,
         description,
         parts_used,
-        Date_complete
+        Date_complete,
+        latitude,
+        longitude
     }
 
     const update = await correctiveMaintence.findOneAndUpdate({jobID : jId}, updatecorrectiveMaintence)

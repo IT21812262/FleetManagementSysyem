@@ -40,14 +40,19 @@ import UpdateFuelentry  from "./Components/Fuel/src/pages/fuelentry/UpdateFuelen
 import UniqueFuelstock from "./Components/Fuel/src/pages/fuelstock/UniqueFuelstock";
 import UpdateFuelstock  from "./Components/Fuel/src/pages/fuelstock/UpdateFuelstock";
 
+// Employee Management System
+import IndexEmployee from './Components/Employee/src/App';
+import EmployeeData from './Components/Employee/src/pages/employeedata/index';
 
-  //Employee
+import UniqueEmployee from "./Components/Employee/src/pages/employeedata/UniqueEmployee";
+import UpdateEmployee  from "./Components/Employee/src/pages/employeedata/UpdateEmployee";
 
-  import Employee from './Components/Employee/Employee';
 
-  import AddEmployee from './Components/Employee/AddEmployee';
-  import AllEmployees from './Components/Employee/AllEmployee';
-  import UpdateEmployee from './Components/Employee/UpdateEmployee';
+//Vehicle
+import Vehicle from './Components/Vehicle/Vehicle';
+import AllVehicles from './Components/Vehicle/AllVehicle';
+import AddVehicle from './Components/Vehicle/AddVehicle';
+import UpdateVehicle from './Components/Vehicle/UpdateVehicle';
 
 
   // Inventroy Management System
@@ -298,34 +303,66 @@ const router = createBrowserRouter([
           },
         ],
       },
+
+
       {
-        path: "/employee",
+        path: "/vehicle",
+
         element: <Outlet />,
         children: [
           {
             path: "",
-            element: <Employee />,
+
+            element: <Vehicle />,
           },
           {
-            path: "addemployee",
-            element: <AddEmployee />
+            path: "addvehicle",
+            element: <AddVehicle />
           },
           {
-            path: "allEmployees",
-            element: <AllEmployees />
+            path: "allVehicles",
+            element: <AllVehicles />
           },
           
           {
-            path: "updateEmployee",
-            element: <UpdateEmployee />
+            path: "updateVehicle",
+            element: <UpdateVehicle />
           },
           {
-            path: "/employee/updateEmployee/:id",
-            element: <UpdateEmployee />
+            path: "/vehicle/updateVehicle/:id",
+            element: <UpdateVehicle />
           },
-          
-        ]
+        
+        ],
       },
+
+
+      {
+        path: '/employee',
+        element: <Outlet />,
+        children: [
+
+          {
+            path: "",
+            element: <IndexEmployee />,
+            children: [
+              {
+                path: "/employee/employeedata",
+                element: <EmployeeData />,
+              },
+              {
+                path: "/employee/uniqueemployee/:id",
+                element: <UniqueEmployee />,
+              },
+              {
+                path: "/employee/updateemployee/:id",
+                element: <UpdateEmployee />,
+              },
+            ],
+          },
+        ],
+      },
+
 
       /* 
       {

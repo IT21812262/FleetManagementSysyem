@@ -39,7 +39,7 @@ const Dashboard = () => {
         alignItems={smScreen ? "center" : "start"}
         m="10px 0"
       >
-        <Header title="FUEL MANAGEMENT SYSTEM" subtitle="Welcome to LogiX Fleet Management System" />
+        <Header title="SUPPLIER MANAGEMENT SYSTEM" subtitle="Welcome to LogiX Fleet Management System" />
 
         <Box>
           <Button
