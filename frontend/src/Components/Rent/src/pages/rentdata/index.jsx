@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Box, useTheme, Button, IconButton, } from "@mui/material";
+import {
+  Box,
+  useTheme,
+  Button,
+  IconButton,
+  InputBase,
+} from "@mui/material";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
@@ -8,23 +14,13 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import AddRent from './AddRent';
 import "./index.css";
-
-
-// import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-// import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-// import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-// import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SearchIcon from "@mui/icons-material/Search";
-import { InputBase } from "@mui/material";
-// import React, { useState, useEffect } from "react";
-
-
-
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const Rent = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -35,7 +31,7 @@ const Rent = () => {
   };
 
   const [isPopupVisible, setPopupVisible] = useState(false);
-  
+
   const openPopup = () => {
     setPopupVisible(true);
   };
@@ -44,11 +40,25 @@ const Rent = () => {
     setPopupVisible(false);
   };
 
-  
-  const [selectedRow, setSelectedRow] = useState(null);
-
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [originalRents, setOriginalRents] = useState([]);
   const [rents, setRents] = useState([]);
 
+  const handleSearch = (e) => {
+    const keyword = e.target.value.toLowerCase();
+    setSearchKeyword(keyword);
+
+    if (keyword === "") {
+      setRents(originalRents);
+    } else {
+      const filteredRents = originalRents.filter((rent) =>
+        rent.brand.toLowerCase().includes(keyword)
+      );
+      setRents(filteredRents);
+    }
+  };
+
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const handleDelete = async (id) => {
     const confirmation = window.prompt("To confirm deletion, type 'CONFIRM' (case-sensitive):");
@@ -57,9 +67,7 @@ const Rent = () => {
       try {
         await axios.delete(`http://localhost:8411/rent/delete/${id}`);
         alert("Rent record deleted successfully.");
-        //window.location.reload();
-
-        
+        window.location.reload();
       } catch (error) {
         alert("Error deleting rent record:", error.message);
       }
@@ -67,129 +75,127 @@ const Rent = () => {
       alert("Deletion cancelled. No changes were made.");
     }
   };
-  const rows = rents.map((rent) => ({
-    id:rent.vehicle_no,
-    vehicle_no:rent.vehicle_no,
-    brand:rent.brand,
-    vehicle_model:rent.vehicle_model,
-    milage:rent.milage,
-    capacity:rent.capacity,
-    description:rent.description,
-    receive_date: formatDate(rent.receive_date),
-  return_date: formatDate(rent.return_date),
-    owner_name:rent.owner_name,
-    owner_phone:rent.owner_phone,
-    owner_email:rent.owner_email,
-    rental:rent.rental,
-    total_rental: rent.total_rental,
 
+  const rows = rents.map((rent) => ({
+    id: rent.vehicle_no,
+    vehicle_no: rent.vehicle_no,
+    brand: rent.brand,
+    vehicle_model: rent.vehicle_model,
+    milage: rent.milage,
+    capacity: rent.capacity,
+    description: rent.description,
+    receive_date: formatDate(rent.receive_date),
+    return_date: formatDate(rent.return_date),
+    owner_name: rent.owner_name,
+    owner_phone: rent.owner_phone,
+    owner_email: rent.owner_email,
+    rental: rent.rental,
+    total_rental: rent.total_rental,
   }));
+
   const linkStyle = {
-    textDecoration: "none", // Remove underline
-    color: "white",       // Set text color to white
+    textDecoration: "none",
+    color: "white",
   };
 
-
   const columns = [
-
     {
       field: "vehicle_no",
       headerName: "VEHICLE NO",
       headerAlign: "center",
       align: "center",
       width: 150,
-    },  
-  {
-    field: "brand",
-    headerName: "BRAND",
-    headerAlign: "center",
-    align: "center",
-    width: 150,
-  },
-  {
-    field: "vehicle_model",
-    headerName: "VEHICLE MODEL",
-    headerAlign: "center",
-    align: "center",
-    width: 150,
-  },
-  {
-    field: "milage",
-    headerName: "MILEAGE",
-    headerAlign: "center",
-    align: "center",
-    type: "number",
-    width: 150,
-  },
-  {
-    field: "capacity",
-    headerName: "CAPACITY",
-    headerAlign: "center",
-    align: "center",
-    type: "number",
-    width: 150,
-  },
-  {
-    field: "description",
-    headerName: "DESCRIPTION",
-    headerAlign: "center",
-    align: "center",
-    width: 150,
-  },
-  {
-    field: "receive_date",
-    headerName: "RECEIVE DATE",
-    headerAlign: "center",
-    align: "center",
-    width: 150,
-  },
-  {
-    field: "return_date",
-    headerName: "RETURN DATE",
-    headerAlign: "center",
-    align: "center",
-    width: 150,
-  },
-  {
-    field: "owner_name",
-    headerName: "OWNER NAME",
-    headerAlign: "center",
-    align: "center",
-    width: 150,
-  },
-  {
-    field: "owner_phone",
-    headerName: "OWNER PHONE",
-    headerAlign: "center",
-    align: "center",
-    width: 150,
-  },
-  {
-    field: "owner_email",
-    headerName: "OWNER EMAIL",
-    headerAlign: "center",
-    align: "center",
-    width: 150,
-  },
-  {
-    field: "rental",
-    headerName: "RENTAL",
-    headerAlign: "center",
-    align: "center",
-    type: "number",
-    width: 150,
-  },
-  {
-    field: "total_rental",
-    headerName: "TOTAL RENTAL",
-    headerAlign: "center",
-    align: "center",
-    valueFormatter: (params) => (params.value ? params.value.toFixed(2) : "N/A"),
-    width: 150,
-  },
-  
-
-
+    },
+    // Add other columns here as needed
+    {
+      field: "brand",
+      headerName: "BRAND",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+    {
+      field: "vehicle_model",
+      headerName: "VEHICLE MODEL",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+    {
+      field: "milage",
+      headerName: "MILEAGE",
+      headerAlign: "center",
+      align: "center",
+      type: "number",
+      width: 150,
+    },
+    {
+      field: "capacity",
+      headerName: "CAPACITY",
+      headerAlign: "center",
+      align: "center",
+      type: "number",
+      width: 150,
+    },
+    {
+      field: "description",
+      headerName: "DESCRIPTION",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+    {
+      field: "receive_date",
+      headerName: "RECEIVE DATE",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+    {
+      field: "return_date",
+      headerName: "RETURN DATE",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+    {
+      field: "owner_name",
+      headerName: "OWNER NAME",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+    {
+      field: "owner_phone",
+      headerName: "OWNER PHONE",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+    {
+      field: "owner_email",
+      headerName: "OWNER EMAIL",
+      headerAlign: "center",
+      align: "center",
+      width: 150,
+    },
+    {
+      field: "rental",
+      headerName: "RENTAL",
+      headerAlign: "center",
+      align: "center",
+      type: "number",
+      width: 150,
+    },
+    {
+      field: "total_rental",
+      headerName: "TOTAL RENTAL",
+      headerAlign: "center",
+      align: "center",
+      valueFormatter: (params) => (params.value ? params.value.toFixed(2) : "N/A"),
+      width: 150,
+    },
+    // ... (other columns)
     {
       headerName: "OPERATIONS",
       headerAlign: "center",
@@ -197,7 +203,7 @@ const Rent = () => {
       width: 300,
       renderCell: (params) => (
         <div className="edit-1-2-parent">
-          <Button 
+          <Button
             sx={{
               backgroundColor: colors.blueAccent[700],
               color: colors.grey[100],
@@ -205,23 +211,21 @@ const Rent = () => {
               fontWeight: "bold",
               padding: "10px 20px",
               margin: "2px",
-              transition: "background-color 0.3s", // Add a transition for smooth color change
-                "&:hover": {
-                backgroundColor: "#141B2D", // Red color on hover
+              transition: "background-color 0.3s",
+              "&:hover": {
+                backgroundColor: "#141B2D",
               },
             }}
           >
-            <Link 
-                to={`/rent/uniquerent/${params.row.vehicle_no}`}
-                state={{ rentData: params.row }}
-                style={linkStyle}
+            <Link
+              to={`/rent/uniquerent/${params.row.vehicle_no}`}
+              state={{ rentData: params.row }}
+              style={linkStyle}
             >
               VIEW
-
             </Link>
           </Button>
           <Button
-            
             sx={{
               backgroundColor: colors.blueAccent[700],
               color: colors.grey[100],
@@ -229,19 +233,22 @@ const Rent = () => {
               fontWeight: "bold",
               padding: "10px 20px",
               margin: "2px",
-              transition: "background-color 0.3s", // Add a transition for smooth color change
-                "&:hover": {
-                backgroundColor: "#141B2D", // Red color on hover
+              transition: "background-color 0.3s",
+              "&:hover": {
+                backgroundColor: "#141B2D",
               },
             }}
-          ><Link
-          to={`/rent/updateRent/${params.row.vehicle_no}`}
-          state={{ rentData: params.row }}
-          style={linkStyle}
-        >
-            EDIT</Link>
+          >
+            <Link
+              to={`/rent/updateRent/${params.row.vehicle_no}`}
+              state={{ rentData: params.row }}
+              style={linkStyle}
+            >
+              EDIT
+            </Link>
           </Button>
-          <Button onClick={() => handleDelete(params.row.vehicle_no)}
+          <Button
+            onClick={() => handleDelete(params.row.vehicle_no)}
             sx={{
               backgroundColor: '#FF0000',
               color: colors.grey[100],
@@ -249,9 +256,9 @@ const Rent = () => {
               fontWeight: "bold",
               padding: "10px 20px",
               margin: "3px",
-              transition: "background-color 0.3s", // Add a transition for smooth color change
-                "&:hover": {
-                backgroundColor: "#141B2D", // Red color on hover
+              transition: "background-color 0.3s",
+              "&:hover": {
+                backgroundColor: "#141B2D",
               },
             }}
           >
@@ -270,7 +277,7 @@ const Rent = () => {
       }
       const data = await response.json();
       setRents(data);
-      // setFilteredRows(data);
+      setOriginalRents(data);
     } catch (error) {
       console.error("Error fetching Rents:", error);
     }
@@ -280,48 +287,54 @@ const Rent = () => {
     fetchRents();
   }, []);
 
-
-
-  // search function
-
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const [filteredRows, setFilteredRows] = useState({rows}); 
-
-
-  // const handleSearch = (e) => {
-  //   const query = e.target.value.toLowerCase();
-  //   setSearchQuery(query);
-
-  //   // Filter rows based on the search query
-  //   const filteredData = rows.filter((row) =>
-  //     Object.values(row).some((value) =>
-  //       String(value).toLowerCase().includes(query)
-  //     )
-  //   );
-  //   setFilteredRows(filteredData);
-  // };
-// end of search function
-
-// second handle search function
-
-// const [searchQuery, setSearchQuery] = useState("");
-// const [filteredRows, setFilteredRows] = useState({rows});
-
-
-// const handleSearch = (e) => {
-//   const query = e.target.value.toLowerCase();
-//   setSearchQuery(query);
-
-//   // Filter rows based on the search query
-//   const filteredData = inventories.filter((inventory) =>
-//     Object.values(inventory).some((value) =>
-//       String(value).toLowerCase().includes(query)
-//     )
-//   );
-//   setFilteredRows(filteredData);
-// };
-
-
+  const downloadPDF = () => {
+    const doc = new jsPDF('l', 'pt', 'a4'); // Set page orientation to landscape
+    const tableColumns = columns.filter((col) => col.field !== "OPERATIONS");
+  
+    // Define styles for table header and cell
+    const headerStyles = {
+      fillColor: [100, 100, 255],
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+      fontSize: 10,
+    };
+  
+    const cellStyles = {
+      halign: "center",
+      valign: "middle",
+      fontSize: 10,
+      padding: 8,
+    };
+  
+    // Calculate the width for each column based on the available width
+    const availableWidth = doc.internal.pageSize.getWidth() - 20; // Adjust the margin as needed
+    const columnWidths = tableColumns.map((col, index) => ({
+      columnWidth: availableWidth / tableColumns.length,
+    }));
+  
+    doc.autoTable({
+      head: [tableColumns.map((col) => col.headerName)],
+      body: rows.map((row) => tableColumns.map((col) => row[col.field])),
+      theme: "grid",
+      styles: {
+        cellPadding: 2,
+        overflow: "linebreak",
+      },
+      headStyles: headerStyles,
+      bodyStyles: cellStyles,
+      columnStyles: columnWidths,
+      margin: { top: 30 },
+      addPageContent: function (data) {
+        doc.setFontSize(18);
+        doc.text("RENT MANAGER - Rent Data", 200, 20, "center");
+      },
+    });
+  
+    // Save the PDF with a custom file name
+    doc.save("rent_data.pdf");
+  };
+  
+  
   
 
   return (
@@ -332,62 +345,65 @@ const Rent = () => {
           subtitle="Welcome to LogiX Fleet Management System"
         />
 
-{/* // Search box */}
-<Box
+        <Box
           display="flex"
           backgroundColor={colors.primary[400]}
           p={0.2}
           borderRadius={1}
         >
-          <InputBase sx={{ ml: 1, flex: 1 }} 
-          placeholder="Search"
-          // value={searchQuery}
-          // onChange={handleSearch}
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Search"
+            value={searchKeyword}
+            onChange={handleSearch}
           />
           <IconButton type="button">
             <SearchIcon />
           </IconButton>
         </Box>
 
-        {/* <Box
-        m="8px 0 0 0"
-        width="100%"
-        height="80vh"
-        sx={{
-          // ... other styling ...
-        }}
-      >
-        <DataGrid rows={filteredRows} columns={columns} components={{ Toolbar: GridToolbar }} />
-      </Box> */}
+        <Button
+          onClick={openPopup}
+          sx={{
+            backgroundColor: colors.blueAccent[700],
+            color: colors.grey[100],
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "10px 20px",
+            transition: "background-color 0.3s",
+            "&:hover": {
+              backgroundColor: "#1F2A40",
+            },
+          }}
+        >
+          <DownloadOutlinedIcon sx={{ mr: "10px" }} />
+          ADD NEW RENT VEHICLE
+        </Button>
 
-      {/* // end of search */}
-        
-        <Button 
-            onClick={openPopup}
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-              transition: "background-color 0.3s", // Add a transition for smooth color change
-                "&:hover": {
-                backgroundColor: "#1F2A40", // Red color on hover
-              },
-            }}
-          >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            ADD NEW RENT VEHICLE
-          </Button>
-          {isPopupVisible && (
-            <div className="overlay">
-              <AddRent onClose={closePopup} />
-            </div>
-          )}
+        <Button
+          onClick={downloadPDF}
+          sx={{
+            backgroundColor: colors.blueAccent[700],
+            color: colors.grey[100],
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "10px 20px",
+            marginLeft: "10px",
+            transition: "background-color 0.3s",
+            "&:hover": {
+              backgroundColor: "#1F2A40",
+            },
+          }}
+        >
+          <DownloadOutlinedIcon sx={{ mr: "10px" }} />
+          DOWNLOAD AS PDF
+        </Button>
 
-          
-
-          
+        {isPopupVisible && (
+          <div className="overlay">
+            <AddRent onClose={closePopup} />
+          </div>
+        )}
       </Box>
       <Box
         m="8px 0 0 0"
@@ -423,10 +439,10 @@ const Rent = () => {
         }}
       >
         <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} />
-        {/* <DataGrid rows={filteredRows} columns={columns} components={{ Toolbar: GridToolbar }} getRowId={(row) => row.pid}/> */}
       </Box>
     </Box>
   );
 };
 
 export default Rent;
+
