@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Box, Button, TextField } from '@mui/material';
 import { useLocation } from "react-router-dom";
 import { Formik } from "formik";
-import * as yup from 'yup';
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
 
-//import "./UpdateTrip.css"; // You can create a separate CSS file for styling
+//import './UpdateSupplier.css';
 
 const UpdateTrip = () => {
   const location = useLocation();
@@ -27,7 +26,6 @@ const UpdateTrip = () => {
       departuretime: "",
       startfuel: "",
       endfuel: "",
-      fuelUsed: "",
     }
   );
 
@@ -49,33 +47,43 @@ const UpdateTrip = () => {
   const validateInput = (id, value) => {
     let error = "";
 
+    const tripidRegex = /^\d{4}$/;
+
     switch (id) {
       case "tripid":
-        error = value.length !== 4 ? "Trip ID must be 4 characters" : "";
+        error = value.length !== 4 ? "Trip ID must be 4 numbers" : "";
         break;
 
       case "tripname":
-        error = value.trim() === "" ? "Trip Name is required" : "";
-        break;
-
-      case "tripduration":
-        error = isNaN(value) ? "Trip Duration should contain only numbers" : "";
+        error = value.length > 20 ? "Trip Name should not exceed 20 characters" : "";
         break;
 
       case "tripdistance":
-        error = isNaN(value) ? "Trip Distance should contain only numbers" : "";
+        const distanceValue = parseFloat(value);
+        error = isNaN(distanceValue) || distanceValue <= 0 || distanceValue >= 700
+          ? "Trip Distance must be a positive number less than 700"
+          : "";
+        break;
+
+      case "tripduration":
+        const durationValue = parseFloat(value);
+        error = isNaN(durationValue) || durationValue <= 0 || durationValue >= 100
+          ? "Trip Duration must be a positive number less than 100"
+          : "";
         break;
 
       case "vehicleno":
-        error = value.trim() === "" ? "Vehicle Number is required" : "";
+        const vehicleNoRegex = /^\d{6}$/;
+        error = !vehicleNoRegex.test(value) ? "Vehicle Number should have 6 numbers" : "";
         break;
 
       case "driverid":
-        error = value.trim() === "" ? "Driver ID is required" : "";
+        const driverIdRegex = /^[A-Za-z]{2}\d{4}$/;
+        error = !driverIdRegex.test(value) ? "Driver ID should have 2 letters followed by 4 numbers" : "";
         break;
 
       case "startpoint":
-        error = value.trim() === "" ? "Starting Point is required" : "";
+        error = value.trim() === "" ? "Start Point is required" : "";
         break;
 
       case "destination":
@@ -83,27 +91,23 @@ const UpdateTrip = () => {
         break;
 
       case "tripgoods":
-        error = value.trim() === "" ? "Trip Goods is required" : "";
+        error = value.trim() === "" ? "Trip goods is required" : "";
         break;
 
       case "arrivaltime":
-        error = isNaN(value) ? "Arrival Time should contain only numbers" : "";
+        error = value.trim() === "" ? "Arrival Time is required" : "";
         break;
 
       case "departuretime":
-        error = isNaN(value) ? "Departure Time should contain only numbers" : "";
+        error = value.trim() === "" ? "Departure Time is required" : "";
         break;
 
       case "startfuel":
-        error = isNaN(value) ? "Start Fuel should contain only numbers" : "";
+        error = value.trim() === "" ? "Start Fuel is required" : "";
         break;
 
       case "endfuel":
-        error = isNaN(value) ? "End Fuel should contain only numbers" : "";
-        break;
-
-      case "fuelUsed":
-        error = isNaN(value) ? "Fuel Used should contain only numbers" : "";
+        error = value.trim() === "" ? "End Fuel is required" : "";
         break;
 
       default:
@@ -130,8 +134,7 @@ const UpdateTrip = () => {
         .put(`http://localhost:8411/trip/update/${newTrip.tripid}`, newTrip)
         .then((response) => {
           resetForm();
-          alert("Trip data successfully updated.");
-          // Redirect or navigate to the appropriate page
+          window.location.href = "/trip/tripdata";
         })
         .catch((err) => {
           alert(err);
@@ -149,12 +152,12 @@ const UpdateTrip = () => {
             `http://localhost:8411/trip/get/${searchQ}`
           );
 
-          if (response.data.tripData) {
-            setTripData(response.data.tripData);
+          if (response.data.trip) {
+            setTripData(response.data.trip);
           }
         }
       } catch (error) {
-        alert("Error fetching trip data: " + error.message);
+        alert("Error fetching trip: " + error.message);
       }
     };
 
@@ -176,7 +179,6 @@ const UpdateTrip = () => {
       departuretime: "",
       startfuel: "",
       endfuel: "",
-      fuelUsed: "",
     });
     setErrors({});
   };
@@ -184,21 +186,20 @@ const UpdateTrip = () => {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    navigate('/trip/tripdata'); // Redirect to the trips page or the appropriate route
+    navigate('/trip/tripdata');
   };
 
   return (
     <Box m="20px">
-      <Formik
-        onSubmit={handleSubmit}
-      >
-        <form className="updateTripForm" onSubmit={handleSubmit}>
+      <Formik onSubmit={handleSubmit}>
+        <form className="updateSupplierForm" onSubmit={handleSubmit}>
           {tripData.tripid && (
             <Header
-              title={`EDIT TRIP DATA FOR TRIP ID: ${tripData.tripid}`}
+              title={`EDIT TRIP DATA FOR ${tripData.tripid}`}
               subtitle="Update Trip Data"
             />
           )}
+
           <TextField
             fullWidth
             variant="filled"
@@ -207,7 +208,7 @@ const UpdateTrip = () => {
             id="tripid"
             value={searchQ}
             onChange={(e) => setSearchQ(e.target.value)}
-            placeholder="Enter Trip ID"
+            placeholder="Enter Trip Data"
             name="tripid"
             sx={{ gridColumn: "span 2" }}
           />
@@ -220,140 +221,152 @@ const UpdateTrip = () => {
               "& > div": { gridColumn: "span 4" },
             }}
           >
-            <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="TRIP NAME"
-              id="tripname"
-              onChange={handleInputChange}
-              value={tripData.tripname}
-              name="tripname"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="number"
-              label="TRIP DURATION"
-              id="tripduration"
-              onChange={handleInputChange}
-              value={tripData.tripduration}
-              name="tripduration"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="number"
-              label="TRIP DISTANCE"
-              id="tripdistance"
-              onChange={handleInputChange}
-              value={tripData.tripdistance}
-              name="tripdistance"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="VEHICLE NO"
-              id="vehicleno"
-              onChange={handleInputChange}
-              value={tripData.vehicleno}
-              name="vehicleno"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="DRIVER ID"
-              id="driverid"
-              onChange={handleInputChange}
-              value={tripData.driverid}
-              name="driverid"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="START POINT"
-              id="startpoint"
-              onChange={handleInputChange}
-              value={tripData.startpoint}
-              name="startpoint"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="DESTINATION"
-              id="destination"
-              onChange={handleInputChange}
-              value={tripData.destination}
-              name="destination"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="TRIP GOODS"
-              id="tripgoods"
-              onChange={handleInputChange}
-              value={tripData.tripgoods}
-              name="tripgoods"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="number"
-              label="ARRIVAL TIME"
-              id="arrivaltime"
-              onChange={handleInputChange}
-              value={tripData.arrivaltime}
-              name="arrivaltime"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="number"
-              label="DEPARTURE TIME"
-              id="departuretime"
-              onChange={handleInputChange}
-              value={tripData.departuretime}
-              name="departuretime"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="number"
-              label="START FUEL"
-              id="startfuel"
-              onChange={handleInputChange}
-              value={tripData.startfuel}
-              name="startfuel"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="number"
-              label="END FUEL"
-              id="endfuel"
-              onChange={handleInputChange}
-              value={tripData.endfuel}
-              name="endfuel"
-            />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="number"
-              label="FUEL USED"
-              id="fuelUsed"
-              onChange={handleInputChange}
-              value={tripData.fuelUsed}
-              name="fuelUsed"
-            />
+            <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+              <TextField
+                fullWidth
+                id="tripid"
+                label="Trip ID"
+                variant="outlined"
+                value={tripData.tripid}
+                onChange={handleInputChange}
+                error={!!errors.tripid}
+                helperText={errors.tripid}
+              />
+              <TextField
+                fullWidth
+                id="tripname"
+                label="Trip Name"
+                variant="outlined"
+                value={tripData.tripname}
+                onChange={handleInputChange}
+                error={!!errors.tripname}
+                helperText={errors.tripname}
+              />
+              <TextField
+                fullWidth
+                id="tripduration"
+                label="Trip Duration"
+                variant="outlined"
+                value={tripData.tripduration}
+                onChange={handleInputChange}
+                error={!!errors.tripduration}
+                helperText={errors.tripduration}
+              />
+              <TextField
+                fullWidth
+                id="tripdistance"
+                label="Trip Distance"
+                variant="outlined"
+                value={tripData.tripdistance}
+                onChange={handleInputChange}
+                error={!!errors.tripdistance}
+                helperText={errors.tripdistance}
+              />
+            </Box>
+
+            <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+              <TextField
+                fullWidth
+                id="vehicleno"
+                label="Vehicle Number"
+                variant="outlined"
+                value={tripData.vehicleno}
+                onChange={handleInputChange}
+                error={!!errors.vehicleno}
+                helperText={errors.vehicleno}
+              />
+              <TextField
+                fullWidth
+                id="driverid"
+                label="Driver ID"
+                variant="outlined"
+                value={tripData.driverid}
+                onChange={handleInputChange}
+                error={!!errors.driverid}
+                helperText={errors.driverid}
+              />
+              <TextField
+                fullWidth
+                id="startpoint"
+                label="Start Point"
+                variant="outlined"
+                value={tripData.startpoint}
+                onChange={handleInputChange}
+                error={!!errors.startpoint}
+                helperText={errors.startpoint}
+              />
+              <TextField
+                fullWidth
+                id="destination"
+                label="Destination"
+                variant="outlined"
+                value={tripData.destination}
+                onChange={handleInputChange}
+                error={!!errors.destination}
+                helperText={errors.destination}
+              />
+            </Box>
+
+            <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+              <TextField
+                fullWidth
+                id="tripgoods"
+                label="Trip Goods"
+                variant="outlined"
+                value={tripData.tripgoods}
+                onChange={handleInputChange}
+                error={!!errors.tripgoods}
+                helperText={errors.tripgoods}
+              />
+              <TextField
+                fullWidth
+                id="arrivaltime"
+                label="Arrival Time"
+                variant="outlined"
+                value={tripData.arrivaltime}
+                onChange={handleInputChange}
+                error={!!errors.arrivaltime}
+                helperText={errors.arrivaltime}
+              />
+              <TextField
+                fullWidth
+                id="departuretime"
+                label="Departure Time"
+                variant="outlined"
+                value={tripData.departuretime}
+                onChange={handleInputChange}
+                error={!!errors.departuretime}
+                helperText={errors.departuretime}
+              />
+              <TextField
+                fullWidth
+                id="startfuel"
+                label="Start Fuel"
+                variant="outlined"
+                value={tripData.startfuel}
+                onChange={handleInputChange}
+                error={!!errors.startfuel}
+                helperText={errors.startfuel}
+              />
+            </Box>
+
+            <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+              <TextField
+                fullWidth
+                id="endfuel"
+                label="End Fuel"
+                variant="outlined"
+                value={tripData.endfuel}
+                onChange={handleInputChange}
+                error={!!errors.endfuel}
+                helperText={errors.endfuel}
+              />
+            </Box>
           </Box>
+
           <Box display="flex" justifyContent="end" mt="20px">
             <Button type="submit" color="secondary" variant="contained" fullWidth>
-              UPDATE TRIP DATA
+              UPDATE TRIP
             </Button>
           </Box>
 
@@ -363,9 +376,8 @@ const UpdateTrip = () => {
               color="btnBack"
               variant="contained"
               fullWidth
-              onClick={handleButtonClick}
-            >
-              BACK TO TRIPS
+              onClick={handleButtonClick}>
+              BACK TO TRIP DATA
             </Button>
           </Box>
         </form>

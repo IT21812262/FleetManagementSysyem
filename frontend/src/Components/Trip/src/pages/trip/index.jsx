@@ -23,6 +23,19 @@ const Tripdata = () => {
     setPopupVisible(false);
   };
 
+  const formatDateTime = (dateStr) => {
+    const date = new Date(dateStr);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+  
+  
+
   const [trips, setTrips] = useState([]);
 
   const handleDelete = async (tripId) => {
@@ -47,8 +60,8 @@ const Tripdata = () => {
     startpoint: trip.startpoint,
     destination: trip.destination,
     tripgoods: trip.tripgoods,
-    arrivaltime: parseFloat(trip.arrivaltime),
-    departuretime: parseFloat(trip.departuretime),
+    arrivaltime: formatDateTime(trip.arrivaltime),
+    departuretime: formatDateTime(trip.departuretime),
     startfuel: parseFloat(trip.startfuel),
     endfuel: parseFloat(trip.endfuel),
   }));

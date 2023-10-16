@@ -1,443 +1,758 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { Formik } from "formik";
-import * as yup from "yup";
+import { useMediaQuery } from "@mui/material";
 import Header from "../../components/Header";
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { TextField } from "@mui/material";
+import "./AddTrip.css";
+
+const generateRandomLetters = (length) => {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += letters.charAt(Math.floor(Math.random() * letters.length));
+  }
+  return result;
+};
+
+const generateTripID = () => {
+  const randomLetters = generateRandomLetters(2);
+  const randomNumber = Math.floor(1000 + Math.random() * 9000); // Generate a 4-digit random number
+  return `${randomLetters}${randomNumber}`;
+};
+
+// ... (previous code)
 
 const AddTrip = ({ onClose }) => {
-  const initialValues = {
-    tripid: 0, // Set the initial value as a number (e.g., 0)
-    tripname: "",
-    tripduration: "",
-    tripdistance: "",
-    vehicleno: "",
-    driverid: "",
-    startpoint: "",
-    destination: "",
-    tripgoods: "",
-    arrivaltime: "",
-    departuretime: "",
-    startfuel: "",
-    endfuel: "",
-    fuelUsed: "",
+  const isNonMobile = useMediaQuery("(min-width:600px");
+  const location = useLocation();
+
+  // ... (previous code)
+
+  const handleFormSubmit = (values) => {
+    console.log(values);
   };
 
-  const validationSchema = yup.object().shape({
-    tripid: yup
-      .number()
-      .integer("Trip ID must be an integer")
-      .positive("Trip ID must be a positive number")
-      .required("Trip ID is required"),
-    tripname: yup
-      .string()
-      .max(10, "Trip Name must have a maximum of 10 characters")
-      .required("Trip Name is required"),
-    tripduration: yup
-      .number()
-      .positive("Trip Duration should be a positive number")
-      .max(100, "Trip Duration should not exceed 50 hours")
-      .required("Trip Duration is required"),
-    tripdistance: yup
-      .number()
-      .positive("Trip Distance should be a positive number")
-      .max(600, "Trip Distance should not exceed 300 kilometers")
-      .required("Trip Distance is required"),
-    vehicleno: yup
-      .string()
-      .matches(/^\d{6}$/, "Vehicle Number must have 6 numbers")
-      .required("Vehicle Number is required"),
-    driverid: yup.string().required("Driver ID is required"),
-    startpoint: yup.string().required("Starting Point is required"),
-    destination: yup.string().required("Destination is required"),
-    tripgoods: yup.string().required("Trip Goods is required"),
-    arrivaltime: yup
-      .number()
-      .positive("Arrival Time should be a positive number")
-      .required("Arrival Time is required"),
-    departuretime: yup
-      .number()
-      .positive("Departure Time should be a positive number")
-      .required("Departure Time is required"),
-    startfuel: yup.number().required("Start Fuel is required"),
-    endfuel: yup.number().required("End Fuel is required"),
-    fuelUsed: yup.number().required("Fuel Used is required"),
-  });
+  const initialValues = {
+    tripid:"",
+    tripname:"",
+    tripduration:"",
+    tripdistance:"",
+    vehicleno:"",
+    driverid:"",
+    startpoint:"",
+    destination:"",
+    tripgoods:"",
+    arrivaltime:"",
+    departuretime:"",
+    startfuel:"",
+    endfuel:"",
 
-  const [tripid, setTripid] = useState("");
-  const [tripname, setTripname] = useState("");
-  const [tripduration, setTripduration] = useState("");
-  const [tripdistance, setTripdistance] = useState("");
-  const [vehicleno, setVehicleno] = useState("");
-  const [driverid, setDriverid] = useState("");
-  const [startpoint, setStartpoint] = useState("");
+  };
+  const [tripid, setTripID] = useState("");
+  const [tripname, setTripName] = useState("");
+  const [tripduration, setTripDuration] = useState("");
+  const [tripdistance, setTripDistance] = useState("");
+  const [vehicleno, setVehicleNo] = useState("");
+  const [driverid, setDriverId] = useState("");
+  const [startpoint, setStartPoint] = useState("");
   const [destination, setDestination] = useState("");
-  const [tripgoods, setTripgoods] = useState("");
-  const [arrivaltime, setArrivaltime] = useState("");
-  const [departuretime, setDeparturetime] = useState("");
-  const [startfuel, setStartfuel] = useState("");
-  const [endfuel, setEndfuel] = useState("");
-  const [fuelUsed, setFuelUsed] = useState("");
+  const [tripgoods, setTripGoods] = useState("");
+  const [arrivaltime, setArrivalTime] = useState("");
+  const [departuretime, setDepartureTime] = useState("");
+  const [startfuel, setStartFuel] = useState("");
+  const [endfuel, setEndFuel] = useState("");
+
+  const [tripidError, setTripIDError] = useState("");
+  const [tripnameError, setTripNameError] = useState("");
+  const [tripdurationError, setTripDurationError] = useState("");
+  const [tripdistanceError, setTripDistanceError] = useState("");
+  const [vehiclenoError, setVehicleNoError] = useState("");
+  const [driveridError, setDriverIdError] = useState("");
+  const [startpointError, setStartPointError] = useState("");
+  const [destinationError, setDestinationError] = useState("");
+  const [tripgoodsError, setTripGoodsError] = useState("");
+  const [arrivaltimeError, setArrivalTimeError] = useState("");
+  const [departuretimeError, setDepartureTimeError] = useState("");
+  const [startfuelError, setStartFuelError] = useState("");
+  const [endfuelError, setEndFuelError] = useState("");
+
   const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
-  function validateForm() {
-    const errors = {};
-
-    // Validate Trip ID
-    if (!tripid) {
-      errors.tripid = "Trip ID is required";
-    } else if (!/^[A-Za-z]{2}\d{4}$/.test(tripid)) {
-      errors.tripid = "Trip ID must start with 2 letters and end with 4 numbers";
-    }
-
-    // Validate Trip Name
-    if (!tripname) {
-      errors.tripname = "Trip Name is required";
-    } else if (tripname.length > 10) {
-      errors.tripname = "Trip Name must have a maximum of 10 characters";
-    }
-
-    // Validate Trip Duration
-    if (!tripduration) {
-      errors.tripduration = "Trip Duration is required";
-    } else if (
-      isNaN(tripduration) ||
-      parseFloat(tripduration) <= 0 ||
-      parseFloat(tripduration) > 50
-    ) {
-      errors.tripduration =
-        "Trip Duration should be a positive number and not exceed 50 hours";
-    }
-
-    // Validate Trip Distance
-    if (!tripdistance) {
-      errors.tripdistance = "Trip Distance is required";
-    } else if (
-      isNaN(tripdistance) ||
-      parseFloat(tripdistance) <= 0 ||
-      parseFloat(tripdistance) > 300
-    ) {
-      errors.tripdistance =
-        "Trip Distance should be a positive number and not exceed 300 kilometers";
-    }
-
-    // Validate Vehicle Number
-    if (!vehicleno) {
-      errors.vehicleno = "Vehicle Number is required";
-    } else if (!/^\d{6}$/.test(vehicleno)) {
-      errors.vehicleno = "Vehicle Number must have 6 numbers";
-    }
-
-    // Validate Driver ID
-    if (!driverid) {
-      errors.driverid = "Driver ID is required";
-    }
-
-    // Validate Starting Point
-    if (!startpoint) {
-      errors.startpoint = "Starting Point is required";
-    }
-
-    // Validate Destination
-    if (!destination) {
-      errors.destination = "Destination is required";
-    }
-
-    // Validate Trip Goods
-    if (!tripgoods) {
-      errors.tripgoods = "Trip Goods is required";
-    }
-
-    // Validate Arrival Time
-    if (!arrivaltime) {
-      errors.arrivaltime = "Arrival Time is required";
-    }
-
-    // Validate Departure Time
-    if (!departuretime) {
-      errors.departuretime = "Departure Time is required";
-    }
-
-    setErrors(errors);
-    return Object.keys(errors).length === 0;
-  }
-
-  function sentData(e) {
+  const sentData = (e) => {
     e.preventDefault();
-
-    if (validateForm()) {
-      alert("Insert");
-
-      const newTrip = {
-        tripid,
-        tripname,
-        tripduration: parseFloat(tripduration),
-        tripdistance: parseFloat(tripdistance),
-        vehicleno,
-        driverid,
-        startpoint,
-        destination,
-        tripgoods,
-        arrivaltime: parseFloat(arrivaltime),
-        departuretime: parseFloat(departuretime),
-        startfuel: parseFloat(startfuel),
-        endfuel: parseFloat(endfuel),
-        fuelUsed: parseFloat(fuelUsed),
-      };
-
-      axios
-        .post("http://localhost:8411/trip/add", newTrip)
-        .then((response) => {
-          alert("Trip added successfully");
-          window.location.href = "/tripdata"
-          window.location.reload();
-          // Reset form fields
-          setTripid("");
-          setTripname("");
-          setTripduration("");
-          setTripdistance("");
-          setVehicleno("");
-          setDriverid("");
-          setStartpoint("");
-          setDestination("");
-          setTripgoods("");
-          setArrivaltime("");
-          setDeparturetime("");
-          setStartfuel("");
-          setEndfuel("");
-          setFuelUsed("");
-        })
-        .catch((err) => {
-          alert(err);
-        });
+  
+    alert("Insert");
+    if (
+      !validateTripId(tripid)||
+      !validateTripName(tripname) ||
+      //!validateTripDuration(tripduration) ||
+      !validateTripDistance(tripdistance) ||
+      !validateVehicleNo(vehicleno) ||
+      !validateDriverId(driverid) ||
+      !validateStartPoint(startpoint) ||
+      !validateDestination(destination) ||
+      !validateTripGoods(tripgoods) ||
+      !validateArrivalTime(arrivaltime) ||
+      !validateDepartureTime(departuretime) ||
+      !validateStartFuel(startfuel) ||
+      !validateEndFuel(endfuel)
+    ) {
+      return;
     }
+    const newTrip = {
+      tripid,
+      tripname,
+      tripduration,
+      tripdistance,
+      vehicleno,
+      driverid,
+      startpoint,
+      destination,
+      tripgoods,
+      arrivaltime,
+      departuretime,
+      startfuel,
+      endfuel,
+    };
+  
+    axios
+      .post("http://localhost:8411/trip/add", newTrip)
+      .then((response) => {
+        alert("Trip added successfully");
+        window.location.href = "/tripdata";
+        window.location.reload();
+  
+        setTripID("");
+        setTripName("");
+        setTripDuration("");
+        setTripDistance("");
+        setVehicleNo("");
+        setDriverId("");
+        setStartPoint("");
+        setDestination("");
+        setTripGoods("");
+        setArrivalTime("");
+        setDepartureTime("");
+        setStartFuel("");
+        setEndFuel("");
+      })
+      .catch((err) => {
+        alert(err);
+        console.error(err);
+      });
+  };
+  
+  function handleCancel() {
+    // Clear form fields when the "Cancel" button is clicked
+    setTripID("");
+        setTripName("");
+        setTripDuration("");
+        setTripDistance("");
+        setVehicleNo("");
+        setDriverId("");
+        setStartPoint("");
+        setDestination("");
+        setTripGoods("");
+        setArrivalTime("");
+        setDepartureTime("");
+        setStartFuel("");
+        setEndFuel("");
   }
+  
+
+  const handleInputChange = (e) => {
+  
+    const { name, value } = e.target;
+ // handleChange(e); // Use Formik's handleChange to update Formik state
+  if (!value) {
+    setErrors({ ...errors, [name]: 'Trip ID is required' });
+  } else {
+    const regex = /^\d{4}$/;
+    setErrors({
+      ...errors,
+      [name]: regex.test(value) ? null : 'Trip ID should be 4 numbers',
+    });
+  }
+};
+
+const validateTripId = (tripid) => {
+  if (!tripid) {
+    setTripIDError("Trip ID is required.");
+    return false;
+  }
+
+  // Use a regex to validate that tripid contains at least 4 digits
+  if (!/^\d{4,}$/.test(tripid)) {
+    setTripIDError("Trip ID should contain at least 4 digits.");
+    return false;
+  }
+
+  // You can add additional validation logic if needed
+
+  setTripIDError("");
+  return true;
+};
+
+
+const validateTripName = (tripname) => {
+  if (!tripname) {
+    setTripNameError("Trip name is required.");
+    return false;
+  }
+
+  if (tripname.length > 20) {
+    setTripNameError("Trip name cannot be more than 20 characters.");
+    return false;
+  }
+
+  // You can add additional validation logic if needed
+
+  setTripNameError("");
+  return true;
+};
+
+
+const validateTripDistance = (tripdistance) => {
+  if (!tripdistance) {
+    setTripDistanceError("Trip Distance is required.");
+    return false;
+  }
+
+  if (isNaN(tripdistance)) {
+    setTripDistanceError("Trip Distance must be a number.");
+    return false;
+  }
+
+  if (tripdistance <= 0) {
+    setTripDistanceError("Trip Distance must be greater than 0 km.");
+    return false;
+  }
+
+  if (tripdistance >= 700) {
+    setTripDistanceError("Trip Distance must be lower than 700 km.");
+    return false;
+  }
+
+  // If all conditions pass, clear the error message
+  setTripDistanceError("");
+  return true;
+};
+
+  
+ /* const validateTripDuration = (tripduration) => {
+    if (!tripduration) {
+      setTripDurationError("Trip Duration is required.");
+      return false;
+    }
+  
+    if (isNaN(tripduration)) {
+      setTripDistanceError("Trip Duration must be a number.");
+      return false;
+    }
+  
+    if (tripduration <= 0) {
+      setTripDurationError("Trip Duration must be greater than 0 hours.");
+      return false;
+    }
+
+    if (tripduration >= 100) {
+      setTripDurationError("Trip Duration must be lower than 100 hours.");
+      return false;
+    }
+  
+    setTripDurationError("");
+    return true;
+  };*/
+  
+
+  const validateVehicleNo = (vehicleno) => {
+    if (!vehicleno) {
+      setVehicleNoError("Vehicle Number is required.");
+      return false;
+    }
+  
+    // Use a regular expression to check if vehicleno contains exactly 6 digits
+    const vehicleNoPattern = /^\d{6}$/;
+    if (!vehicleNoPattern.test(vehicleno)) {
+      setVehicleNoError("Vehicle Number must contain exactly 6 numbers.");
+      return false;
+    }
+  
+    // If all conditions pass, clear the error message
+    setVehicleNoError("");
+    return true;
+  };
+  
+  
+  const validateDriverId = (driverid) => {
+    if (!driverid) {
+      setDriverIdError("Driver ID is required.");
+      return false;
+    }
+  
+    // Check if driverid has at least 2 characters and 4 numbers
+    const driverIdPattern = /^(?=.*[a-zA-Z]{2})(?=.*\d{4})/;
+    if (!driverIdPattern.test(driverid)) {
+      setDriverIdError("Driver ID must have at least 2 characters and 4 numbers.");
+      return false;
+    }
+  
+    // If all conditions pass, clear the error message
+    setDriverIdError("");
+    return true;
+  };
+  
+  const validateStartPoint = (startpoint) => {
+    if (!startpoint) {
+      setStartPointError("Start Point is required.");
+      return false;
+    }
+  
+    // You can add additional start point validation logic here
+  
+    setStartPointError("");
+    return true;
+  };
+  
+  const validateDestination = (destination) => {
+    if (!destination) {
+      setDestinationError("Destination is required.");
+      return false;
+    }
+  
+    // You can add additional destination validation logic here
+  
+    setDestinationError("");
+    return true;
+  };
+  
+  const validateTripGoods = (tripgoods) => {
+    if (!tripgoods) {
+      setTripGoodsError("Trip Goods are required.");
+      return false;
+    }
+  
+    // You can add additional trip goods validation logic here
+  
+    setTripGoodsError("");
+    return true;
+  };
+  
+  const validateArrivalTime = (arrivaltime) => {
+    if (!arrivaltime) {
+      setArrivalTimeError("Arrival Time is required.");
+      return false;
+    }
+  
+    // Define a regular expression pattern for a date and time format
+   // const dateTimePattern = /^\d{2}-\d{2}-\d{4} \d{2}:\d{2}(?: [APap][Mm])?$/;
+  
+    // Check if arrivaltime matches the dateTimePattern
+    /*if (!dateTimePattern.test(arrivaltime)) {
+      setArrivalTimeError("Arrival Time should be in the format DD-MM-YYYY HH:MM AM/PM (optional).");
+      return false;
+    }*/
+  
+    // If all conditions pass, clear the error message
+    setArrivalTimeError("");
+    return true;
+  };
+  
+  
+  
+  
+  const validateDepartureTime = (departuretime) => {
+    if (!departuretime) {
+      setDepartureTimeError("Departure Time is required.");
+      return false;
+    }
+  
+    // Define a regular expression pattern for a date and time format
+   /* const dateTimePattern = /^\d{2}-\d{2}-\d{4} \d{2}:\d{2}(?: [APap][Mm])?$/;
+  
+    // Check if departuretime matches the dateTimePattern
+    if (!dateTimePattern.test(departuretime)) {
+      setDepartureTimeError("Departure Time should be in the format DD-MM-YYYY HH:MM AM/PM (optional).");
+      return false;
+    }
+  
+    // Parse the departuretime into a Date object
+    const departureDate = new Date(departuretime);
+  
+    // Get the current date and time
+    const currentDate = new Date();
+  
+    // Check if departuretime is before the current date and time
+    if (departureDate >= currentDate) {
+      setDepartureTimeError("Departure Time must be before the current date and time.");
+      return false;
+    }*/
+  
+    // If all conditions pass, clear the error message
+    setDepartureTimeError("");
+    return true;
+  };
+  
+  
+  
+  const validateStartFuel = (startfuel) => {
+    if (!startfuel) {
+      setStartFuelError("Start Fuel is required.");
+      return false;
+    }
+  
+    if (isNaN(startfuel)) {
+      setStartFuelError("Start Fuel must be a number.");
+      return false;
+    }
+  
+    if (parseFloat(startfuel) < 0) {
+      setStartFuelError("Start Fuel cannot be lower than 0.");
+      return false;
+    }
+  
+    // If all conditions pass, clear the error message
+    setStartFuelError("");
+    return true;
+  };
+  
+  
+  const validateEndFuel = (endfuel) => {
+    if (!endfuel) {
+      setEndFuelError("End Fuel is required.");
+      return false;
+    }
+  
+    if (isNaN(endfuel)) {
+      setEndFuelError("End Fuel must be a number.");
+      return false;
+    }
+  
+    if (endfuel < 0) {
+      setEndFuelError("End Fuel cannot be negative.");
+      return false;
+    }
+  
+    setEndFuelError("");
+    return true;
+  };
+
+
+  // ... (previous code)
 
   return (
     <Box m="20px">
-      <Header title="ADD NEW TRIP" subtitle="Adding a new trip to Fleet" />
-      <button className="close-button" onClick={onClose}>
-        Close
-      </button>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={sentData} 
-      >
-        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <form onSubmit={handleSubmit}>
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: "span 1" },
-              }}
-            >
+    <button className="close-button" onClick={onClose}>
+      Close
+    </button>
+   <Formik onSubmit={sentData} initialValues={initialValues}>
+{({ values, errors, touched, handleBlur, handleChange }) => (
+  <form className="addSupplierForm" onSubmit={sentData}>
+          <center>
+            <Header title="ADD TRIP" subtitle="Add a new trip to the trip management system" />
+          </center>
+          <Box
+            display="grid"
+            gap="30px"
+            gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+            sx={{
+              "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+            }}
+          >
+            
+            
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
                 type="number"
                 label="TRIP ID"
-                name="tripid"
-                value={values.tripid}
-                onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.tripid && errors.tripid}
-                helperText={touched.tripid && errors.tripid}
+                onChange={(e) => {
+                  setTripID(e.target.value);
+                  validateTripId(e.target.value);
+                  handleChange(e);
+                }}
+                value={values.tripid}
+                name="tripid"
+                error={!!touched.tripid && !!errors.trip}
+                helperText={touched.tripid && errors.trip}
+                sx={{ gridColumn: "span 2" }}
               />
-
+              {tripidError && <div className="text-danger">{tripidError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
                 label="TRIP NAME"
-                name="tripname"
-                value={values.tripname}
-                onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.tripname && errors.tripname}
+                onChange={(e) => {
+                  setTripName(e.target.value);
+                  validateTripName(e.target.value);
+                  handleChange(e);
+                }}
+                value={values.tripname}
+                name="tripname"
+                error={!!touched.tripname && !!errors.tripname}
                 helperText={touched.tripname && errors.tripname}
+                sx={{ gridColumn: "span 2" }}
               />
-
+              {tripnameError && <div className="text-danger">{tripnameError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
                 type="number"
                 label="TRIP DURATION"
-                name="tripduration"
-                value={values.tripduration}
-                onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.tripduration && errors.tripduration}
+                onChange={(e) => {
+                  setTripDuration(e.target.value);
+                  //validateTripDuration(e.target.value);
+                  handleChange(e);
+                }}
+                value={values.tripduration}
+                name="tripduration"
+                error={!!touched.tripduration && !!errors.tripduration}
                 helperText={touched.tripduration && errors.tripduration}
+                sx={{ gridColumn: 'span 2' }}
               />
-
+              {tripdurationError && <div className="text-danger">{tripdurationError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
                 type="number"
                 label="TRIP DISTANCE"
-                name="tripdistance"
-                value={values.tripdistance}
-                onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.tripdistance && errors.tripdistance}
+                onChange={(e) => {
+                  setTripDistance(e.target.value);
+                  validateTripDistance(e.target.value);
+                  handleChange(e);
+                }}
+                value={values.tripdistance}
+                name="tripdistance"
+                error={!!touched.tripdistance && !!errors.tripdistance}
                 helperText={touched.tripdistance && errors.tripdistance}
+                sx={{ gridColumn: 'span 2' }}
               />
-
+              {tripdistanceError && <div className="text-danger">{tripdistanceError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
-                type="number"
-                label="VEHICLE NO"
-                name="vehicleno"
-                value={values.vehicleno}
-                onChange={handleChange}
+                type="text"
+                label="VEHICLE NUMBER"
                 onBlur={handleBlur}
-                error={touched.vehicleno && errors.vehicleno}
+                onChange={(e) => {
+                  setVehicleNo(e.target.value);
+                  validateVehicleNo(e.target.value);
+                  handleChange(e);
+                }}
+                value={values.vehicleno}
+                name="vehicleno"
+                error={!!touched.vehicleno && !!errors.vehicleno}
                 helperText={touched.vehicleno && errors.vehicleno}
+                sx={{ gridColumn: 'span 2' }}
               />
-
+              {vehiclenoError && <div className="text-danger">{vehiclenoError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
                 label="DRIVER ID"
-                name="driverid"
-                value={values.driverid}
-                onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.driverid && errors.driverid}
+                onChange={(e) => {
+                  setDriverId(e.target.value);
+                  validateDriverId(e.target.value);
+                  handleChange(e);
+                }}
+                value={values.driverid}
+                name="driverid"
+                error={!!touched.driverid && !!errors.driverid}
                 helperText={touched.driverid && errors.driverid}
+                sx={{ gridColumn: 'span 2' }}
               />
-
+              {driveridError && <div className="text-danger">{driveridError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
                 label="START POINT"
-                name="startpoint"
-                value={values.startpoint}
-                onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.startpoint && errors.startpoint}
+                onChange={(e) => {
+                  setStartPoint(e.target.value);
+                  validateStartPoint(e.target.value);
+                  handleChange(e);
+                }}
+                value={values.startpoint}
+                name="startpoint"
+                error={!!touched.startpoint && !!errors.startpoint}
                 helperText={touched.startpoint && errors.startpoint}
+                sx={{ gridColumn: 'span 2' }}
               />
-
+              {startpointError && <div className="text-danger">{startpointError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
                 label="DESTINATION"
-                name="destination"
-                value={values.destination}
-                onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.destination && errors.destination}
+                onChange={(e) => {
+                  setDestination(e.target.value);
+                  validateDestination(e.target.value);
+                  handleChange(e);
+                }}
+                value={values.destination}
+                name="destination"
+                error={!!touched.destination && !!errors.destination}
                 helperText={touched.destination && errors.destination}
+                sx={{ gridColumn: 'span 2' }}
               />
-
+              {destinationError && <div className="text-danger">{destinationError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
                 label="TRIP GOODS"
-                name="tripgoods"
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setTripGoods(e.target.value);
+                  validateTripGoods(e.target.value);
+                  handleChange(e);
+                }}
                 value={values.tripgoods}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.tripgoods && errors.tripgoods}
+                name="tripgoods"
+                error={!!touched.tripgoods && !!errors.tripgoods}
                 helperText={touched.tripgoods && errors.tripgoods}
+                sx={{ gridColumn: 'span 2' }}
               />
-
+              {tripgoodsError && <div className="text-danger">{tripgoodsError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
-                type="number"
+                type="datetime-local"
                 label="ARRIVAL TIME"
-                name="arrivaltime"
-                value={values.arrivaltime}
-                onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.arrivaltime && errors.arrivaltime}
+                onChange={(e) => {
+                  setArrivalTime(e.target.value);
+                  validateArrivalTime(e.target.value);
+                  handleChange(e);
+                }}
+                value={values.arrivaltime}
+                name="arrivaltime"
+                error={!!touched.arrivaltime && !!errors.arrivaltime}
                 helperText={touched.arrivaltime && errors.arrivaltime}
+                sx={{ gridColumn: 'span 2' }}
               />
-
+              {arrivaltimeError && <div className="text-danger">{arrivaltimeError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
-                type="number"
+                type="datetime-local"
                 label="DEPARTURE TIME"
-                name="departuretime"
-                value={values.departuretime}
-                onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.departuretime && errors.departuretime}
+                onChange={(e) => {
+                  setDepartureTime(e.target.value);
+                  validateDepartureTime(e.target.value);
+                  handleChange(e);
+                }}
+                value={values.departuretime}
+                name="departuretime"
+                error={!!touched.departuretime && !!errors.departuretime}
                 helperText={touched.departuretime && errors.departuretime}
+                sx={{ gridColumn: 'span 2' }}
               />
-
+              {departuretimeError && <div className="text-danger">{departuretimeError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
                 type="number"
                 label="START FUEL"
-                name="startfuel"
-                value={values.startfuel}
-                onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.startfuel && errors.startfuel}
+                onChange={(e) => {
+                  setStartFuel(e.target.value);
+                  validateStartFuel(e.target.value);
+                  handleChange(e);
+                }}
+                value={values.startfuel}
+                name="startfuel"
+                error={!!touched.startfuel && !!errors.startfuel}
                 helperText={touched.startfuel && errors.startfuel}
+                sx={{ gridColumn: 'span 2' }}
               />
-
+              {startfuelError && <div className="text-danger">{startfuelError}</div>}
+            </div>
+            <div>
               <TextField
                 fullWidth
                 variant="filled"
                 type="number"
                 label="END FUEL"
-                name="endfuel"
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setEndFuel(e.target.value);
+                  validateEndFuel(e.target.value);
+                  handleChange(e);
+                }}
                 value={values.endfuel}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.endfuel && errors.endfuel}
+                name="endfuel"
+                error={!!touched.endfuel && !!errors.endfuel}
                 helperText={touched.endfuel && errors.endfuel}
+                sx={{ gridColumn: 'span 2' }}
               />
+              {endfuelError && <div className="text-danger">{endfuelError}</div>}
+            </div>
+          </Box>
 
-              <TextField
-                fullWidth
-                variant="filled"
-                type="number"
-                label="FUEL USED"
-                name="fuelUsed"
-                value={values.fuelUsed}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.fuelUsed && errors.fuelUsed}
-                helperText={touched.fuelUsed && errors.fuelUsed}
-              />
-            </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                ADD NEW TRIP
+          <center>
+            <Box mt={3}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                style={{ marginRight: '10px' }}
+              >
+                ADD TRIP
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                //type="button"
+                onClick={handleCancel}
+              >
+                CANCEL
               </Button>
             </Box>
-            {successMessage && (
-              <Typography variant="success" sx={{ marginTop: 2 }}>
-                {successMessage}
-              </Typography>
-            )}
-            {errorMessage && (
-              <Typography variant="error" sx={{ marginTop: 2 }}>
-                {errorMessage}
-              </Typography>
-            )}
-          </form>
-        )}
-      </Formik>
-    </Box>
-  );
+          </center>
+        </form>
+      )}
+    </Formik>
+  </Box>
+);
 };
+
 
 export default AddTrip;
