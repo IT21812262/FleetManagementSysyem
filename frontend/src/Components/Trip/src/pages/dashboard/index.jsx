@@ -1,37 +1,39 @@
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
-  IconButton,
   Typography,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { tokens } from "../../theme";
-import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-import EmailIcon from "@mui/icons-material/Email";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
-import LineChart from "../../components/LineChart";
-import GeographyChart from "../../components/GeographyChart";
-import StatBox from "../../components/StatBox";
-import ProgressCircle from "../../components/ProgressCircle";
-
-import DieselTank from "../../components/DieselTank";
-import PetrolTank from "../../components/PetrolTank";
-import StockTable from "../../components/StockTable";
 
 const Dashboard = () => {
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const colors = tokens(theme.palette.mode);
+
+  const [trips, setTrips] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Make an API request to fetch trip data from your server
+    fetch("http://your-api-endpoint/trips")
+      .then((response) => response.json())
+      .then((data) => {
+        setTrips(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching trips:", error);
+      });
+  }, []);
+
   return (
     <Box m="20px">
-      {/* HEADER */}
-
       <Box
         display={smScreen ? "flex" : "block"}
         flexDirection={smScreen ? "row" : "column"}
@@ -39,7 +41,10 @@ const Dashboard = () => {
         alignItems={smScreen ? "center" : "start"}
         m="10px 0"
       >
-        <Header title="FUEL MANAGEMENT SYSTEM" subtitle="Welcome to LogiX Fleet Management System" />
+        <Header
+          title="TRIP REGISTRY SYSTEM"
+          subtitle="Welcome to LogiX Fleet Management System"
+        />
 
         <Box>
           <Button
@@ -57,112 +62,70 @@ const Dashboard = () => {
         </Box>
       </Box>
 
-      {/* GRID & CHARTS */}
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid xs={12} sm={12} md={6} lg={3} xl={3}>
-        <Box
+        <Grid xs={12} sm={12} md={8} lg={8} xl={8}>
+          <Box
             width="100%"
-            height="300px" 
+            height="300px"
             backgroundColor={colors.primary[400]}
             display="flex"
-            flexDirection="row" 
-            alignItems="center"
-            justifyContent="center"
-            padding="50px"
-            borderRadius= "15px"
-          >
-          <DieselTank />
-          
-          </Box>
-        </Grid>
-        <Grid xs={12} sm={12} md={6} lg={3} xl={3}>
-        <Box
-            width="100%"
-            height="300px" 
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            flexDirection="row" 
-            alignItems="center"
-            justifyContent="center"
-            padding="50px"
-            borderRadius= "15px"
-          >
-          
-          <PetrolTank />
-          </Box>
-        </Grid>
-        
-        <Grid xs={12} sm={12} md={6} lg={3} xl={6}>
-        <Box
-            width="100%"
-            height="300px" 
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            flexDirection="column" 
+            flexDirection="column"
             alignItems="center"
             justifyContent="center"
             padding="20px"
-            borderRadius= "15px"
+            borderRadius="15px"
           >
-          
-          </Box>
-        </Grid>
-
-        <Grid Grid xs={12} sm={12} md={8} lg={8} xl={8}
-          
-          
-          
-          container
-          rowSpacing={1}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-        >
-          <Grid xs={12}>
-            <Box backgroundColor={colors.primary[400]}>
-              <Box
-                mt="25px"
-                p="0 30px"
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                
-              >
-                
-                
-              </Box>
-              <Box height="680px" m="-20px 0 0 0">
-               
-              </Box>
-            </Box>
-          </Grid>
-          
-          
-          
-        </Grid>
-        <Grid xs={12} sm={12} md={4} lg={4} xl={4}>
-          <Box
-            backgroundColor={colors.primary[400]}
-            maxHeight="100vh"
-            overflow="auto"
-            m="25px 0 0 0"
-          >
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              borderBottom={`4px solid ${colors.primary[500]}`}
-              color={colors.grey[100]}
-              p="15px"
-            >
-              <Typography
-                variant="h5"
-                fontWeight="600"
-                color={colors.grey[100]}
-              >
-                Resent Transaction
-              </Typography>
-            </Box>
-            <StockTable />
-            
+            <Typography variant="h4" color="textPrimary">
+              On-Going Trips
+            </Typography>
+            {isLoading ? (
+              <p>Loading trips...</p>
+            ) : trips.length > 0 ? (
+              <table className="trip-table">
+                <thead>
+                  <tr>
+                    <th>Trip ID</th>
+                    <th>Trip Name</th>
+                    <th>Trip Duration</th>
+                    <th>Trip Distance</th>
+                    <th>Vehicle Number</th>
+                    <th>Driver ID</th>
+                    <th>Starting Point</th>
+                    <th>Destination</th>
+                    <th>Trip Goods</th>
+                    <th>Arrival Time</th>
+                    <th>Departure Time</th>
+                    <th>Starting Fuel</th>
+                    <th>End Fuel</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {trips.map((trip) => (
+                    <tr key={trip.tripid}>
+                      <td>{trip.tripid}</td>
+                      <td>{trip.tripname}</td>
+                      <td>{trip.tripduration}</td>
+                      <td>{trip.tripdistance}</td>
+                      <td>{trip.vehicleno}</td>
+                      <td>{trip.driverid}</td>
+                      <td>{trip.startpoint}</td>
+                      <td>{trip.destination}</td>
+                      <td>{trip.tripgoods}</td>
+                      <td>{trip.arrivaltime}</td>
+                      <td>{trip.departuretime}</td>
+                      <td>{trip.startfuel}</td>
+                      <td>{trip.endfuel}</td>
+                      <td>
+                        {/* Add your action buttons here */}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No trips found.</p>
+            )}
           </Box>
         </Grid>
       </Grid>
