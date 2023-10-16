@@ -18,13 +18,13 @@ import UpdateSupplier  from "./Components/Supplier/src/pages/supplierdata/Update
 
 import UniqueNotification from "./Components/Supplier/src/pages/notifications/UniqueNotification";
 
-//Rent Management System
+// Rent Management System
+import IndexRent from './Components/Rent/src/App';
+import RentData from './Components/Rent/src/pages/rentdata/index';
 
-import Rent from './Components/Rent/Rent'; // Add this import
-import AddRent from './Components/Rent/AddRent'; // Add this import
-import AllRent from './Components/Rent/AllRent'; // Add this import
-import UpdateRent from './Components/Rent/UpdateRent';
-import UniqueRent from './Components/Rent/UniqueRent';
+import UniqueRent from "./Components/Rent/src/pages/rentdata/UniqueRent";
+import UpdateRent  from "./Components/Rent/src/pages/rentdata/UpdateRent";
+ 
 
 // Fuel Management System
 import Index from './Components/Fuel/src/App';
@@ -122,38 +122,30 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/rent", // Add Rent route
+        path: '/rent',
         element: <Outlet />,
         children: [
+
           {
             path: "",
-            element: <Rent />,
+            element: <IndexRent />,
+            children: [
+              {
+                path: "/rent/rentdata",
+                element: <RentData />,
+              },
+              
+              
+              {
+                path: "/rent/uniquerent/:id",
+                element: <UniqueRent />,
+              },
+              {
+                path: "/rent/updaterent/:id",
+                element: <UpdateRent />,
+              },
+            ],
           },
-          {
-            path: "addRent",
-            element: <AddRent />,
-          },
-          {
-            path: "allRent",
-            element: <AllRent />,
-          },
-          {
-            path: "updateRent",
-            element: <UpdateRent />,
-          },
-          {
-            path: "uniqueRent",
-            element: <UniqueRent />
-          },
-          {
-            path: "updateRent/:id", // Add the ":id" parameter
-            element: <UpdateRent />,
-          },
-          {
-            path: "/rent/uniqueRent/:id",
-            element: <UniqueRent />
-          },
-          
         ],
       },
       {
