@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Box, Button, TextField, Grid, Paper, Typography } from "@mui/material";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import "./UpdateRent.css";
 
 export default function UpdateRent() {
@@ -12,7 +12,7 @@ export default function UpdateRent() {
     vehicle_no: "",
     brand: "",
     vehicle_model: "",
-    mileage: "",
+    milage: "",
     capacity: "",
     description: "",
     receive_date: "",
@@ -38,6 +38,8 @@ export default function UpdateRent() {
         console.error("Error fetching rent details:", error.message);
       });
   }, [id]);
+
+  
 
   useEffect(() => {
     calculateTotalRent();
@@ -78,8 +80,8 @@ export default function UpdateRent() {
     if (!rent.vehicle_model) {
       newErrors.vehicle_model = "Vehicle Model is required";
     }
-    if (!rent.mileage) {
-      newErrors.mileage = "Mileage is required";
+    if (!rent.milage) {
+      newErrors.milage = "Mileage is required";
     }
     if (!rent.description) {
       newErrors.description = "Description is required";
@@ -87,9 +89,9 @@ export default function UpdateRent() {
     if (!rent.owner_name) {
       newErrors.owner_name = "Owner Name is required";
     }
-    if (!rent.owner_phone || !rent.owner_phone.match(/^\d{10}$/)) {
+    /* if (!rent.owner_phone || !rent.owner_phone.match(/^\d{10}$/)) {
       newErrors.owner_phone = "Owner Phone must be 10 digits";
-    }
+    } */
     if (!rent.owner_email || !rent.owner_email.match(/^\S+@\S+\.\S+$/)) {
       newErrors.owner_email = "Invalid email format";
     }
@@ -115,6 +117,7 @@ export default function UpdateRent() {
       try {
         await axios.put(`http://localhost:8411/rent/update/${id}`, rent);
         alert("Rent record updated successfully!");
+        window.location.href = "/rent/rentdata"
       
       } catch (error) {
         console.error("Error updating rent:", error.message);
@@ -172,10 +175,10 @@ export default function UpdateRent() {
                 label="Mileage (in km)"
                 onBlur={calculateTotalRent}
                 onChange={(e) => handleInputChange("mileage", e.target.value)}
-                value={rent.mileage}
-                error={!!errors.mileage}
-                helperText={errors.mileage}
-                name="mileage"
+                value={rent.milage}
+                error={!!errors.milage}
+                helperText={errors.milage}
+                name="milage"
               />
             </Grid>
             <Grid item xs={4}>
@@ -282,6 +285,7 @@ export default function UpdateRent() {
           </Grid>
           <center>
             <Box mt={3}>
+              
               <Button
                 variant="contained"
                 color="primary"
@@ -290,13 +294,11 @@ export default function UpdateRent() {
               >
                 UPDATE RENT
               </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-               
-              >
-                CANCEL
-              </Button>
+              <Link to="/rent/rentdata">
+      <Button variant="contained" color="secondary">
+        CANCEL
+      </Button>
+    </Link>
             </Box>
           </center>
         </form>

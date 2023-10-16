@@ -4,6 +4,7 @@ import { Box, Button, TextField, Grid, Paper, Typography } from '@mui/material';
 import "./AddRent.css";
 
 const AddRent = ({ onClose }) => {
+  // State variables for form fields
   const [vehicle_no, setVehicleNo] = useState("");
   const [brand, setBrand] = useState("");
   const [vehicle_model, setVehicleModel] = useState("");
@@ -17,11 +18,24 @@ const AddRent = ({ onClose }) => {
   const [owner_email, setOwnerEmail] = useState("");
   const [rental, setRental] = useState("");
   const [total_rent, setTotalRent] = useState(0); // Initialize total_rent to 0
+
+  // State variable for form validation errors
   const [errors, setErrors] = useState({});
+
+  // State variable to check if the vehicle number is unique
   const [isVehicleNoUnique, setIsVehicleNoUnique] = useState(true);
 
+  // State variable for displaying vehicle number validation error
+  const [vehicleNoError, setVehicleNoError] = useState("");
+
+  // Function to handle input changes and update state
   const handleInputChange = (name, value) => {
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+
+    // Reset the vehicleNoError when user starts typing
+    if (name === "vehicle_no") {
+      setVehicleNoError("");
+    }
 
     switch (name) {
       case "vehicle_no":
@@ -65,7 +79,91 @@ const AddRent = ({ onClose }) => {
     }
   };
 
+  // Function to check if the vehicle number already exists
+  const checkIfVehicleNoExists = async (vehicle_no) => {
+    try {
+      const response = await axios.get(`http://localhost:8411/rent/check-vehicle-no/${vehicle_no}`);
+      return response.data.exists;
+    } catch (error) {
+      console.error("Error checking vehicle number:", error);
+      return false;
+    }
+  };
+  
 
+  // Function to perform form validation
+  const validate = async () => {
+    const newErrors = {};
+    setErrors({});
+
+    if (!vehicle_no.match(/^([A-Z]{2,3}-\d{4})$/)) {
+      newErrors.vehicle_no = "Invalid format (e.g., XX-0000 or XXX-0000)";
+    } else {
+      // Check if the vehicle number already exists
+      const exists = await checkIfVehicleNoExists(vehicle_no);
+      if (exists) {
+        setVehicleNoError("Vehicle No already exists");
+      }
+    }
+
+    if (!brand) {
+      newErrors.brand = "Brand is required";
+    }
+    if (!vehicle_model) {
+      newErrors.vehicle_model = "Vehicle Model is required";
+    }
+    if (!milage) {
+      newErrors.milage = "Mileage is required";
+    }
+    if (!description) {
+      newErrors.description = "Description is required";
+    }
+    if (!owner_name) {
+      newErrors.owner_name = "Owner Name is required";
+    }
+    if (!owner_phone || !owner_phone.match(/^\d{10}$/)) {
+      newErrors.owner_phone = "Owner Phone must be 10 digits";
+    }
+    if (!owner_email || !owner_email.match(/^\S+@\S+\.\S+$/)) {
+      newErrors.owner_email = "Invalid email format";
+    }
+
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split("T")[0];
+
+    if (receive_date && receive_date < currentDateString) {
+      newErrors.receive_date = "Receive Date cannot be in the past";
+    }
+
+    if (return_date && return_date < receive_date) {
+      newErrors.return_date = "Return Date must be after Receive Date";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Function to calculate total rent amount
+  useEffect(() => {
+    if (return_date && receive_date && rental) {
+      const returnDateObj = new Date(return_date);
+      const receiveDateObj = new Date(receive_date);
+      const rentalAmount = parseFloat(rental);
+
+      if (!isNaN(rentalAmount)) {
+        const daysDifference = (returnDateObj - receiveDateObj) / (1000 * 60 * 60 * 24);
+        const totalRentAmount = daysDifference * rentalAmount;
+
+        setTotalRent(totalRentAmount.toFixed(2));
+      } else {
+        setTotalRent(0);
+      }
+    } else {
+      setTotalRent(0);
+    }
+  }, [return_date, receive_date, rental]);
+
+  // Function to send form data to the server
   const sendData = (e) => {
     e.preventDefault();
 
@@ -116,7 +214,7 @@ const AddRent = ({ onClose }) => {
           setRental("");
           setTotalRent(0);
 
-          
+          window.location.reload();
         })
         .catch((err) => {
           console.error("Error while adding rent:", err);
@@ -124,70 +222,6 @@ const AddRent = ({ onClose }) => {
         });
     }
   };
-
-  const validate = () => {
-    const newErrors = {};
-    setErrors({});
-
-    if (!vehicle_no.match(/^([A-Z]{2,3}-\d{4})$/)) {
-      newErrors.vehicle_no = "Invalid format (e.g., XX-0000 or XXX-0000)";
-    }
-
-    if (!brand) {
-      newErrors.brand = "Brand is required";
-    }
-    if (!vehicle_model) {
-      newErrors.vehicle_model = "Vehicle Model is required";
-    }
-    if (!milage) {
-      newErrors.milage = "Mileage is required";
-    }
-    if (!description) {
-      newErrors.description = "Description is required";
-    }
-    if (!owner_name) {
-      newErrors.owner_name = "Owner Name is required";
-    }
-    if (!owner_phone || !owner_phone.match(/^\d{10}$/)) {
-      newErrors.owner_phone = "Owner Phone must be 10 digits";
-    }
-    if (!owner_email || !owner_email.match(/^\S+@\S+\.\S+$/)) {
-      newErrors.owner_email = "Invalid email format";
-    }
-
-    const currentDate = new Date();
-    const currentDateString = currentDate.toISOString().split("T")[0];
-
-    if (receive_date && receive_date < currentDateString) {
-      newErrors.receive_date = "Receive Date cannot be in the past";
-    }
-
-    if (return_date && return_date < receive_date) {
-      newErrors.return_date = "Return Date must be after Receive Date";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  useEffect(() => {
-    if (return_date && receive_date && rental) {
-      const returnDateObj = new Date(return_date);
-      const receiveDateObj = new Date(receive_date);
-      const rentalAmount = parseFloat(rental);
-
-      if (!isNaN(rentalAmount)) {
-        const daysDifference = (returnDateObj - receiveDateObj) / (1000 * 60 * 60 * 24);
-        const totalRentAmount = daysDifference * rentalAmount;
-
-        setTotalRent(totalRentAmount.toFixed(2));
-      } else {
-        setTotalRent(0);
-      }
-    } else {
-      setTotalRent(0);
-    }
-  }, [return_date, receive_date, rental]);
 
   return (
     <Box m={3}>
@@ -207,8 +241,8 @@ const AddRent = ({ onClose }) => {
                 onBlur={() => validate()}
                 onChange={(e) => handleInputChange("vehicle_no", e.target.value)}
                 value={vehicle_no}
-                error={!!errors.vehicle_no}
-                helperText={errors.vehicle_no}
+                error={!!(errors.vehicle_no || vehicleNoError)} // Combine errors
+                helperText={errors.vehicle_no || vehicleNoError} // Display the error message
                 name="vehicle_no"
               />
             </Grid>

@@ -49,6 +49,14 @@ const UniqueRent = () => {
     }
   };
 
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const handleDelete = async () => {
     const confirmation = window.prompt("To confirm deletion, type 'CONFIRM' (case-sensitive):");
 
@@ -90,7 +98,7 @@ const UniqueRent = () => {
             type="button"
             color="secondary"
             variant="contained"
-            onClick={() => navigate("/rent/allRent")}
+            onClick={() => navigate("/rent/rentdata")}
           >
             Cancel
           </Button>
@@ -125,10 +133,10 @@ const UniqueRent = () => {
                   <ListItemText primary="Description" secondary={rent.description} />
                 </ListItem>
                 <ListItem>
-                  <ListItemText primary="Receive Date" secondary={rent.receive_date} />
+                  <ListItemText primary="Receive Date" secondary={formatDate(rent.receive_date)} />
                 </ListItem>
                 <ListItem>
-                  <ListItemText primary="Return Date" secondary={rent.return_date} />
+                  <ListItemText primary="Return Date" secondary={formatDate(rent.return_date)} />
                 </ListItem>
               </List>
             </Grid>
