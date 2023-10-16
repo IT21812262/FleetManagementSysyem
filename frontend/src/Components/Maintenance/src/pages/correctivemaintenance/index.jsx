@@ -89,10 +89,17 @@ const Maintenance = () => {
     doc.setFontSize(10);
     doc.text(`Generated on: ${formattedDate}`, doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 10);
 
+    const formatDate = (dateStr) => {
+      const date = new Date(dateStr);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
     const columns = [
       "Job ID",
       "DID",
-      "Dname",
       "Priority",
       "Vehicle No",
       "Date_report",
@@ -104,13 +111,12 @@ const Maintenance = () => {
     const rows = filterMaintenanceJobs().map((job) => [
       job.jobID,
       job.DID,
-      job.Dname,
       job.priority,
       job.vehicleNo,
-      job.Date_report,
+      formatDate(job.Date_report),
       job.description,
       job.parts_used,
-      job.Date_complete
+      formatDate(job.Date_report)
 
     ]);
 

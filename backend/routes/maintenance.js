@@ -6,7 +6,7 @@ router.route("/add").post((req,res)=>{
 
     const jobID = req.body.jobID;
     const DID = req.body.DID;
-    const Dname = req.body.DName;
+    const Dname = req.body.Dname;
     const vehicleNo = req.body.vehicleNo;
     const Date_report = Date(req.body.Date_report);
     const priority = req.body.priority;

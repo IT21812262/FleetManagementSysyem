@@ -156,6 +156,7 @@ const AddCorrectiveMaintenance = ({ onClose }) => {
           type="text"
           label="Driver Name"
           value={Dname}
+          onChange={(e) => setDname(e.target.value)}
           disabled
         />
 
