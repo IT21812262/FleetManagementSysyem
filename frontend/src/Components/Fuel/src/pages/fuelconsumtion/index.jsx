@@ -12,7 +12,7 @@ import "./index.css";
 
 
 
-const Fuelentry = () => {
+const Fuelconsumption = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -40,7 +40,7 @@ const Fuelentry = () => {
   
 
 
-  const [fuelentries, setFuelentries] = useState([]);
+  const [fuelconsumptions, setFuelconsumptions] = useState([]);
 
   const handleDelete = async (vehicleId) => {
     try {
@@ -66,8 +66,6 @@ const Fuelentry = () => {
     color: "white",       // Set text color to white
   };
   
-
-
   const columns = [
     
     {
@@ -112,6 +110,14 @@ const Fuelentry = () => {
     {
       field: "vehicle_milage",
       headerName: "ACTUAL FUEL CONSUMTION",
+      type: "number",
+      headerAlign: "center",
+      align: "center",
+      width: 200,
+    },
+    {
+      field: "vehicle_milage",
+      headerName: "STATUS",
       type: "number",
       headerAlign: "center",
       align: "center",
@@ -283,4 +289,4 @@ const Fuelentry = () => {
   );
 };
 
-export default Fuelentry;
+export default Fuelconsumption;

@@ -7,43 +7,47 @@ import { useMediaQuery } from "@mui/material";
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
 
-import "./AddFuelentry.css";
+import "./AddConsumption.css";
 
 const CalculateFuelConsumtion = ({ onClose }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
 
-  const [vehicle_id, setVehicle_Id] = useState("");
-  const [fuel_type, setFuel_Type] = useState("");
-  const [fuel_quantity, setFuel_Quantity] = useState("");
-  const [estimatedConsumption, setEstimatedConsumption] = useState("");
-  const [actualConsumption, setActualConsumption] = useState("");
   const [difference, setDifference] = useState("");
   const [status, setStatus] = useState("");
-  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    if (estimatedConsumption && actualConsumption) {
-      const diff = ((actualConsumption - estimatedConsumption) / estimatedConsumption) * 100;
-      setDifference(diff.toFixed(2));
-      setStatus(Math.abs(diff) > 10 ? 'Need to Repair' : 'Normal');
-    }
-  }, [estimatedConsumption, actualConsumption]);
+  const [estimatedConsumption, setEstimatedConsumption] = useState("");
+const [actualConsumption, setActualConsumption] = useState("");
+
+
+useEffect(() => {
+  if (estimatedConsumption && actualConsumption) {
+    const diff = ((actualConsumption - estimatedConsumption) / estimatedConsumption) * 100;
+    setDifference(diff.toFixed(2));
+    setStatus(Math.abs(diff) > 10 ? 'Need to Repair' : 'Normal');
+  }
+}, [estimatedConsumption, actualConsumption]);
+
+
 
   const initialValues = {
     vehicle_id: "",
     fuel_type: "",
     fuel_quantity: "",
+    estimatedConsumption: "",
+    actualConsumption: ""
   };
 
   const validationSchema = yup.object().shape({
     vehicle_id: yup.string().required("Vehicle No is required"),
     fuel_type: yup.string().required("Fuel Type is required"),
     fuel_quantity: yup.number().required("Fuel Quantity is required"),
+    estimatedConsumption: yup.number().required("Estimated Consumption is required"),
+    actualConsumption: yup.number().required("Actual Consumption is required")
   });
 
   const handleFormSubmit = (values) => {
-    const diff = ((values.actualConsumption - values.estimatedConsumption) / values.estimatedConsumption) * 100;
+    const diff = ((actualConsumption - estimatedConsumption) / estimatedConsumption) * 100;
     const statusValue = Math.abs(diff) > 10 ? 'Need to Repair' : 'Normal';
 
     const fuelConsumptionData = {
@@ -56,7 +60,7 @@ const CalculateFuelConsumtion = ({ onClose }) => {
       .post("http://localhost:8411/fuelconsumption/add", fuelConsumptionData)
       .then((response) => {
         alert("Fuel Consumption Data Successfully added");
-        navigate("/fuelconsumption");
+        window.location.href = "/fuelconsumption";
       })
       .catch((err) => {
         alert(err);
@@ -79,7 +83,7 @@ const CalculateFuelConsumtion = ({ onClose }) => {
             <Box
               display="grid"
               gap="30px"
-              gridTemplateColumns="repeat(2, 1fr)" // Adjusted to 2 columns
+              gridTemplateColumns="repeat(2, 1fr)"
             >
               <TextField
                 fullWidth
@@ -123,9 +127,13 @@ const CalculateFuelConsumtion = ({ onClose }) => {
                 type="text"
                 label="Estimated Consumption"
                 onBlur={handleBlur}
-                onChange={(e) => setEstimatedConsumption(e.target.value)}
-                value={estimatedConsumption}
-                name="estimatedConsumption"
+                onChange={(e) => {
+                  setEstimatedConsumption(e.target.value);
+                  handleChange(e);
+              }}
+              value={estimatedConsumption}
+              name="estimatedConsumption"
+               
                 error={!!touched.estimatedConsumption && !!formikErrors.estimatedConsumption}
                 helperText={touched.estimatedConsumption && formikErrors.estimatedConsumption}
               />
@@ -135,9 +143,12 @@ const CalculateFuelConsumtion = ({ onClose }) => {
                 type="text"
                 label="Actual Consumption"
                 onBlur={handleBlur}
-                onChange={(e) => setActualConsumption(e.target.value)}
-                value={actualConsumption}
-                name="actualConsumption"
+                onChange={(e) => {
+                  setActualConsumption(e.target.value);
+                  handleChange(e);
+              }}
+              value={actualConsumption}
+              name="actualConsumption"
                 error={!!touched.actualConsumption && !!formikErrors.actualConsumption}
                 helperText={touched.actualConsumption && formikErrors.actualConsumption}
               />
@@ -150,15 +161,14 @@ const CalculateFuelConsumtion = ({ onClose }) => {
                 name="difference"
                 disabled
               />
-              
             </Box>
             <Box
               display="grid"
               marginTop={"30px"}
               gap={"30px"}
-              gridTemplateColumns="repeat(1, 1fr)" // Adjusted to 2 columns
+              gridTemplateColumns="repeat(1, 1fr)"
             >
-            <TextField
+              <TextField
                 fullWidth
                 variant="filled"
                 type="text"
@@ -167,7 +177,7 @@ const CalculateFuelConsumtion = ({ onClose }) => {
                 name="status"
                 disabled
               />
-              </Box>
+            </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained" fullWidth>
                 ADD TO TABLE
