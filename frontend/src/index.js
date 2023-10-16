@@ -48,11 +48,6 @@ import UniqueEmployee from "./Components/Employee/src/pages/employeedata/UniqueE
 import UpdateEmployee  from "./Components/Employee/src/pages/employeedata/UpdateEmployee";
 
 
-  import AddEmployee from './Components/Employee/AddEmployee';
-  import AllEmployees from './Components/Employee/AllEmployee';
-  import UpdateEmployee from './Components/Employee/UpdateEmployee';
-
-
  // Vehicle Management System
  import IndexVehicle from './Components/Vehicle/src/App';
  import VehicleData from './Components/Vehicle/src/pages/vehicledata/index';
@@ -61,7 +56,7 @@ import UpdateEmployee  from "./Components/Employee/src/pages/employeedata/Update
 import Vehicle from './Components/Vehicle/Vehicle';
 import AllVehicles from './Components/Vehicle/AllVehicle';
 import AddVehicle from './Components/Vehicle/AddVehicle';
-import UpdateVehicle from './Components/Vehicle/UpdateVehicle';
+
 
 
  import UniqueVehicle from "./Components/Vehicle/src/pages/vehicledata/UniqueVehicle";
