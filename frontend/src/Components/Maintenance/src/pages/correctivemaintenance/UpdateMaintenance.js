@@ -22,6 +22,10 @@ export default function UpdateMaintenanceJob() {
 
     fetchJobData();
   }, [id]);
+  const validateVehicleNumber = (vehicleNo) => {
+    const vehicleNumberRegex = /^[A-Z0-9]{2,3}-[0-9]{4}$/;
+    return vehicleNumberRegex.test(vehicleNo);
+  };
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -30,6 +34,10 @@ export default function UpdateMaintenanceJob() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateVehicleNumber(jobData.vehicleNo)) {
+      setErrors({ ...errors, vehicleNo: "Invalid vehicle number format" });
+      return;
+    }
 
     try {
       const response = await axios.put(
@@ -103,21 +111,23 @@ export default function UpdateMaintenanceJob() {
             />
           </Box>
           <Box display="flex" justifyContent="end" mt="20px" gap="30px">
-            <FormControl fullWidth variant="outlined">
-              <InputLabel id="priority-label">Priority</InputLabel>
-              <Select
-                labelId="priority-label"
-                id="priority"
-                name="priority"
-                onChange={handleInputChange}
-                value={jobData.priority}
-              >
-                <MenuItem value="">Select Priority</MenuItem>
-                <MenuItem value="Low Priority">Low Priority</MenuItem>
-                <MenuItem value="Medium Priority">Medium Priority</MenuItem>
-                <MenuItem value="High Priority">High Priority</MenuItem>
-              </Select>
-            </FormControl>
+          <FormControl fullWidth variant="filled">
+            <InputLabel id="priority-label">Priority</InputLabel>
+            <Select
+              labelId="priority-label"
+              id="priority"
+              required
+              value={jobData.priority}
+              onChange={handleInputChange}
+              error={errors.priority}
+              helperText={errors.priority && "Priority is required"}
+            >
+              <MenuItem value="">Select Priority</MenuItem>
+              <MenuItem value="Low Priority">Low Priority</MenuItem>
+              <MenuItem value="Medium Priority">Medium Priority</MenuItem>
+              <MenuItem value="High Priority">High Priority</MenuItem>
+            </Select>
+          </FormControl>
 
             
 

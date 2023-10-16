@@ -6,6 +6,7 @@ router.route("/add").post((req,res)=>{
 
     const jobID = req.body.jobID;
     const DID = req.body.DID;
+    const Dname = req.body.DName;
     const vehicleNo = req.body.vehicleNo;
     const Date_report = Date(req.body.Date_report);
     const priority = req.body.priority;
@@ -17,6 +18,7 @@ router.route("/add").post((req,res)=>{
     
         jobID,
         DID,
+        Dname,
         vehicleNo,
         Date_report,
         priority,
@@ -46,11 +48,12 @@ router.route("/display").get((req,res)=>{
 // Update data in the database
 router.route("/update/:id").put(async (req, res) => {
     let jId = req.params.id;
-    const { jobID,DID,vehicleNo,Date_report,priority, description, parts_used,Date_complete,latitude,longitude } = req.body;
+    const { jobID,DID,Dname,vehicleNo,Date_report,priority, description, parts_used,Date_complete,latitude,longitude } = req.body;
   
     const updatecorrectiveMaintence = {
         jobID,
         DID,
+        Dname,
         vehicleNo,
         Date_report,
         priority,
