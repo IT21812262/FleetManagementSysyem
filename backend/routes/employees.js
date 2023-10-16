@@ -69,7 +69,7 @@ router.route("/update/:id").put(async (req, res) => {
     bsal,
   };
 
-  const update = await employee.findByIdAndUpdate(Eid, updateEmployee)
+  const update = await employee.findOneAndUpdate({eid : Eid}, updateEmployee)
     .then(() => {
       res.status(200).send({ status: "Employee Updated" });
     })
@@ -84,7 +84,7 @@ router.route("/update/:id").put(async (req, res) => {
 router.route("/delete/:id").delete(async (req, res) => {
   let Eid = req.params.id;
 
-  await employee.findByIdAndDelete(Eid)
+  await employee.findOneAndDelete(Eid)
     .then(() => {
       res.status(200).send({ status: "Employee Deleted" });
     })
@@ -96,7 +96,7 @@ router.route("/delete/:id").delete(async (req, res) => {
 
 router.route("/get/:id").get(async (req, res) => {
   let Eid = req.params.id;
-  const user = await employee.findById(Eid)
+  const user = await employee.findOne({eid : Eid})
     .then((employee) => {
       res.status(200).send({ status: "Employee Fetched", employee });
     })

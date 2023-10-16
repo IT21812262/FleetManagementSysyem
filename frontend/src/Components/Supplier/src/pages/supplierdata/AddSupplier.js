@@ -2,14 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Box, Button} from '@mui/material'; // Import Select and MenuItem from Material-UI
 import { Formik } from "formik";
-import * as yup from 'yup';
 import { useMediaQuery } from "@mui/material";
 import Header from "../../components/Header";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-//import MenuItem from '@material-ui/core/MenuItem';
-//import Select from '@material-ui/core/Select';
+import { TextField, Select, MenuItem } from '@mui/material';
 import "./AddSupplier.css";
 
 const generateRandomLetters = (length) => {
@@ -90,7 +87,11 @@ const AddSupplier = ({ onClose }) => {
   const [manufatured_dateError, setManufatured_dateError] = useState("");
   const [invoice_numberError, setInvoice_numberError] = useState("");
 
-  const [errors, setErrors] = useState({});
+ const [touched, setTouched] = useState({ item_type: false, brand: false });
+ const [brandOptions, setBrandOptions] = useState([]);
+ //const [errors, setErrors] = useState({});
+ const [errors, setErrors] = useState({ item_type: "", brand: "" });
+ 
 
   const sentData = (e) => {
     e.preventDefault();
@@ -244,7 +245,6 @@ const validatePhoneNumber = (phone_number) => {
 };
 
 
-
 const validateEmail = (email) => {
   if (!email) {
     setEmail("Email is required.");
@@ -271,28 +271,24 @@ const validateCompanyName = (company_name) => {
   return true;
 };
 
-/* const validateItemType = (itemType, brandOptionsMap, selectedItemType) => {
-  if (itemType) {
-    const options = brandOptionsMap[selectedItemType] || [];
-    // Assuming setBrandOptions is defined
-    setBrandOptions(options);
-    setItem_typeError("Select the field");
-  } else {
-    setItem_typeError('Please select a valid item type.');
-  }
-}; */
-
-/* const brandOptionsMap = {
-  Fuel: ["Ceypetco", "Synopec"],
-  Battery: ["Amaron", "Exide", "Lucas", "Dagenite", "Yokohama"],
+const brandOptionsMap = {
   Lubricants: ["Mobil", "Valvoline", "Shell", "Caltex", "Laugfs"],
   Tyres: ["Dunlop", "Michelin", "DSI", "Hankook"],
-  Filters: ["Toyota", "Mitsubishi", "Sakura", "TATA"],
   BrakePads: ["FBK", "Akebono", "Power Stop", "StopTech"],
+  Battery: ["Amaron", "Exide", "Lucas", "Dagenite", "Yokohama"],
+  Filters: ["Toyota", "Mitsubishi", "Sakura", "TATA"],
+  Fuel: ["Ceypetco", "Synopec"],
 };
 
-const validateItemType = (itemType) => {
-  return !!itemType && itemType.trim() !== '';
+const validateItemType = (selectedItemType) => {
+  if (brandOptionsMap[selectedItemType]) {
+    setErrors({ ...errors, item_type: "" });
+    setBrandOptions(brandOptionsMap[selectedItemType]);
+    return true;
+  } else {
+    setErrors({ ...errors, item_type: "Please select a valid item type." });
+    return false;
+  }
 };
 
 const handleItemTypeChange = (e) => {
@@ -300,19 +296,55 @@ const handleItemTypeChange = (e) => {
   setItem_type(selectedItemType);
   setTouched({ ...touched, item_type: true });
 
-  // Validate the selected item type
-  const isValidItemType = validateItemType(selectedItemType);
+  // Set the brand options based on the selected item type
+  const options = brandOptionsMap[selectedItemType] || [];
+  setBrandOptions(options);
 
-  if (isValidItemType) {
-    // Do something with the selected item type if needed
-    setItem_typeError('');
+  if (!selectedItemType) {
+    setErrors({ ...errors, item_type: "Please select a valid item type." });
   } else {
-    // Handle invalid item type
-    setItem_typeError('Please select a valid item type.');
+    setErrors({ ...errors, item_type: "" });
   }
+};
+
+
+const validateBrand = (brandValue) => {
+  if (brandValue) {
+    setErrors({ ...errors, brand: "" });
+    return true;
+  } else {
+    setErrors({ ...errors, brand: "Brand is required" });
+    return false;
+  }
+};
+
+const handleBrandChange = (e) => {
+  const brandValue = e.target.value;
+  setBrand(brandValue);
+  setTouched({ ...touched, brand: true });
+  validateBrand(brandValue);
+};
+
+/* const validateItemType = (itemType) => {
+  return !!itemType && itemType.trim() !== '';
 }; */
 
-const validateItemType = (item_type) => {
+/* const handleItemTypeChange = (e) => {
+  const selectedItemType = e.target.value;
+  setItem_type(selectedItemType);
+  setTouched({ ...touched, item_type: true });
+
+  const options = brandOptionsMap[selectedItemType] || [];
+  setBrandOptions(options);
+
+  if (!selectedItemType) {
+    setItem_typeError('Please select a valid item type.');
+  } else {
+    setItem_typeError('');
+  }
+};
+ */
+/*const validateItemType = (item_type) => {
   if (!item_type) {
     setItem_typeError("Item Name is required.");
     return false;
@@ -320,7 +352,7 @@ const validateItemType = (item_type) => {
 
   setItem_typeError("");
   return true;
-};
+};*/
 
 const validateItemSize = (itemSize) => {
   if (!itemSize) {
@@ -355,26 +387,8 @@ const validateItemCode = (item_code) => {
 
 };
 
-/* const validateBrand = (brandValue) => {
-  return !!brandValue;
-};
 
-const handleBrandChange = (e) => {
-  const brandValue = e.target.value;
-  setBrand(brandValue);
-  setTouched({ ...touched, brand: true }); // Mark brand as touched
-
-  // Validate the brand
-  const isBrandValid = validateBrand(brandValue);
-
-  if (isBrandValid) {
-    setBrandError(null); // Clear the error for brand
-  } else {
-    setBrandError('Brand is required');
-  }
-}; */
-
-const validateBrand = (brand) => {
+/* const validateBrand = (brand) => {
   if (!brand) {
     setBrandError("Brand is required.");
     return false;
@@ -382,7 +396,7 @@ const validateBrand = (brand) => {
 
   setBrandError("");
   return true;
-};
+}; */
 
 
 const validateQuantity = (quantity) => {
@@ -419,31 +433,45 @@ const validateUnitPrice = (unit_price) => {
 };
 
 
-  const isDateTodayOrPast = (dateString) => {
+/*   const isDateTodayOrPast = (dateString) => {
     const selectedDate = new Date(dateString);
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set today's time to midnight for comparison
     return selectedDate <= today;
-  };
+  }; */
 
   const validateOrderdDate = (dateString) => {
     if (!dateString) {
       setOrderd_dateError("Ordered Date is required.");
       return false;
     }
-  
+
+    // Extract date components from selectedDate
     const selectedDate = new Date(dateString);
+    const selectedYear = selectedDate.getFullYear();
+    const selectedMonth = selectedDate.getMonth();
+    const selectedDay = selectedDate.getDate();
+
+    // Extract date components from today
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set today's time to midnight for comparison
-  
-    if (selectedDate > today) {
+    const todayYear = today.getFullYear();
+    const todayMonth = today.getMonth();
+    const todayDay = today.getDate();
+
+    // Compare date components
+    if (
+      selectedYear > todayYear ||
+      (selectedYear === todayYear && selectedMonth > todayMonth) ||
+      (selectedYear === todayYear && selectedMonth === todayMonth && selectedDay > todayDay)
+    ) {
       setOrderd_dateError("Ordered Date should be today or a past date.");
       return false;
     }
-  
+
     setOrderd_dateError("");
     return true;
-  };
+};
+
   
 
   const validateManufaturedDate = (dateString) => {
@@ -664,7 +692,7 @@ const validateInvoiceNumber = (invoiceNumber) => {
     {company_nameError && <div className="text-danger">{company_nameError}</div>}
     </div>
 
-{/* <div>
+{/*} <div>
 <TextField
       fullWidth
       variant="filled"
@@ -698,35 +726,86 @@ const validateInvoiceNumber = (invoiceNumber) => {
       </Select>
     </TextField>
     {item_typeError && <div className="text-danger">{item_typeError}</div>}
-              </div> */}
+    </div> */}
 
 
-{/* <div>
-      <TextField
+{/*<div>
+<TextField
         fullWidth
         variant="filled"
         label="ITEM NAME"
         onBlur={() => setTouched({ ...touched, item_type: true })}
-        error={touched.item_type && !item_type}
-        helperText={touched.item_type && !item_type && 'Item type is required'}
+        onChange={handleItemTypeChange}
+        value={item_type}
+        name="item_type"
+        error={!!touched.item_type && !!errors.item_type}
+        helperText={touched.item_type && errors.item_type}
+        sx={{ gridColumn: "span 2" }}
       >
-        <Select
-          value={item_type}
-          onChange={handleItemTypeChange}
-          readOnly // Make the Select component read-only
-        >
-          <MenuItem value="">
-            <em>Select Item Type</em>
-          </MenuItem>
-          {Object.keys(brandOptionsMap).map((key) => (
-            <MenuItem key={key} value={key}>{key}</MenuItem>
-          ))}
+      <Select value={item_type}>
+        {/* ... other MenuItems ...
+        <MenuItem value="">Select Item Type</MenuItem>
+        <MenuItem value="Lubricants">Lubricants (oil)</MenuItem>
+        <MenuItem value="Tyres">Tyres</MenuItem>
+        <MenuItem value="BrakePads">Brake Pads</MenuItem>
+        <MenuItem value="Battery">Battery</MenuItem>
+        <MenuItem value="Filters">Filters</MenuItem>
+        <MenuItem value="Fuel">Fuel (Diesel & Petrol)</MenuItem>
         </Select>
       </TextField>
-      {item_typeError && <div className="text-danger">{item_typeError}</div>}
+      {errors.item_type && <div className="text-danger">{errors.item_type}</div>}
     </div> */}
 
 <div>
+  <TextField
+    select
+    fullWidth
+    variant="filled"
+    label="ITEM NAME"
+    onBlur={() => setTouched({ ...touched, item_type: true })}
+    onChange={handleItemTypeChange}
+    value={item_type}
+    name="item_type"
+    error={!!touched.item_type && !!errors.item_type}
+    helperText={touched.item_type && errors.item_type}
+    sx={{ gridColumn: "span 2" }}
+  >
+    <MenuItem value="">Select Item Type</MenuItem>
+    {Object.keys(brandOptionsMap).map((type) => (
+      <MenuItem key={type} value={type}>
+        {type}
+      </MenuItem>
+    ))}
+  </TextField>
+  {errors.item_type && (
+    <div className="text-danger">{errors.item_type}</div>
+  )}
+</div>
+
+<div>
+  <TextField
+    select
+    fullWidth
+    variant="filled"
+    label="BRAND"
+    onBlur={() => setTouched({ ...touched, brand: true })}
+    onChange={handleBrandChange}
+    value={brand}
+    name="brand"
+    error={!!touched.brand && !!errors.brand}
+    helperText={touched.brand && errors.brand}
+    sx={{ gridColumn: "span 2" }}
+  >
+    {brandOptions.map((option) => (
+      <MenuItem key={option} value={option}>
+        {option}
+      </MenuItem>
+    ))}
+  </TextField>
+  {errors.brand && <div className="text-danger">{errors.brand}</div>}
+</div>
+
+{/* <div>
 <TextField
       fullWidth
       variant="filled"
@@ -745,7 +824,7 @@ const validateInvoiceNumber = (invoiceNumber) => {
       sx={{ gridColumn: "span 2" }}
     />
     {item_typeError && <div className="text-danger">{item_typeError}</div>}
-    </div>
+    </div> */}
 
     <div>
 <TextField
@@ -789,37 +868,9 @@ const validateInvoiceNumber = (invoiceNumber) => {
     {item_codeError && <div className="text-danger">{item_codeError}</div>}
     </div>
 
- {/*    <div>
-  <TextField
-    fullWidth
-    variant="filled"
-    label="BRAND"
-    onBlur={() => setTouched({ ...touched, brand: true })}
-   // onChange={handleChange}
-    //value={brand}
-    //name="brand"
-    error={touched.brand && !brand}
-    helperText={touched.brand && !brand && 'Brand is required'}
-    sx={{ gridColumn: 'span 2' }}
-  >
-    <Select
-     // className={`form-control ${touched.brand && errors.brand ? 'is-invalid' : ''}`}
-     // id="brand"
-      value={brand}
-      onChange={handleBrandChange}
-    >
-      <MenuItem value="">Select Brand</MenuItem>
-            {brandOptions.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-  </TextField>
-  {brandError && <div className="text-danger">{brandError}</div>}
-</div> */}
+ 
 
-<div>
+{/* <div>
 <TextField
       fullWidth
       variant="filled"
@@ -838,7 +889,7 @@ const validateInvoiceNumber = (invoiceNumber) => {
       sx={{ gridColumn: "span 2" }}
     />
     {brandError && <div className="text-danger">{brandError}</div>}
-    </div>
+    </div> */}
 
 
 <div>

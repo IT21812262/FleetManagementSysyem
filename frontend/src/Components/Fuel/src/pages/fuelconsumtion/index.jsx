@@ -6,7 +6,7 @@ import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import AddFuelentry from './AddFuelentry';
+import AddConsumption from './AddConsumption';
 import "./index.css";
 
 
@@ -236,7 +236,7 @@ const Fuelentry = () => {
           </Button>
           {isPopupVisible && (
             <div className="overlay">
-              <AddFuelentry onClose={closePopup} />
+              <AddConsumption onClose={closePopup} />
             </div>
           )}
 

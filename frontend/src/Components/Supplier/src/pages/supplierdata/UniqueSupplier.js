@@ -41,7 +41,7 @@ const UniqueSupplier = () => {
       await axios.delete(`http://localhost:8411/supplier/delete/${supplierId}`);
       alert('Supplier deleted successfully.');
       // Navigate to All Suppliers page
-      window.location.href = "/supplier/allSuppliers";
+      window.location.href = "/supplier/supplierdata";
     } catch (error) {
       alert('Error deleting supplier:', error.message);
     }
@@ -56,7 +56,7 @@ const UniqueSupplier = () => {
 
   // Use navigate function to programmatically navigate to a different route
   const handleCancelClick = () => {
-    navigate('/supplier/allSuppliers');
+    navigate('/supplier/supplierdata');
   };
 
   return (
@@ -141,11 +141,22 @@ const UniqueSupplier = () => {
         <ListItemText primary="Total Price" secondary={(parseFloat(supplier.quntity) * parseFloat(supplier.unit_price)).toFixed(2)} />
       </ListItem>
       <ListItem>
-        <ListItemText primary="Ordered Date" secondary={supplier.ordered_date} />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="Manufactured Date" secondary={supplier.manufatured_date} />
-      </ListItem>
+  <ListItemText 
+    primary="Ordered Date" 
+    secondary={
+      new Date(supplier.orderd_date).toISOString().split('T')[0]
+    } 
+  />
+</ListItem>
+
+<ListItem>
+  <ListItemText 
+    primary="Manufactured Date" 
+    secondary={
+      new Date(supplier.manufatured_date).toISOString().split('T')[0]
+    } 
+  />
+</ListItem>
       <ListItem>
         <ListItemText primary="Invoice No" secondary={supplier.invoice_number} />
       </ListItem>
