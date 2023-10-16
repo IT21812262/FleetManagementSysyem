@@ -19,11 +19,15 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import AddVehicle from "./AddVehicle";
 import SearchIcon from "@mui/icons-material/Search";
+import jsPDF from "jspdf"; // Import jsPDF library
+import "jspdf-autotable"; // Import jspdf-autotable plugin
 
 const Vehicle = () => {
+  // Initialize Material-UI theme
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // Function to format a date string
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     const year = date.getFullYear();
@@ -32,17 +36,20 @@ const Vehicle = () => {
     return `${year}-${month}-${day}`;
   };
 
+  // State variables
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [vehicles, setVehicles] = useState([]);
   const [searchText, setSearchText] = useState("");
 
+  // Function to handle vehicle deletion
   const handleDelete = (id) => {
     setSelectedVehicleId(id);
     setConfirmationDialogOpen(true);
   };
 
+  // Function to confirm vehicle deletion
   const confirmDelete = () => {
     setConfirmationDialogOpen(false);
     axios
@@ -50,7 +57,6 @@ const Vehicle = () => {
       .then((response) => {
         setVehicles((prevVehicles) =>
           prevVehicles.filter((vehicle) => vehicle._id !== selectedVehicleId)
-          
         );
         alert(response.data.status);
         window.location.reload();
@@ -61,11 +67,13 @@ const Vehicle = () => {
       });
   };
 
+  // Style for links
   const linkStyle = {
     textDecoration: "none",
     color: "white",
   };
 
+  // Columns configuration for the data grid
   const columns = [
     {
       field: "vehicleid",
@@ -119,13 +127,6 @@ const Vehicle = () => {
       align: "center",
       width: 150,
     },
-    // {
-    //   field: "licenseplate",
-    //   headerName: "LICENSE PLATE",
-    //   headerAlign: "center",
-    //   align: "center",
-    //   width: 150,
-    // },
     {
       field: "location",
       headerName: "LOCATION",
@@ -213,6 +214,7 @@ const Vehicle = () => {
     },
   ];
 
+  // Function to fetch vehicles from the server
   const fetchVehicles = async () => {
     try {
       const response = await fetch("http://localhost:8411/vehicle/");
@@ -226,6 +228,7 @@ const Vehicle = () => {
     }
   };
 
+  // useEffect to fetch vehicles when the component mounts
   useEffect(() => {
     fetchVehicles();
   }, []);
@@ -239,6 +242,47 @@ const Vehicle = () => {
       vehicle.vehicleid.toLowerCase().includes(searchText.toLowerCase()) ||
       vehicle.vehicletype.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  // Function to handle PDF download
+  const handleDownloadPDF = () => {
+    // Create a new jsPDF instance
+    const doc = new jsPDF();
+
+    // Define the columns for the PDF table
+    const columns = [
+      { title: "Vehicle ID", dataKey: "vehicleid" },
+      { title: "Vehicle Type", dataKey: "vehicletype" },
+      { title: "Fuel Type", dataKey: "fueltype" },
+      { title: "Manufacture Year", dataKey: "manufactureyear" },
+      { title: "Mileage", dataKey: "mileage" },
+      { title: "Transaction Type", dataKey: "transactiontype" },
+      { title: "Vehicle Status", dataKey: "vehiclestatus" },
+      { title: "Location", dataKey: "location" },
+      { title: "Vehicle Color", dataKey: "vehiclecolor" },
+    ];
+
+    // Define the rows for the PDF table
+    const rows = filteredRows.map((vehicle) => ({
+      vehicleid: vehicle.vehicleid,
+      vehicletype: vehicle.vehicletype,
+      fueltype: vehicle.fueltype,
+      manufactureyear: vehicle.manufactureyear,
+      mileage: vehicle.mileage,
+      transactiontype: vehicle.transactiontype,
+      vehiclestatus: vehicle.vehiclestatus,
+      location: vehicle.location,
+      vehiclecolor: vehicle.vehiclecolor,
+    }));
+
+    // Add the table to the PDF
+    doc.autoTable({
+      columns,
+      body: rows,
+    });
+
+    // Save the PDF with a filename
+    doc.save("vehicle_list.pdf");
+  };
 
   return (
     <Box m="20px">
@@ -266,6 +310,26 @@ const Vehicle = () => {
           </IconButton>
         </Box>
 
+        {/* Button to trigger PDF download */}
+        <Button
+          onClick={handleDownloadPDF}
+          sx={{
+            backgroundColor: colors.blueAccent[700],
+            color: colors.grey[100],
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "10px 20px",
+            transition: "background-color 0.3s",
+            "&:hover": {
+              backgroundColor: "#1F2A40",
+            },
+          }}
+        >
+          <DownloadOutlinedIcon sx={{ mr: "10px" }} />
+          DOWNLOAD PDF
+        </Button>
+
+        {/* Button to add a new vehicle */}
         <Button
           onClick={() => setPopupVisible(true)}
           sx={{
@@ -348,7 +412,12 @@ const Vehicle = () => {
           >
             Cancel
           </Button>
-          <Button onClick={confirmDelete} color="primary" sx={{ color: "white" }} autoFocus>
+          <Button
+            onClick={confirmDelete}
+            color="primary"
+            sx={{ color: "white" }}
+            autoFocus
+          >
             Delete
           </Button>
         </DialogActions>
