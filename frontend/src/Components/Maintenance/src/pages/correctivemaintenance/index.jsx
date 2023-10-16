@@ -197,25 +197,20 @@ const Maintenance = () => {
       ),
     },
   ];
-  const getRowStyle = (params) => {
-    const priority = params.getValue("priority");
+  const getRowClassName = (params) => {
+    const priority = params.getValue(params.id, "priority");
   
     if (priority === "High") {
-      return {
-        backgroundColor: "#FF0000", // Red for High Priority
-      };
+      return "high-priority";
     } else if (priority === "Medium") {
-      return {
-        backgroundColor: "#FFA500", // Orange for Medium Priority
-      };
+      return "medium-priority";
     } else if (priority === "Low") {
-      return {
-        backgroundColor: "#FFFF00", // Yellow for Low Priority
-      };
+      return "low-priority";
     }
   
-    return {};
+    return "no-priority"; // This is optional, in case there's an entry without any set priority
   };
+  
   
 
   const fetchJobData = async () => {
@@ -309,7 +304,7 @@ const Maintenance = () => {
           rows={rows}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
-          getRowStyle={getRowStyle} // Apply the row styles based on priority
+          getRowStyle={getRowClassName} // Apply the row styles based on priority
         />
       </Box>
     </Box>
