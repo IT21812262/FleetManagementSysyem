@@ -11,6 +11,10 @@ const correctiveSchema = new Schema({
         type : String,
         required : true 
     },
+    DName : {
+        type : String,
+        required : true 
+    },
     vehicleNo : {
         type : String,
         required : true

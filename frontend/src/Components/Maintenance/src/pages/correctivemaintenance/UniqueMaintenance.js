@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import { Box, Button, Typography, Paper, List, ListItem, ListItemText, Link as MUILink } from '@mui/material';
+import { Box, Button, Typography, Paper, List, ListItem, ListItemText, Link as MUILink, Grid, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 export default function UniqueMaintenanceJob() {
@@ -43,9 +43,7 @@ export default function UniqueMaintenanceJob() {
       }
     }
   };
-  const textStyle = {
-    fontSize: '20px'
-  };
+
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     const year = date.getFullYear();
@@ -56,21 +54,45 @@ export default function UniqueMaintenanceJob() {
 
   return (
     <Box m="20px">
-      <Typography variant="h4" component="h1" style={textStyle}><b>Corrective Maintenance Job</b></Typography>
+      <Typography variant="h4" component="h1" style={{ fontSize: '20px', fontWeight: 'bold' }}>Corrective Maintenance Job</Typography>
 
       {job ? (
         <Paper elevation={3} style={{ marginTop: '20px', padding: '20px' }}>
-          <List>
-            <ListItem><ListItemText primary="Job ID" secondary={job.jobID} /></ListItem>
-            <ListItem><ListItemText primary="Priority" secondary={job.priority} /></ListItem>
-            <ListItem><ListItemText primary="Vehicle Number" secondary={job.vehicleNo} /></ListItem>
-            <ListItem><ListItemText primary="Date Report" secondary={formatDate(job.Date_report)} /></ListItem>
-            <ListItem><ListItemText primary="Description" secondary={job.description} /></ListItem>
-            <ListItem><ListItemText primary="Parts Used" secondary={job.parts_used} /></ListItem>
-          </List>
-          <Box mt={2}>
-            <Button variant="contained" color="error" onClick={() => handleDelete(job.jobID)}>Delete Job</Button>
-          </Box>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={4}>
+              <Typography variant="h6" style={{ fontSize: '20px', fontWeight: 'bold' }}>Job Details</Typography>
+              <List>
+                <ListItem>
+                  <ListItemText primary="Job ID" secondary={job.jobID} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Driver ID" secondary={job.DID} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Driver Name" secondary={job.Dname} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Priority" secondary={job.priority} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Vehicle Number" secondary={job.vehicleNo} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Date Report" secondary={formatDate(job.Date_report)} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Description" secondary={job.description} />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Parts Used" secondary={job.parts_used} />
+                </ListItem>
+              </List>
+              <Box mt={2}>
+                <Button variant="contained" color="error" onClick={() => handleDelete(job.jobID)}>Delete Job</Button>
+              </Box>
+            </Grid>
+            {/* Add more Grid items for other details */}
+          </Grid>
         </Paper>
       ) : (
         <Typography variant="h6">No maintenance job found with the specified ID.</Typography>
