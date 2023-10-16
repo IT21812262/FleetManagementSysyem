@@ -65,6 +65,7 @@ const corrective_m = require("./routes/maintenance.js");
 const vehicle = require("./routes/vehicle.js");
 
 const employee = require("./routes/employees.js");
+const fuelConsumptionRoutes = require('./routes/fuelConsumption.js');
 
 
 app.use("/fuelentry", fuelentry);
@@ -79,6 +80,8 @@ app.use("/vehicle",vehicle);
 
 app.use("/employee",employee);
 
+
+app.use('/fuelconsumption', fuelConsumptionRoutes);
 
 app.listen(PORT, () =>{
     console.log(`Server is up and running on port number is: ${PORT}`)
