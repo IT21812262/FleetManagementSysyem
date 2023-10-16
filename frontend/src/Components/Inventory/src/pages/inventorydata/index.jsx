@@ -7,6 +7,8 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import AddInventory from './AddInventory';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import "./index.css";
 
 
@@ -16,6 +18,7 @@ import "./index.css";
 // import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { InputBase } from "@mui/material";
+//import jsPDF from "jspdf";
 // import React, { useState, useEffect } from "react";
 
 
@@ -160,7 +163,7 @@ const Inventory = () => {
             }}
           >
             <Link 
-                to={`/invntory/uniqueinventory/${params.row.pid}`}
+                to={`/inventory/uniqueinventory/${params.row.pid}`}
                 state={{ inventoryData: params.row }}
                 style={linkStyle}
             >
@@ -230,7 +233,75 @@ const Inventory = () => {
 
 
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredInventories, setFilteredInventories] = useState([]);
+  
+  useEffect(() => {
+    const filtered = inventories.filter((inventory) => {
+      const pidStr = inventory.pid ? String(inventory.pid).toLowerCase() : "";
+      const qtyStr = inventory.qty ? String(inventory.qty).toLowerCase() : "";
+      const unitPriceStr = inventory.unit_price ? String(inventory.unit_price).toLowerCase() : "";
+      const reorderLevelStr = inventory.reorder_level ? String(inventory.reorder_level).toLowerCase() : "";
+  
+      const voltageStr = (typeof inventory.voltage === "object" && "value" in inventory.voltage) ? inventory.voltage.value.toLowerCase() : "";
+      const ampHrsStr = (typeof inventory.amp_hrs === "object" && "value" in inventory.amp_hrs) ? inventory.amp_hrs.value.toLowerCase() : "";
+      const manYearStr = (typeof inventory.vehicle_man_year === "object" && "value" in inventory.vehicle_man_year) ? inventory.vehicle_man_year.value.toLowerCase() : "";
+  
+      return (
+        pidStr.includes(searchTerm.toLowerCase()) ||
+        (inventory.type ? inventory.type.toLowerCase() : "").includes(searchTerm.toLowerCase()) ||
+        (inventory.name ? inventory.name.toLowerCase() : "").includes(searchTerm.toLowerCase()) ||
+        (inventory.brand ? inventory.brand.toLowerCase() : "").includes(searchTerm.toLowerCase()) ||
+        qtyStr.includes(searchTerm) ||
+        unitPriceStr.includes(searchTerm) ||
+        (inventory.size ? inventory.size.toLowerCase() : "").includes(searchTerm.toLowerCase()) ||
+        voltageStr.includes(searchTerm) ||
+        ampHrsStr.includes(searchTerm) ||
+        (inventory.man_date ? inventory.man_date.toLowerCase() : "").includes(searchTerm.toLowerCase()) ||
+        (inventory.exp_date ? inventory.exp_date.toLowerCase() : "").includes(searchTerm.toLowerCase()) ||
+        (inventory.vehicle_brand_and_model ? inventory.vehicle_brand_and_model.toLowerCase() : "").includes(searchTerm.toLowerCase()) ||
+        manYearStr.includes(searchTerm) ||
+        reorderLevelStr.includes(searchTerm) ||
+        (inventory.invoice_number ? inventory.invoice_number.toLowerCase() : "").includes(searchTerm.toLowerCase())
+      );
+    });
+    setFilteredInventories(filtered);
+  }, [searchTerm, inventories]);
+  
+
+
+
+
+
+
+
+
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const [filteredRows, setFilteredRows] = useState([]); // Initialize with an empty array
+
+  // const handleSearch = (e) => {
+  //   const query = e.target.value.toLowerCase();
+  //   setSearchQuery(query);
+
+  //   // Filter rows based on the search query
+  //   const filteredData = inventories.filter((inventory) =>
+  //     Object.values(inventory).some((value) =>
+  //       String(value).toLowerCase().includes(query)
+  //     )
+  //   );
+  //   setFilteredRows(filteredData);
+  // };
+
+
+
+
+
+
+
+
   // search function
+
+  
 
   // const [searchQuery, setSearchQuery] = useState("");
   // const [filteredRows, setFilteredRows] = useState({rows}); 
@@ -268,6 +339,96 @@ const Inventory = () => {
 //   );
 //   setFilteredRows(filteredData);
 // };
+const handleDownloadPdf = () => {
+  const doc = new jsPDF({ orientation: "landscape" });
+
+  const centerText = (text, yPosition, fontSize) => {
+    doc.setFontSize(fontSize);
+    const textWidth = doc.getStringUnitWidth(text) * fontSize / doc.internal.scaleFactor;
+    const xPosition = (doc.internal.pageSize.width - textWidth) / 2;
+    doc.text(text, xPosition, yPosition);
+  };
+
+  centerText('Logix', 10, 20);
+  centerText('Inventory Details', 18, 16);
+
+  const currentDate = new Date();
+  const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+  doc.setFontSize(10);
+  doc.text(`Generated on: ${formattedDate}`, doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 10);
+
+  const columns1 = [
+    "PID",
+    "Type",
+    "Name",
+    "Brand",
+    "Size",
+    "Voltage",
+    "Amp Hours",
+    "Vehicle Brand & Model"
+  ];
+
+  const columns2 = [
+    "Quantity",
+    "Unit Price",
+    "Total Price",
+    "Manufactured Date",
+    "Expiry Date",
+    "Reorder Level",
+    "Invoice Number",
+    "Vehicle Manufacturing Year"
+  ];
+
+  const extractDateOnly = (dateTimeStr) => {
+    const date = new Date(dateTimeStr);
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+  }
+
+  const rows1 = filteredInventories.map((inventory) => [
+    inventory.pid,
+    inventory.type,
+    inventory.name,
+    inventory.brand,
+    inventory.size,
+    inventory.voltage && inventory.voltage.value,
+    inventory.amp_hrs && inventory.amp_hrs.value,
+    inventory.vehicle_brand_and_model
+  ]);
+
+  const rows2 = filteredInventories.map((inventory) => [
+    inventory.qty,
+    inventory.unit_price,
+    inventory.total_price, // Assuming this property exists in your data
+    extractDateOnly(inventory.man_date),
+    extractDateOnly(inventory.exp_date),
+    inventory.reorder_level,
+    inventory.invoice_number,
+    inventory.vehicle_man_year && inventory.vehicle_man_year.value
+  ]);
+
+  let y = 30;
+
+  doc.autoTable({
+    head: [columns1],
+    body: rows1,
+    startY: y
+  });
+
+  doc.addPage();
+
+  centerText('Logix', 10, 20);
+  centerText('Inventory Details', 18, 16);
+  doc.setFontSize(10);
+  doc.text(`Generated on: ${formattedDate}`, doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 10);
+
+  doc.autoTable({
+    head: [columns2],
+    body: rows2,
+    startY: y
+  });
+
+  doc.save("inventory.pdf");
+};
 
 
   
@@ -279,6 +440,16 @@ const Inventory = () => {
           title="SPARE PARTS MANAGER"
           subtitle="Welcome to LogiX Fleet Management System"
         />
+
+{/* // dila's one */}
+<input
+  type="text"
+  value={searchTerm}
+  onChange={e => setSearchTerm(e.target.value)}
+  className="search-input"
+  placeholder="Search Supplier"
+  style={{ width: '200px' }} // Adjust the width as needed
+/>
 
 {/* // Search box */}
 <Box
@@ -333,7 +504,11 @@ const Inventory = () => {
             </div>
           )}
 
-          
+<div className="buttons">
+        <button onClick={handleDownloadPdf} className="update-button">
+          Download as PDF
+        </button>
+      </div>
 
           
       </Box>
@@ -370,8 +545,26 @@ const Inventory = () => {
           },
         }}
       >
-        <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} />
+        {/* <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} /> */}
         {/* <DataGrid rows={filteredRows} columns={columns} components={{ Toolbar: GridToolbar }} getRowId={(row) => row.pid}/> */}
+        {/* <DataGrid
+          rows={filteredRows.length > 0 ? filteredRows : rows}
+          columns={columns}
+          components={{ Toolbar: GridToolbar }}
+        /> */}
+
+
+<DataGrid
+  rows={filteredInventories.map((inventory) => ({
+    ...inventory,
+    id: inventory.pid, // Change "supplier_id" to "pid"
+  }))}
+  columns={columns}
+  components={{ Toolbar: GridToolbar }}
+/>
+
+
+
       </Box>
     </Box>
   );
