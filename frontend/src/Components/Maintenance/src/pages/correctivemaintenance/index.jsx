@@ -7,6 +7,8 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import AddFuelstock from './AddMaintenance';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import "./index.css";
 
 
@@ -67,6 +69,57 @@ const Maintenance = () => {
       );
     });
   };
+  const handleDownloadPdf = () => {
+    const doc = new jsPDF({ orientation: "landscape" });
+
+    const centerText = (text, yPosition, fontSize) => {
+      doc.setFontSize(fontSize);
+      const textWidth = doc.getStringUnitWidth(text) * fontSize / doc.internal.scaleFactor;
+      const xPosition = (doc.internal.pageSize.width - textWidth) / 2;
+      doc.text(text, xPosition, yPosition);
+    };
+
+    // Add the centered headers to the PDF
+    centerText('Logix', 10, 20);
+    centerText('Maintenance Details', 18, 16);
+
+    // Add the current date to the bottom-right corner
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${formattedDate}`, doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 10);
+
+    const columns = [
+      "Job ID",
+      "Priority",
+      "Vehicle No",
+      "Date_report",
+      "Description",
+      "Parts Used"
+    ];
+
+    const rows = filterMaintenanceJobs().map((job) => [
+      job.jobID,
+      job.priority,
+      job.vehicleNo,
+      job.Date_report,
+      job.description,
+      job.parts_used
+    ]);
+
+    let y = 30; // Initial Y position
+
+    // Generate the table in the PDF
+    doc.autoTable({
+      head: [columns],
+      body: rows,
+      startY: y,
+    });
+
+    doc.save("maintenance.pdf");
+  };
+
+  
 
   const handleDelete = async (jobID) => {
     // Display a confirmation dialog before deleting
@@ -262,10 +315,9 @@ const Maintenance = () => {
               <AddFuelstock onClose={closePopup} />
             </div>
           )}
-
-          
-
-          
+          <button onClick={handleDownloadPdf} className="update-button">
+            Download as PDF
+          </button>
       </Box>
       <Box
         m="8px 0 0 0"
@@ -312,3 +364,5 @@ const Maintenance = () => {
 };
 
 export default Maintenance;
+
+
