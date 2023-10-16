@@ -119,16 +119,16 @@ export default function UpdateMaintenanceJob() {
             
 
             <TextField
-    fullWidth
-    id="Date_report"
-    label="DATE REPORT"
-    variant="outlined"
-    type="date"
-    value={jobData.Date_report}
-    onChange={(e) => handleInputChange(e, "Date_report")}
-    error={!!errors.Date_report}
-    helperText={errors.Date_report}
-  />
+                fullWidth
+                id="Date_report"
+                label="DATE REPORT"
+                variant="outlined"
+                type="date"
+                value={jobData.Date_report}
+                onChange={(e) => handleInputChange(e, "Date_report")}
+                error={!!errors.Date_report}
+                helperText={errors.Date_report}
+              />
         
        
         
@@ -153,6 +153,7 @@ export default function UpdateMaintenanceJob() {
             error={!!errors.parts_used}
             helperText={errors.parts_used}
           />
+          
           <TextField
             fullWidth
             id="Date_complete"
