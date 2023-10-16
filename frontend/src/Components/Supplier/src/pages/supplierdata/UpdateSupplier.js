@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import { Formik } from "formik";
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
+import { DatePicker } from '@mui/lab';
 
 import './UpdateSupplier.css';
 
@@ -37,6 +38,8 @@ const UpdateSupplier = () => {
   const [searchQ, setSearchQ] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
 
+  const today = new Date().toISOString().split('T')[0];
+
   const calculateTotalPrice = useCallback(() => {
     const unitPriceValue = parseFloat(supplierData.unit_price) || 0;
     const quantityValue = parseInt(supplierData.quntity, 10) || 0;
@@ -63,6 +66,14 @@ const UpdateSupplier = () => {
     }
   };
 
+  const handleDateChange = (newValue, id) => {
+    setSupplierData((prevData) => ({
+      ...prevData,
+      [id]: newValue, // Update the date value
+    }));
+    validateInput(id, newValue);
+  };
+
   const validateInput = (id, value) => {
     let error = "";
 
@@ -75,6 +86,11 @@ const UpdateSupplier = () => {
     case "supplier_id":
         error = value.length !== 6 ? "Supplier ID must be 6 characters" : "";
         break;
+
+        case "supplier_name":
+          error = value.trim() === "" ? "Supplier Name is required" : "";
+          break;
+
     case "phone_number":
         const phoneNumberRegex = /^[0-9]{10}$/;
           error = !phoneNumberRegex.test(value) ? "Phone Number must be exactly 10 digits" : "";
@@ -123,24 +139,28 @@ const UpdateSupplier = () => {
           error = !/^\d+(\.\d+)?$/.test(value) ? "Unit Price should be a valid float value" : "";
           break;    
 
-      case "orderd_date":
-        if (!value) {
-          error = "Order Date is required";
-        } else {
-          const date = new Date(value);
-          if (isNaN(date.getTime())) {
-            error = "Invalid date format";
-          }
-        }
-        break;
-
-        case "manufatured_date":
+          case "orderd_date":
+            if (!value) {
+              error = "Order Date is required";
+            } else {
+              const date = new Date(value);
+              if (isNaN(date.getTime())) {
+                error = "Invalid date format";
+              } else if (value > today) {
+                error = "Order Date cannot be in the future";
+              }
+            }
+            break;
+        
+          case "manufatured_date":
             if (!value) {
               error = "Manufactured Date is required";
             } else {
               const date = new Date(value);
               if (isNaN(date.getTime())) {
                 error = "Invalid date format";
+              } else if (value > today) {
+                error = "Manufactured Date cannot be in the future";
               }
             }
             break;
@@ -502,28 +522,57 @@ return (
     value={totalPrice}
     disabled
   />
-  <TextField
+ <TextField
     fullWidth
     id="orderd_date"
     label="Order Date"
     variant="outlined"
     type="date"
-    value={supplierData.orderd_date}
+    InputLabelProps={{ shrink: true }}
+    value={supplierData.orderd_date?.split('T')[0]}
     onChange={(e) => handleInputChange(e, "orderd_date")}
     error={!!errors.orderd_date}
     helperText={errors.orderd_date}
-  />
+    max={today} // Setting maximum date to today
+/>
+
 <TextField
     fullWidth
     id="manufatured_date"
     label="Manufactured Date"
     variant="outlined"
     type="date"
-    value={supplierData.manufatured_date}
+    InputLabelProps={{ shrink: true }}
+    value={supplierData.manufatured_date?.split('T')[0]}
     onChange={(e) => handleInputChange(e, "manufatured_date")}
     error={!!errors.manufatured_date}
     helperText={errors.manufatured_date}
-  />
+    max={today} // Setting maximum date to today
+/>
+
+
+   {/* <TextField
+            fullWidth
+            id="orderd_date"
+            label="Order Date"
+            value={supplierData.orderd_date}
+            onChange={(newValue) => handleDateChange(newValue, "orderd_date")}
+            renderInput={(params) => <TextField {...params} variant="outlined" />}
+            error={!!errors.orderd_date}
+            helperText={errors.orderd_date}
+          />
+
+          <TextField
+            fullWidth
+            id="manufatured_date"
+            label="Manufactured Date"
+            value={supplierData.manufatured_date}
+            onChange={(newValue) => handleDateChange(newValue, "manufatured_date")}
+            renderInput={(params) => <TextField {...params} variant="outlined" />}
+            error={!!errors.manufatured_date}
+            helperText={errors.manufatured_date}
+          /> */}
+
   <TextField
     fullWidth
     id="invoice_number"
