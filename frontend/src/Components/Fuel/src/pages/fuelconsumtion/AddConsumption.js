@@ -60,7 +60,7 @@ useEffect(() => {
       .post("http://localhost:8411/fuelconsumption/add", fuelConsumptionData)
       .then((response) => {
         alert("Fuel Consumption Data Successfully added");
-        window.location.href = "/fuelconsumption";
+        window.location.href = "/fuel/fuelconsumtion";
       })
       .catch((err) => {
         alert(err);

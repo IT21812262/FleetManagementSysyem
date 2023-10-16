@@ -34,6 +34,16 @@ const Fuelconsumption = () => {
     setPopupVisible(false);
   };
 
+  const handleDelete = async (vehicleId) => {
+    try {
+      await axios.delete(`http://localhost:8411/fuelconsumption/delete/${vehicleId}`);
+      alert('Fuel consumption deleted successfully.');
+      // Refresh the data after deletion
+      window.location.reload();
+    } catch (error) {
+      alert('Error deleting fuel consumption:', error.message);
+    }
+  };
   
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -42,24 +52,17 @@ const Fuelconsumption = () => {
 
   const [fuelconsumptions, setFuelconsumptions] = useState([]);
 
-  const handleDelete = async (vehicleId) => {
-    try {
-      await axios.delete(`http://localhost:8411/fuelentry/delete/${vehicleId}`);
-      alert('Fuel entry deleted successfully.');
-      // Refresh the data after deletion
-      window.location.reload();
-    } catch (error) {
-      alert('Error deleting fuel entry:', error.message);
-    }
-  };
-  const rows = fuelentries.map((fuelentry) => ({
-    id: fuelentry.vehicle_id,
-    vehicle_id: fuelentry.vehicle_id, // Update with the correct field name
-    fuel_date: formatDate(fuelentry.fuel_date),
-    fuel_type: fuelentry.fuel_type,
-    fuel_quantity: fuelentry.fuel_quantity,
-    fuel_cost: fuelentry.fuel_cost,
-    vehicle_milage: fuelentry.vehicle_milage,
+  
+  const rows = fuelconsumptions.map((fuelconsumption) => ({
+    id: fuelconsumption.vehicle_id,
+    vehicle_id: fuelconsumption.vehicle_id, // Update with the correct field name
+    trip_id: fuelconsumption.trip_id,
+    fuel_type: fuelconsumption.fuel_type,
+    fuel_quantity: fuelconsumption.fuel_quantity,
+    estimatedConsumption: fuelconsumption.estimatedConsumption,
+    actualConsumption: fuelconsumption.actualConsumption,
+    difference: fuelconsumption.difference,
+    status: fuelconsumption.status,
   }));
   const linkStyle = {
     textDecoration: "none", // Remove underline
@@ -77,7 +80,7 @@ const Fuelconsumption = () => {
       width: 100,
     },
     {
-      field: "fuel_date",
+      field: "trip_id",
       headerName: "TRIP ID",
       type: "date",
       headerAlign: "center",
@@ -100,7 +103,7 @@ const Fuelconsumption = () => {
       width: 200,
     },
     {
-      field: "fuel_cost",
+      field: "estimatedConsumption",
       headerName: "DESIGNED FUEL CONSUMTION",
       headerAlign: "center",
       align: "center",
@@ -108,7 +111,7 @@ const Fuelconsumption = () => {
       width: 200,
     },
     {
-      field: "vehicle_milage",
+      field: "actualConsumption",
       headerName: "ACTUAL FUEL CONSUMTION",
       type: "number",
       headerAlign: "center",
@@ -116,43 +119,29 @@ const Fuelconsumption = () => {
       width: 200,
     },
     {
-      field: "vehicle_milage",
+      field: "difference",
+      headerName: "DIFFERENCE",
+      type: "number",
+      headerAlign: "center",
+      align: "center",
+      width: 100,
+    },
+    {
+      field: "status",
       headerName: "STATUS",
       type: "number",
       headerAlign: "center",
       align: "center",
-      width: 200,
+      width: 100,
     },
     {
       headerName: "OPERATIONS",
       headerAlign: "center",
       align: "center",
-      width: 300,
+      width: 400,
       renderCell: (params) => (
         <div className="edit-1-2-parent">
-          <Button 
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-              margin: "2px",
-              transition: "background-color 0.3s", // Add a transition for smooth color change
-                "&:hover": {
-                backgroundColor: "#141B2D", // Red color on hover
-              },
-            }}
-          >
-            <Link 
-                to={`/fuel/uniqueFuelentry/${params.row.vehicle_id}`}
-                state={{ fuelentryData: params.row }}
-                style={linkStyle}
-            >
-              VIEW
-
-            </Link>
-          </Button>
+          
           <Button
             
             sx={{
@@ -172,8 +161,9 @@ const Fuelconsumption = () => {
           state={{ fuelentryData: params.row }}
           style={linkStyle}
         >
-            REPAIR</Link>
+            REQUEST REPAIR</Link>
           </Button>
+
           <Button onClick={() => handleDelete(params.row.vehicle_id)}
             sx={{
               backgroundColor: '#FF0000',
@@ -195,21 +185,21 @@ const Fuelconsumption = () => {
     },
   ];
 
-  const fetchFuelentries = async () => {
+  const fetchFuelconsumptions = async () => {
     try {
-      const response = await fetch("http://localhost:8411/fuelentry/");
+      const response = await fetch("http://localhost:8411/fuelconsumption/");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      setFuelentries(data);
+      setFuelconsumptions(data);
     } catch (error) {
-      console.error("Error fetching fuel entries:", error);
+      console.error("Error fetching fuel consumptions:", error);
     }
   };
 
   useEffect(() => {
-    fetchFuelentries();
+    fetchFuelconsumptions();
   }, []);
 
 
