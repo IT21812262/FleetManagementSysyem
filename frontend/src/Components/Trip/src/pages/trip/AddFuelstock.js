@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import "./AddTrip.css";
 
 
+
 const AddTrip = ({onClose}) => {
 
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -120,6 +121,7 @@ const [departuretime, setDeparturetime] = useState("");
 const [startfuel, setStartfuel] = useState("");
 const [endfuel, setEndfuel] = useState("");
 const [fuelUsed, setFuelUsed] = useState("");
+const [errors, setErrors] = useState({});
 
 function validateForm() {
   const errors = {};
