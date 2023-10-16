@@ -104,8 +104,8 @@ const Maintenance = () => {
       "Vehicle No",
       "Date_report",
       "Description",
-      "Parts Used",
-      "Date Complete"
+      "Parts Used"
+     
     ];
 
     const rows = filterMaintenanceJobs().map((job) => [
@@ -116,7 +116,7 @@ const Maintenance = () => {
       formatDate(job.Date_report),
       job.description,
       job.parts_used,
-      formatDate(job.Date_report)
+    
 
     ]);
 

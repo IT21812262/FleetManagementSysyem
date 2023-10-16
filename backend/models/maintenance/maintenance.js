@@ -11,7 +11,7 @@ const correctiveSchema = new Schema({
         type : String,
         required : true 
     },
-    DName : {
+    Dname : {
         type : String,
         required : false 
     },
