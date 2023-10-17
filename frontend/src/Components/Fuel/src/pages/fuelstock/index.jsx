@@ -7,6 +7,8 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import AddFuelstock from './AddFuelstock';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import "./index.css";
 
 
@@ -37,6 +39,52 @@ const Fuelstock = () => {
   
   const [selectedRow, setSelectedRow] = useState(null);
 
+
+
+
+  // report generation
+
+  const handleDownloadPdf = () => {
+    const doc = new jsPDF({ orientation: "landscape" });
+    
+    const centerText = (text, yPosition, fontSize) => {
+      doc.setFontSize(fontSize);
+      const textWidth = doc.getStringUnitWidth(text) * fontSize / doc.internal.scaleFactor;
+      const xPosition = (doc.internal.pageSize.width - textWidth) / 2;
+      doc.text(text, xPosition, yPosition);
+    };
+  
+    // Add the centered headers to the PDF
+    centerText('Logix', 10, 20);
+    centerText('Fuel Stock Details', 18, 16);
+  
+    // Add the current date to the bottom-right corner
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${formattedDate}`, doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 10);
+  
+    const columns1 = ["Invoice Number", "Stocked Fuel Type", "Stocked Fuel Quantity", "Per Liter Quantity", "Stocked Fuel Date"];
+  
+    const rows1 = fuelstocks.map((fuelstock) => [
+      fuelstock.invoice_no,
+      fuelstock.stocked_fuel_type,
+      fuelstock.stocked_fuel_quantity,
+      fuelstock.per_leter_cost,
+      formatDate(fuelstock.stocked_fuel_date)
+    ]);
+  
+    let y = 30; // Initial Y position
+  
+    // Generate the table
+    doc.autoTable({
+      head: [columns1],
+      body: rows1,
+      startY: y
+    });
+  
+    doc.save("fuelStock.pdf");
+  };
   
 
 
@@ -327,8 +375,11 @@ const Fuelstock = () => {
           )}
 
           
-
-          
+<div className="buttons">
+        <button onClick={handleDownloadPdf} className="update-button">
+          Download as PDF
+        </button>
+        </div>
       </Box>
       <Box
         m="8px 0 0 0"
