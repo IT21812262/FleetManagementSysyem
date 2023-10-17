@@ -189,13 +189,7 @@ const MyProSidebar = () => {
               setSelected={setSelected}
             />
 
-            <Item
-              title="Analytics"
-              to="/inventory/analytics"
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            
           </Box>
         </Menu>
       </Sidebar>
