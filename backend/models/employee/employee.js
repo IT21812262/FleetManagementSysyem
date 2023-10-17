@@ -44,6 +44,11 @@ const employeeSchema = new Schema({
        required: true
    },
 
+   dlicense:{
+    type: String,
+    required: false
+},
+
    bsal:{
        type: Number,
        required: true
