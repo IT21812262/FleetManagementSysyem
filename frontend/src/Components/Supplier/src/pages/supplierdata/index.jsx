@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, useTheme, Button,} from "@mui/material";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
@@ -9,6 +9,8 @@ import Header from "../../components/Header";
 import AddSupplier from "./AddSupplier";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import emailjs from "emailjs-com";
+//import { useParams } from "react-router-dom";
 import "./index.css";
 
 const Supplier = () => {
@@ -24,6 +26,8 @@ const Supplier = () => {
   }; */
 
   const [isPopupVisible, setPopupVisible] = useState(false);
+  //const [params, setParams] = useState(initialValue);
+
   
   const openPopup = () => {
     setPopupVisible(true);
@@ -80,6 +84,48 @@ const Supplier = () => {
   };
 
 
+  useEffect(() => {
+    emailjs.init("F1HHaZcKVNf2f_AfF");
+},[]);
+  
+  function contactInventoryManager  (rowData)  {
+    // Define your EmailJS service ID, template ID, and user ID
+    const serviceId = "service_h7r71li";
+    const templateId = "template_ie3ivc8";
+    const userId = "F1HHaZcKVNf2f_AfF";
+
+    //const message = `I have recived this ${brand} from this ${item_type}`;
+
+  
+    // Create a template parameters object with the product ID and any other data you want to include
+    const templateParams = {
+      to_name: 'Inventory Manager',
+      from_name: 'Supply Manager',
+      message:`
+      Brand: ${rowData.brand}
+      Item Type: ${rowData.item_type}
+      Quantity: ${rowData.quntity}
+    ` 
+      
+    };
+  
+    // Send the email using EmailJS
+    emailjs.send(serviceId, templateId, templateParams, userId)
+      .then((response) => {
+        console.log("Email sent successfully:",response);
+        alert("Email sent successfully:");
+        // Close the modal or perform any other actions
+        
+      })
+      .catch((error) => {
+        console.error("Email send error:", error);
+        alert("Email send error:", error);
+        // Handle the error, e.g., display an error message to the user
+      });
+  };
+  
+
+
   const columns = [
     
     {
@@ -126,7 +172,7 @@ const Supplier = () => {
       headerName: "OPERATIONS",
       headerAlign: "center",
       align: "center",
-      width: 300,
+      width: 500,
       renderCell: (params) => (
         <div className="edit-1-2-parent">
           <Button 
@@ -193,6 +239,26 @@ const Supplier = () => {
           >
             DELETE
           </Button>
+
+          <Button 
+            onClick={() => contactInventoryManager(params.row)}
+            sx={{
+              backgroundColor: colors.blueAccent[700],
+              color: colors.grey[100],
+              fontSize: "14px",
+              fontWeight: "bold",
+              padding: "10px 20px",
+              margin:"2px",
+              transition: "background-color 0.3s", // Add a transition for smooth color change
+                "&:hover": {
+                backgroundColor: "#1F2A40", // Red color on hover
+              },
+            }}
+          >
+           {/* <DownloadOutlinedIcon sx={{ mr: "10px" }} />*/}
+            EMAIL
+          </Button>
+
         </div>
       ),
     },
@@ -427,6 +493,7 @@ const handleDownloadPdf = () => {
   placeholder="Search Supplier"
   style={{ width: '200px' }} // Adjust the width as needed
 />
+
 
 
 
