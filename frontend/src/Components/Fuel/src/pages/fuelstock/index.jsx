@@ -52,20 +52,90 @@ const Fuelstock = () => {
       alert('Error deleting fuel stock:', error.message);
     }
   };
-  const rows = fuelstocks.map((fuelstock) => ({
+
+
+
+
+
+
+
+   // search functionality
+
+   const [searchTerm, setSearchTerm] = useState(""); // State for the search term
+   const [filteredFuelstocks, setFilteredFuelstocks] = useState([]); // State for filtered fuelstocks
+   
+   
+   useEffect(() => {
+     const filtered = fuelstocks.filter((fuelstock) => {
+       return (
+         fuelstock.invoice_no.toLowerCase().includes(searchTerm.toLowerCase()) ||
+         fuelstock.stocked_fuel_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+         fuelstock.stocked_fuel_quantity.toString().includes(searchTerm) ||
+         fuelstock.per_leter_cost.toString().includes(searchTerm) ||
+         fuelstock.total_cost.toString().includes(searchTerm) ||
+         formatDate(fuelstock.stocked_fuel_date).toLowerCase().includes(searchTerm.toLowerCase())
+       );
+     });
+     setFilteredFuelstocks(filtered);
+   }, [searchTerm, fuelstocks]);
+   
+
+
+
+
+
+
+
+
+
+
+  // const rows = fuelstocks.map((fuelstock) => ({
+  //   id: fuelstock.invoice_no,
+  //   invoice_no: fuelstock.invoice_no,
+  //   stocked_fuel_type: fuelstock.stocked_fuel_type, // Update with the correct field name
+  //   stocked_fuel_quantity: fuelstock.stocked_fuel_quantity,
+  //   per_leter_cost: fuelstock.per_leter_cost,
+  //   total_cost: fuelstock.total_cost,
+  //   stocked_fuel_date: formatDate(fuelstock.stocked_fuel_date),
+    
+  // }));
+
+
+  const rows = filteredFuelstocks.map((fuelstock) => ({
     id: fuelstock.invoice_no,
     invoice_no: fuelstock.invoice_no,
-    stocked_fuel_type: fuelstock.stocked_fuel_type, // Update with the correct field name
+    stocked_fuel_type: fuelstock.stocked_fuel_type,
     stocked_fuel_quantity: fuelstock.stocked_fuel_quantity,
     per_leter_cost: fuelstock.per_leter_cost,
     total_cost: fuelstock.total_cost,
     stocked_fuel_date: formatDate(fuelstock.stocked_fuel_date),
-    
   }));
+
   const linkStyle = {
     textDecoration: "none", // Remove underline
     color: "white",       // Set text color to white
   };
+
+
+
+
+
+  
+  
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
 
 
   const columns = [
@@ -220,6 +290,18 @@ const Fuelstock = () => {
           title="FUEL STOCK MANAGER"
           subtitle="Welcome to LogiX Fuel Management System"
         />
+
+<input
+  type="text"
+  placeholder="Search..."
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  style={{
+    marginBottom: '20px',
+    padding: '5px',
+  }}
+/>
+
         
         <Button 
             onClick={openPopup}
