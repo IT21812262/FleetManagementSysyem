@@ -1,54 +1,95 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Button, TextField, Typography, Paper, List, ListItem, ListItemText } from '@mui/material';
-import { Formik, Field, ErrorMessage } from "formik";
-import * as yup from 'yup'; // Import yup for validation
-import { useMediaQuery } from "@mui/material";
+import { useLocation } from "react-router-dom";
+import { Formik } from "formik";
+import * as yup from 'yup';
 import Header from "../../components/Header";
-import { useParams } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { Grid } from '@mui/material';
-import { tokens } from "../../theme";
-import { useTheme} from "@mui/material";
+import { FormControl, Box, Button, TextField, InputLabel, Select, MenuItem } from '@mui/material';
 
 
+import "./UpdateFuelentry.css";
 
-const UniqueFuelentry = ({ onClose }) => {
+const validationSchema = yup.object({
+  vehicle_id: yup.string()
+    .required("Vehicle ID is required")
+    .matches(/^[A-Za-z]{2}\d{4}$/, "Vehicle ID must have 2 letters followed by 4 numbers")
+    .length(6, "Vehicle ID must be 6 characters"),
+  fuel_date: yup.date().required("Fuel Date is required").nullable(),
+  fuel_type: yup.string().required("Fuel Type is required"),
+  fuel_quantity: yup.number().required("Fuel Quantity is required"),
+  fuel_cost: yup.number().required("Fuel Cost is required"),
+  vehicle_milage: yup.number().required("Vehicle Milage is required"),
+});
 
-  
-  const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { id } = useParams();
-  const [fuelentry, setFuelentry] = useState(null);
+const UpdateFuelentry = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const [fuelentryData, setFuelentryData] = useState(
+    location.state?.fuelentryData || {
+      vehicle_id: "",
+      fuel_date: "",
+      fuel_type: "",
+      fuel_quantity: "",
+      fuel_cost: "",
+      vehicle_milage: "",
+    }
+  );
 
-  const validationSchema = yup.object().shape({
-    vehicle_id: yup
-      .string()
-      .required("Vehicle ID is required") // Specify the error message
-      .matches(/^[0-9a-zA-Z]{6}$/, "Vehicle ID must be 6 characters"), // Specify the regex pattern and error message
-  });
+  const [searchQ, setSearchQ] = useState("");
+  const [vehicle_id, setVehicle_Id] = useState("");
+
+  const handleSubmit = (values) => {
+    axios
+      .put(`http://localhost:8411/fuelentry/update/${values.vehicle_id}`, values)
+      .then((response) => {
+        setFuelentryData({
+          vehicle_id: "",
+          fuel_date: "",
+          fuel_type: "",
+          fuel_quantity: "",
+          fuel_cost: "",
+          vehicle_milage: ""
+        });
+        alert("Fuel entry successfully updated.");
+        navigate("/fuel/fuelentry");
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
 
   useEffect(() => {
     const fetchFuelentryData = async () => {
       try {
-        if (id) {
-          const response = await axios.get(`http://localhost:8411/fuelentry/get/${id}`);
-          setFuelentry(response.data.fuelentry);
+        if (searchQ) {
+          const response = await axios.get(
+            `http://localhost:8411/fuelentry/get/${searchQ}`
+          );
+
+          if (response.data.fuelentry) {
+            setFuelentryData(response.data.fuelentry);
+          }
         }
       } catch (error) {
-        alert('Error fetching fuel entry:', error.message);
+        alert("Error fetching fuel entry: " + error.message);
       }
     };
 
     fetchFuelentryData();
-  }, [id]);
+  }, [searchQ]);
 
-  const handleDelete = async (vehicleId) => {
+
+  const handleButtonClick = () => {
+    navigate('/fuel/fuelentry');
+  };
+
+
+  const handleDelete = async (vehicle_id) => {
     try {
-      await axios.delete(`http://localhost:8411/fuelentry/delete/${vehicleId}`);
-      alert('Fuel entry deleted successfully.');
+      await axios.delete(`http://localhost:8411/fuelentry/delete/${vehicle_id}`);
+      alert('Fuel dispatch deleted successfully.');
       // Navigate to All Fuel entry page
       window.location.href = "/fuel/fuelentry";
     } catch (error) {
@@ -56,131 +97,184 @@ const UniqueFuelentry = ({ onClose }) => {
     }
   };
 
-  const handleSubmit = async (values, actions) => {
-    const { vehicle_id } = values;
-    try {
-      const response = await axios.get(`http://localhost:8411/fuelentry/get/${vehicle_id}`);
-      setFuelentry(response.data.fuelentry);
-    } catch (error) {
-      alert('Error fetching fuel entry:', error.message);
-    } finally {
-      actions.setSubmitting(false); // Finish form submission
-    }
-  };
-  const navigate = useNavigate();
-
-  // Use navigate function to programmatically navigate to a different route
-  const handleButtonClick = () => {
-    navigate('/fuel/fuelentry');
-  };
-  const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-  
-
   return (
     <Box m="20px">
       <Formik
-        initialValues={{ vehicle_id: "" }}
+        initialValues={fuelentryData}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting, handleSubmit }) => (
-          <form onSubmit={handleSubmit}>
-            {fuelentry && (
+        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+          <form className="updateFuelEntryForm" onSubmit={handleSubmit}>
+            {values.vehicle_id && (
               <Header
-                title={`UNIQUE FUEL DISPATCH FOR ${fuelentry.vehicle_id}`}
-                subtitle="View a unique fuel dispatch data"
+                title={`VIEW FUEL DISPATCH DATA FOR ${values.vehicle_id}`}
+                subtitle="View Fuel Dispatch Data"
               />
             )}
-            <Box mt={2}>
-              <Field
-                as={TextField}
+            <TextField
+              fullWidth
+              variant="filled"
+              type="text"
+              label="Enter Vehicle ID to View"
+              id="vehicle_id"
+              value={searchQ}
+              onChange={(e) => setSearchQ(e.target.value)}
+              placeholder="Enter Vehicle ID"
+              name="vehicle_id"
+              sx={{ gridColumn: "span 2" }}
+            />
+            <Box
+              display="grid"
+              gap="20px"
+              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              sx={{
+                "& > div": { gridColumn: "span 4" },
+              }}
+            ><Box display="flex" justifyContent="end" mt="20px" gap="30px">
+              <TextField
                 fullWidth
                 variant="filled"
-                label="ENTER VEHICLE ID"
+                type="text"
+                label="VEHICLE ID"
+                id="vehicle_id"
+                onChange={handleChange}
+                disabled
+                onBlur={handleBlur}
+                value={values.vehicle_id}
                 name="vehicle_id"
-                error={false}
+                sx={{ gridColumn: "span 2" }}
+                error={touched.vehicle_id && Boolean(errors.vehicle_id)}
+                helperText={touched.vehicle_id && errors.vehicle_id}
               />
-              <ErrorMessage name="vehicle_id">
-                {(msg) => <Typography color="error">{msg}</Typography>}
-              </ErrorMessage>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="date"
+                label="FUEL DATE"
+                id="fuel_date"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled
+                value={values.fuel_date}
+                name="fuel_date"
+                sx={{ gridColumn: "span 2" }}
+                error={touched.fuel_date && Boolean(errors.fuel_date)}
+                helperText={touched.fuel_date && errors.fuel_date}
+              /></Box>
+              <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+              
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="FUEL TYPE"
+                id="fuel_type"
+                disabled
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.fuel_type}
+                name="fuel_type"
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="FUEL QUANTITY"
+                id="fuel_quantity"
+                onChange={handleChange}
+                disabled
+                onBlur={handleBlur}
+                value={values.fuel_quantity}
+                name="fuel_quantity"
+                sx={{ gridColumn: "span 2" }}
+                error={touched.fuel_quantity && Boolean(errors.fuel_quantity)}
+                helperText={touched.fuel_quantity && errors.fuel_quantity}
+              /></Box>
+              <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="FUEL COST"
+                id="fuel_cost"
+                onChange={handleChange}
+                disabled
+                onBlur={handleBlur}
+                value={values.fuel_cost}
+                name="fuel_cost"
+                sx={{ gridColumn: "span 2" }}
+                error={touched.fuel_cost && Boolean(errors.fuel_cost)}
+                helperText={touched.fuel_cost && errors.fuel_cost}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="VEHICLE MILAGE"
+                disabled
+                id="vehicle_milage"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.vehicle_milage}
+                name="vehicle_milage"
+                sx={{ gridColumn: "span 2" }}
+                error={touched.vehicle_milage && Boolean(errors.vehicle_milage)}
+                helperText={touched.vehicle_milage && errors.vehicle_milage}
+              /></Box>
             </Box>
-  
-            <Box mt={2} display="flex" justifyContent="space-between">
-              <Button
-                type="submit"
-                color="secondary"
-                variant="contained"
-                disabled={isSubmitting}
-              >
-                FETCH FUEL ENTRY DATA
-              </Button>
-              <Button
-                type="button"
-                color="secondary"
-                variant="contained"
-                onClick={handleButtonClick}
-                disabled={isSubmitting}
-              >
-                CANCEL
-              </Button>
+            <Box display="flex" justifyContent="end" mt="20px">
+            <button
+               className="buttonm"
+               onClick={() => handleDelete(vehicle_id)}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'red',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'red';
+               }}
+             >
+               DELETE FUEL DISPATCH
+             </button>
+             <button
+               className="buttonm"
+               onClick={handleButtonClick}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'green',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'green';
+               }}
+             >
+               BACK FUEL DISPATCH
+             </button>
             </Box>
-  
-            {fuelentry ? (
-              <Paper elevation={3} style={{ marginTop: '20px', padding: '20px', backgroundColor: colors.primary[400] }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <List>
-                      <ListItem>
-                        <ListItemText primary="Vehicle ID" secondary={fuelentry.vehicle_id} />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText primary="Fuel Date" secondary={formatDate(fuelentry.fuel_date)} />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText primary="Fuel Type" secondary={fuelentry.fuel_type} />
-                      </ListItem>
-                    </List>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <List>
-                      <ListItem>
-                        <ListItemText primary="Fuel Quantity" secondary={fuelentry.fuel_quantity} />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText primary="Fuel Cost" secondary={fuelentry.fuel_cost} />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText primary="Vehicle Mileage" secondary={fuelentry.vehicle_milage} />
-                      </ListItem>
-                    </List>
-                  </Grid>
-                </Grid>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="error"
-                  onClick={() => handleDelete(fuelentry.vehicle_id)}
-                >
-                  Delete Fuel Entry
-                </Button>
-              </Paper>
-            ) : (
-              <Typography variant="h6" color="textSecondary" style={{ marginTop: '20px' }}>
-                No fuel entry found with the specified Vehicle Id.
-              </Typography>
-            )}
           </form>
         )}
       </Formik>
     </Box>
   );
-  
 };
 
-export default UniqueFuelentry;
+export default UpdateFuelentry;
