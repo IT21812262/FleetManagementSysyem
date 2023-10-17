@@ -92,6 +92,13 @@ const AddFuelstock = ({onClose}) => {
           alert(err);
           console.error(err);
         });
+
+
+        const currentCapacity = axios.get('/dieselTank/currentCapacity');
+if (currentCapacity.data + stocked_fuel_quantity > 50000) {
+    alert("Adding this fuel will exceed the tank's capacity!");
+    return;
+}
     };
   
     const navigate = useNavigate();

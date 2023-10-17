@@ -105,6 +105,8 @@ const AddFuelentry = ({onClose}) => {
   }
 
   function sentData(e) {
+
+    
     e.preventDefault();
 
     if (validateForm()) {
@@ -140,6 +142,11 @@ const AddFuelentry = ({onClose}) => {
           alert(err);
         });
     }
+    const currentCapacity = axios.get('/dieselTank/currentCapacity');
+if (currentCapacity.data - fuel_quantity < 0) {
+    alert("There's not enough fuel in the tank for this dispatch!");
+    return;
+}
   }
 
   const navigate = useNavigate();
