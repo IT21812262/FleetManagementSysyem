@@ -3,10 +3,11 @@ import axios from "axios";
 import { Box, Button, TextField, Grid, Paper, Typography } from "@mui/material";
 import { useParams, Link } from "react-router-dom";
 import "./UpdateRent.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function UpdateRent() {
   const { id } = useParams(); // Get the rent ID from the URL
-  
 
   const [rent, setRent] = useState({
     vehicle_no: "",
@@ -26,6 +27,32 @@ export default function UpdateRent() {
 
   const [errors, setErrors] = useState({});
 
+  const [isVehicleNoUnique, setIsVehicleNoUnique] = useState(true);
+
+  const Notify = (message, type) => {
+    toast[type](message, {
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      position: "top-right",
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      style: {
+        width: "300px",
+        height: "100px",
+        fontSize: "22px",
+        alignItems: "center",
+        fontFamily: "Ropa Sans",
+        display: "flex",
+        justifyContent: "center",
+        color: "white",
+      },
+      bodyClassName: "custom-toast-body",
+    });
+  };
+
   useEffect(() => {
     // Fetch rent details when the component mounts
     axios
@@ -38,8 +65,6 @@ export default function UpdateRent() {
         console.error("Error fetching rent details:", error.message);
       });
   }, [id]);
-
-  
 
   useEffect(() => {
     calculateTotalRent();
@@ -66,62 +91,131 @@ export default function UpdateRent() {
 
   const handleInputChange = (name, value) => {
     setRent({ ...rent, [name]: value });
+    validateField(name, value);
+  };
+
+  // You should define this function in the same file or import it from another module.
+const checkIfVehicleNoExists = async (vehicleNo) => {
+  try {
+    // Send a request to your server to check if the vehicle number exists in your database.
+    const response = await axios.get(`http://localhost:8411/rent/checkVehicleNoExists/${vehicleNo}`);
+
+    // Return true if the vehicle number exists, otherwise return false.
+    return response.data.exists;
+  } catch (error) {
+    console.error("Error checking vehicle number:", error.message);
+    return false; // Assume it doesn't exist on error
+  }
+};
+
+
+  const validateField = (name, value) => {
+    const newErrors = { ...errors };
+
+    switch (name) {
+      case "vehicle_no":
+        if (!value.match(/^([A-Z]{2,3}-\d{4})$/)) {
+          newErrors.vehicle_no = "Invalid format (e.g., XX-0000 or XXX-0000)";
+        } else {
+          newErrors.vehicle_no = "";
+          // Check if the vehicle number already exists
+          checkIfVehicleNoExists(value).then((exists) => {
+            setIsVehicleNoUnique(!exists);
+          });
+        }
+        break;
+      case "brand":
+        if (!value) {
+          newErrors.brand = "Brand is required";
+        } else {
+          newErrors.brand = "";
+        }
+        break;
+      case "vehicle_model":
+        if (!value) {
+          newErrors.vehicle_model = "Vehicle Model is required";
+        } else {
+          newErrors.vehicle_model = "";
+        }
+        break;
+      case "milage":
+        if (!value) {
+          newErrors.milage = "Mileage is required";
+        } else {
+          newErrors.milage = "";
+        }
+        break;
+      case "description":
+        if (!value) {
+          newErrors.description = "Description is required";
+        } else {
+          newErrors.description = "";
+        }
+        break;
+      case "owner_name":
+        if (!value) {
+          newErrors.owner_name = "Owner Name is required";
+        } else {
+          newErrors.owner_name = "";
+        }
+        break;
+      case "owner_phone":
+        if (!value.match(/^\d{10}$/)) {
+          newErrors.owner_phone = "Owner Phone must be 10 digits";
+        } else {
+          newErrors.owner_phone = "";
+        }
+        break;
+      case "owner_email":
+        if (!value.match(/^\S+@\S+\.\S+$/)) {
+          newErrors.owner_email = "Invalid email format";
+        } else {
+          newErrors.owner_email = "";
+        }
+        break;
+      case "receive_date":
+        if (value < getCurrentDate()) {
+          newErrors.receive_date = "Receive Date cannot be in the past";
+        } else {
+          newErrors.receive_date = "";
+        }
+        break;
+      case "return_date":
+        if (value < rent.receive_date) {
+          newErrors.return_date = "Return Date must be after Receive Date";
+        } else {
+          newErrors.return_date = "";
+        }
+        break;
+      default:
+        break;
+    }
+
+    setErrors(newErrors);
+  };
+
+  const getCurrentDate = () => {
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split("T")[0];
+    return currentDateString;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation for other required fields
-    const newErrors = {};
-
-    if (!rent.brand) {
-      newErrors.brand = "Brand is required";
-    }
-    if (!rent.vehicle_model) {
-      newErrors.vehicle_model = "Vehicle Model is required";
-    }
-    if (!rent.milage) {
-      newErrors.milage = "Mileage is required";
-    }
-    if (!rent.description) {
-      newErrors.description = "Description is required";
-    }
-    if (!rent.owner_name) {
-      newErrors.owner_name = "Owner Name is required";
-    }
-    /* if (!rent.owner_phone || !rent.owner_phone.match(/^\d{10}$/)) {
-      newErrors.owner_phone = "Owner Phone must be 10 digits";
-    } */
-    if (!rent.owner_email || !rent.owner_email.match(/^\S+@\S+\.\S+$/)) {
-      newErrors.owner_email = "Invalid email format";
+    // Check if there are any validation errors
+    if (Object.values(errors).some((error) => error !== "")) {
+      return;
     }
 
-    if (rent.receive_date && rent.return_date && rent.receive_date > rent.return_date) {
-      newErrors.return_date = "Return Date cannot be before Receive Date";
-    }
-
-    const currentDate = new Date();
-    const currentDateString = currentDate.toISOString().split("T")[0];
-
-    if (rent.receive_date && rent.receive_date < currentDateString) {
-      newErrors.receive_date = "Receive Date cannot be in the past";
-    }
-
-    if (rent.return_date && rent.return_date < currentDateString) {
-      newErrors.return_date = "Return Date cannot be in the past";
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      try {
-        await axios.put(`http://localhost:8411/rent/update/${id}`, rent);
-        alert("Rent record updated successfully!");
-        window.location.href = "/rent/rentdata"
-      
-      } catch (error) {
-        console.error("Error updating rent:", error.message);
-      }
+    try {
+      await axios.put(`http://localhost:8411/rent/update/${id}`, rent);
+      Notify("Rent Record Updated Successfully", "success");
+      setTimeout(() => {
+        window.location.href = "/rent/rentdata";
+      }, 2000);
+    } catch (error) {
+      console.error("Error updating rent:", error.message);
     }
   };
 
@@ -140,9 +234,10 @@ export default function UpdateRent() {
                 onBlur={calculateTotalRent}
                 onChange={(e) => handleInputChange("vehicle_no", e.target.value)}
                 value={rent.vehicle_no}
-                error={!!errors.vehicle_no}
-                helperText={errors.vehicle_no}
+                error={!!errors.vehicle_no || !isVehicleNoUnique}
+                helperText={errors.vehicle_no || (!isVehicleNoUnique && "Vehicle No already exists")}
                 name="vehicle_no"
+                disabled
               />
             </Grid>
             <Grid item xs={4}>
@@ -174,7 +269,7 @@ export default function UpdateRent() {
                 fullWidth
                 label="Mileage (in km)"
                 onBlur={calculateTotalRent}
-                onChange={(e) => handleInputChange("mileage", e.target.value)}
+                onChange={(e) => handleInputChange("milage", e.target.value)}
                 value={rent.milage}
                 error={!!errors.milage}
                 helperText={errors.milage}
@@ -253,6 +348,7 @@ export default function UpdateRent() {
                 error={!!errors.owner_phone}
                 helperText={errors.owner_phone}
                 name="owner_phone"
+                
               />
             </Grid>
             <Grid item xs={4}>
@@ -285,7 +381,6 @@ export default function UpdateRent() {
           </Grid>
           <center>
             <Box mt={3}>
-              
               <Button
                 variant="contained"
                 color="primary"
@@ -295,14 +390,15 @@ export default function UpdateRent() {
                 UPDATE RENT
               </Button>
               <Link to="/rent/rentdata">
-      <Button variant="contained" color="secondary">
-        CANCEL
-      </Button>
-    </Link>
+                <Button variant="contained" color="secondary">
+                  CANCEL
+                </Button>
+              </Link>
             </Box>
           </center>
         </form>
       </Paper>
+      <ToastContainer />
     </Box>
   );
 }
