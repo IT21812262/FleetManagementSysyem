@@ -142,7 +142,7 @@ const MyProSidebar = () => {
                   alt="profile user"
                   width="100px"
                   height="100px"
-                  src={"../../assets/vehicleManager.png"}
+                  src={"../../assets/vehicle.png"}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
