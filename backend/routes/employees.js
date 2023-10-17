@@ -10,6 +10,7 @@ router.route("/add").post((req, res) => {
   const email = req.body.email;
   const dob = req.body.dob;
   const jobroll = req.body.jobroll;
+  const dlicense = req.body.dlicense;
   const bsal = Number(req.body.bsal);
 
   const newEmployee = new employee({
@@ -21,6 +22,7 @@ router.route("/add").post((req, res) => {
     email,
     dob,
     jobroll,
+    dlicense,
     bsal,
   });
 
@@ -55,6 +57,7 @@ router.route("/update/:id").put(async (req, res) => {
     email,
     dob,
     jobroll,
+    dlicense,
     bsal,
   } = req.body;
   const updateEmployee = {
@@ -66,6 +69,7 @@ router.route("/update/:id").put(async (req, res) => {
     email,
     dob,
     jobroll,
+    dlicense,
     bsal,
   };
 
@@ -105,5 +109,23 @@ router.route("/get/:id").get(async (req, res) => {
       res.status(500).send({ status: "Error with getting user", error: err.message });
     });
 });
+
+router.route("/check-emp-id/:eid").get(async (req, res) => {
+  const { eid } = req.params;
+
+  try {
+    const existingRent = await Rent.findOne({ eid });
+    if (existingRent) {
+      res.json({ isUnique: false });
+    } else {
+      res.json({ isUnique: true });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 
 module.exports = router;
