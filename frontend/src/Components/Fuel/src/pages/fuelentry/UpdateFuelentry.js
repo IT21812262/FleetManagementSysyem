@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Button, TextField } from '@mui/material';
 import { useLocation } from "react-router-dom";
 import { Formik } from "formik";
 import * as yup from 'yup';
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
+import { FormControl, Box, Button, TextField, InputLabel, Select, MenuItem } from '@mui/material';
+
 
 import "./UpdateFuelentry.css";
 
 const validationSchema = yup.object({
   vehicle_id: yup.string()
-  .required("Vehicle ID is required")
-  .matches(/^[A-Za-z]{2}\d{4}$/, "Vehicle ID must have 2 letters followed by 4 numbers")
-  .length(6, "Vehicle ID must be 6 characters"),
-  
+    .required("Vehicle ID is required")
+    .matches(/^[A-Za-z]{2}\d{4}$/, "Vehicle ID must have 2 letters followed by 4 numbers")
+    .length(6, "Vehicle ID must be 6 characters"),
   fuel_date: yup.date().required("Fuel Date is required").nullable(),
   fuel_type: yup.string().required("Fuel Type is required"),
   fuel_quantity: yup.number().required("Fuel Quantity is required"),
@@ -40,7 +40,6 @@ const UpdateFuelentry = () => {
   const [searchQ, setSearchQ] = useState("");
 
   const handleSubmit = (values) => {
-    // Your existing logic to update the fuel entry
     axios
       .put(`http://localhost:8411/fuelentry/update/${values.vehicle_id}`, values)
       .then((response) => {
@@ -109,103 +108,106 @@ const UpdateFuelentry = () => {
             />
             <Box
               display="grid"
-              gap=""
+              gap="20px"
               gridTemplateColumns="repeat(4, minmax(0, 1fr))"
               sx={{
                 "& > div": { gridColumn: "span 4" },
               }}
-            >
+            ><Box display="flex" justifyContent="end" mt="20px" gap="30px">
+              <TextField
+                fullWidth
+                variant="filled"
+                type="text"
+                label="VEHICLE ID"
+                id="vehicle_id"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.vehicle_id}
+                name="vehicle_id"
+                sx={{ gridColumn: "span 2" }}
+                error={touched.vehicle_id && Boolean(errors.vehicle_id)}
+                helperText={touched.vehicle_id && errors.vehicle_id}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="date"
+                label="FUEL DATE"
+                id="fuel_date"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.fuel_date}
+                name="fuel_date"
+                sx={{ gridColumn: "span 2" }}
+                error={touched.fuel_date && Boolean(errors.fuel_date)}
+                helperText={touched.fuel_date && errors.fuel_date}
+              /></Box>
               <Box display="flex" justifyContent="end" mt="20px" gap="30px">
-  {/* ... */}
-<TextField
-  fullWidth
-  variant="filled"
-  type="text"
-  label="VEHICLE ID"
-  id="vehicle_id"
-  onChange={handleChange}
-  onBlur={handleBlur}
-  value={values.vehicle_id}
-  name="vehicle_id"
-  sx={{ gridColumn: "span 2" }}
-  error={touched.vehicle_id && Boolean(errors.vehicle_id)}
-  helperText={touched.vehicle_id && errors.vehicle_id}
-/>
-<TextField
-  fullWidth
-  variant="filled"
-  type="date"
-  label="FUEL DATE"
-  id="fuel_date"
-  onChange={handleChange}
-  onBlur={handleBlur}
-  value={values.fuel_date}
-  name="fuel_date"
-  sx={{ gridColumn: "span 2" }}
-  error={touched.fuel_date && Boolean(errors.fuel_date)}
-  helperText={touched.fuel_date && errors.fuel_date}
-/>
-<TextField
-  fullWidth
-  variant="filled"
-  type="text"
-  label="FUEL TYPE"
-  id="fuel_type"
-  onChange={handleChange}
-  onBlur={handleBlur}
-  value={values.fuel_type}
-  name="fuel_type"
-  sx={{ gridColumn: "span 2" }}
-  error={touched.fuel_type && Boolean(errors.fuel_type)}
-  helperText={touched.fuel_type && errors.fuel_type}
-/>
-<TextField
-  fullWidth
-  variant="filled"
-  type="number"
-  label="FUEL QUANTITY"
-  id="fuel_quantity"
-  onChange={handleChange}
-  onBlur={handleBlur}
-  value={values.fuel_quantity}
-  name="fuel_quantity"
-  sx={{ gridColumn: "span 2" }}
-  error={touched.fuel_quantity && Boolean(errors.fuel_quantity)}
-  helperText={touched.fuel_quantity && errors.fuel_quantity}
-/>
-<TextField
-  fullWidth
-  variant="filled"
-  type="number"
-  label="FUEL COST"
-  id="fuel_cost"
-  onChange={handleChange}
-  onBlur={handleBlur}
-  value={values.fuel_cost}
-  name="fuel_cost"
-  sx={{ gridColumn: "span 2" }}
-  error={touched.fuel_cost && Boolean(errors.fuel_cost)}
-  helperText={touched.fuel_cost && errors.fuel_cost}
-/>
-<TextField
-  fullWidth
-  variant="filled"
-  type="number"
-  label="VEHICLE MILAGE"
-  id="vehicle_milage"
-  onChange={handleChange}
-  onBlur={handleBlur}
-  value={values.vehicle_milage}
-  name="vehicle_milage"
-  sx={{ gridColumn: "span 2" }}
-  error={touched.vehicle_milage && Boolean(errors.vehicle_milage)}
-  helperText={touched.vehicle_milage && errors.vehicle_milage}
-/>
-{/* ... */}
-
-
-              </Box>
-              {/* ... Repeat the above pattern for other fields ... */}
+              
+              <FormControl fullWidth variant="filled">
+    <InputLabel htmlFor="fuel_type">FUEL TYPE</InputLabel>
+    <Select
+      id="fuel_type"
+      value={values.fuel_type}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      name="fuel_type"
+      label="FUEL TYPE"
+      error={touched.fuel_type && Boolean(errors.fuel_type)}
+    >
+      <MenuItem value={"Diesel"}>Diesel</MenuItem>
+      <MenuItem value={"Petrol"}>Petrol</MenuItem>
+    
+    </Select>
+    {touched.fuel_type && errors.fuel_type && (
+      <div style={{ color: "red", marginTop: "8px" }}>
+        {errors.fuel_type}
+      </div>
+    )}
+  </FormControl>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="FUEL QUANTITY"
+                id="fuel_quantity"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.fuel_quantity}
+                name="fuel_quantity"
+                sx={{ gridColumn: "span 2" }}
+                error={touched.fuel_quantity && Boolean(errors.fuel_quantity)}
+                helperText={touched.fuel_quantity && errors.fuel_quantity}
+              /></Box>
+              <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="FUEL COST"
+                id="fuel_cost"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.fuel_cost}
+                name="fuel_cost"
+                sx={{ gridColumn: "span 2" }}
+                error={touched.fuel_cost && Boolean(errors.fuel_cost)}
+                helperText={touched.fuel_cost && errors.fuel_cost}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="VEHICLE MILAGE"
+                id="vehicle_milage"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.vehicle_milage}
+                name="vehicle_milage"
+                sx={{ gridColumn: "span 2" }}
+                error={touched.vehicle_milage && Boolean(errors.vehicle_milage)}
+                helperText={touched.vehicle_milage && errors.vehicle_milage}
+              /></Box>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained" fullWidth>

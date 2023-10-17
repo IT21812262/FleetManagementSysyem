@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback  } from "react";
 import axios from "axios";
-import { Box, Button, TextField } from '@mui/material';
+import { FormControl, Box, Button, TextField, InputLabel, Select, MenuItem } from '@mui/material';
 import { useLocation } from "react-router-dom";
 import { Formik } from "formik";
 import Header from "../../components/Header";
@@ -231,7 +231,7 @@ const UpdateFuelstock = () => {
         onSubmit={handleSubmit}
       >
         
-        <form className="updateFuelStockForm" onSubmit={handleSubmit}>
+        <form className="updateFuelStockFormm" onSubmit={handleSubmit}>
         
         {fuelstockData.invoice_no && (
       <Header
@@ -275,16 +275,23 @@ const UpdateFuelstock = () => {
             <div className="invalid-feedback">{errors.invoice_no}</div>
           )}
 
-<TextField
-            fullWidth
-            id="stocked_fuel_type"
-            label="Stocked Fuel Type"
-            variant="outlined"
-            value={fuelstockData.stocked_fuel_type}
-            onChange={handleInputChange}
-            error={!!errors.stocked_fuel_type}
-            helperText={errors.stocked_fuel_type}
-          />
+<FormControl fullWidth variant="filled">
+    <InputLabel htmlFor="fuel_type">Stocked Fuel Type</InputLabel>
+    <Select
+      id="stocked_fuel_type"
+      value={fuelstockData.stocked_fuel_type}
+      
+      name="stocked_fuel_type"
+      label="Stocked Fuel Type"
+      error={!!errors.stocked_fuel_type}
+      helperText={errors.stocked_fuel_type}
+    >
+      <MenuItem value={"Diesel"}>Diesel</MenuItem>
+      <MenuItem value={"Petrol"}>Petrol</MenuItem>
+    
+    </Select>
+  </FormControl>
+
             </Box>
 
             <Box display="flex" justifyContent="end" mt="20px" gap="30px">

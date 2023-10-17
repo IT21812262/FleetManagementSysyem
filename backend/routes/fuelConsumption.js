@@ -45,5 +45,19 @@ router.route("/delete/:vehicle_id").delete((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+//UNIQUE FUEL DATA
+router.route("/get/:vehicle_id").get(async(req,res) =>{
+  let entryId = req.params.id;
+
+  const update = await Fuelentry.findOne({vehicle_id : entryId}) 
+  .then((fuelconsumptionentry) =>{
+      res.status(200).send({status :"Fuel Data Successfully Fetched!!!!!!", fuelconsumptionentry});
+  }).catch((err) => {
+      console.log(err);
+      res.status(500).send({status: "Not Fetched. Error in the fuel data Fetched!!!!", error: err.message});
+  })
+})
+
+
 
 module.exports = router;

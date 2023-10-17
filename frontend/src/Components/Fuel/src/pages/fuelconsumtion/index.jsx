@@ -7,10 +7,11 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import AddConsumption from './AddConsumption';
+import emailjs from "emailjs-com";
 import "./index.css";
 
 
-
+emailjs.init("wnlZ7w7kM05JeKEXb");
 
 const Fuelconsumption = () => {
   const theme = useTheme();
@@ -68,6 +69,42 @@ const Fuelconsumption = () => {
     textDecoration: "none", // Remove underline
     color: "white",       // Set text color to white
   };
+  useEffect(() => {
+    emailjs.init("wnlZ7w7kM05JeKEXb");
+}, []);
+
+function contactMaintenanceManager(rowData) {
+  // Define your EmailJS service ID, template ID, and user ID
+  const serviceId = "service_ayps2f8";
+  const templateId = "template_5datrbi";
+  const userId = "wnlZ7w7kM05JeKEXb";
+
+  // Create a template parameters object with the product ID and any other data you want to include
+  const templateParams = {
+    to_name: "Maintenance Manager",
+    from_name: "Fuel Consumption System",
+    message: `
+      Vehicle ID: ${rowData.vehicle_id}
+      Trip ID: ${rowData.trip_id}
+      Fuel Type: ${rowData.fuel_type}
+      Dispatched Fuel Quantity: ${rowData.fuel_quantity}
+      Designed Fuel Consumption: ${rowData.estimatedConsumption}
+      Actual Fuel Consumption: ${rowData.actualConsumption}
+      Difference: ${rowData.difference}
+    `
+  };
+
+  // Send the email using EmailJS
+  emailjs.send(serviceId, templateId, templateParams, userId)
+    .then((response) => {
+      console.log("Email sent successfully:",response);
+      alert("Email sent successfully:");
+    })
+    .catch((error) => {
+      console.error("Email send error:", error);
+      alert("Email send error:", error);
+    });
+};
   
   const columns = [
     
@@ -142,28 +179,23 @@ const Fuelconsumption = () => {
       renderCell: (params) => (
         <div className="edit-1-2-parent">
           
-          <Button
-            
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-              margin: "2px",
-              transition: "background-color 0.3s", // Add a transition for smooth color change
-                "&:hover": {
-                backgroundColor: "#141B2D", // Red color on hover
-              },
-            }}
-          ><Link
-          to={`/fuel/updateFuelentry/${params.row.vehicle_id}`}
-          state={{ fuelentryData: params.row }}
-          style={linkStyle}
+        <Button onClick={() => contactMaintenanceManager(params.row)}
+          sx={{
+            backgroundColor: colors.blueAccent[700],
+            color: colors.grey[100],
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "10px 20px",
+            margin: "2px",
+            transition: "background-color 0.3s", // Add a transition for smooth color change
+              "&:hover": {
+              backgroundColor: "#141B2D", // Red color on hover
+            },
+          }}
         >
-            REQUEST REPAIR</Link>
-          </Button>
-
+            REQUEST REPAIR
+          
+        </Button>
           <Button onClick={() => handleDelete(params.row.vehicle_id)}
             sx={{
               backgroundColor: '#FF0000',
