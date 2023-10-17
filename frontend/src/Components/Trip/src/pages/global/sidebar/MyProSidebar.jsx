@@ -159,13 +159,13 @@ const MyProSidebar = () => {
             </Box>
           )}
           <Box paddingLeft={collapsed ? undefined : "10%"}>
-            <Item
+           {/*  <Item
               title="Dashboard"
               to="/trip"
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
 
             <Typography
               variant="h6"

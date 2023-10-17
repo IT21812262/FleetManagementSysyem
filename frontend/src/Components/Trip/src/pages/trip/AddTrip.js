@@ -24,13 +24,14 @@ const generateTripID = () => {
   return `${randomLetters}${randomNumber}`;
 };
 
-// ... (previous code)
+
 
 const AddTrip = ({ onClose }) => {
   const isNonMobile = useMediaQuery("(min-width:600px");
   const location = useLocation();
+  const [isTripIdUnique, setIsTripIdUnique] = useState(true);
 
-  // ... (previous code)
+  
 
   const handleFormSubmit = (values) => {
     console.log(values);
@@ -89,7 +90,7 @@ const AddTrip = ({ onClose }) => {
     if (
       !validateTripId(tripid)||
       !validateTripName(tripname) ||
-      //!validateTripDuration(tripduration) ||
+      !validateTripDuration(tripduration) ||
       !validateTripDistance(tripdistance) ||
       !validateVehicleNo(vehicleno) ||
       !validateDriverId(driverid) ||
@@ -163,6 +164,7 @@ const AddTrip = ({ onClose }) => {
         setEndFuel("");
   }
   
+  
 
   const handleInputChange = (e) => {
   
@@ -180,7 +182,7 @@ const AddTrip = ({ onClose }) => {
 };
 
 const validateTripId = (tripid) => {
-  if (!tripid) {
+  if (!tripid ) {
     setTripIDError("Trip ID is required.");
     return false;
   }
@@ -243,7 +245,7 @@ const validateTripDistance = (tripdistance) => {
 };
 
   
- /* const validateTripDuration = (tripduration) => {
+  const validateTripDuration = (tripduration) => {
     if (!tripduration) {
       setTripDurationError("Trip Duration is required.");
       return false;
@@ -266,7 +268,7 @@ const validateTripDistance = (tripdistance) => {
   
     setTripDurationError("");
     return true;
-  };*/
+  };
   
 
   const validateVehicleNo = (vehicleno) => {
