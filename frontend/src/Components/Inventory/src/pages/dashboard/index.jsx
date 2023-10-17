@@ -23,6 +23,8 @@ import ProgressCircle from "../../components/ProgressCircle";
 import DieselTank from "../../components/DieselTank";
 import PetrolTank from "../../components/PetrolTank";
 
+// import BarChart from "../../components/BarChart";
+
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -60,6 +62,19 @@ const Dashboard = () => {
       {/* GRID & CHARTS */}
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid xs={12} sm={12} md={6} lg={3} xl={3}>
+
+
+
+
+
+
+     
+
+
+
+
+
+
         <Box
             width="100%"
             height="300px" 
@@ -74,6 +89,10 @@ const Dashboard = () => {
           <DieselTank />
           
           </Box>
+
+
+
+
         </Grid>
         <Grid xs={12} sm={12} md={6} lg={3} xl={3}>
         <Box

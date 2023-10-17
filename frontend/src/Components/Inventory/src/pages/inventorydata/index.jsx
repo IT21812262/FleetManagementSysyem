@@ -22,6 +22,9 @@ import { InputBase } from "@mui/material";
 // import React, { useState, useEffect } from "react";
 
 
+import { Bar } from "react-chartjs-2";
+
+
 
 
 const Inventory = () => {
@@ -49,11 +52,69 @@ const Inventory = () => {
 
   
   const [selectedRow, setSelectedRow] = useState(null);
+  const [inventories, setInventories] = useState([]);
+
+
+  // bar chart implementation
+
+  // const productNames = inventories.map((inventory) => inventory.name);
+  // const productQuantities = inventories.map((inventory) => inventory.qty);
+
+  // const chartData = {
+  //   labels: productNames,
+  //   datasets: [
+  //     {
+  //       label: "Quantity",
+  //       data: productQuantities,
+  //       backgroundColor: "rgba(75, 192, 192, 0.6)", // Customize the bar color
+  //     },
+  //   ],
+  // };
+  
+  // const chartOptions = {
+  //   scales: {
+  //     y: {
+  //       beginAtZero: true,
+  //       title: {
+  //         display: true,
+  //         text: "Quantity",
+  //       },
+  //     },
+  //   },
+  // };
+
+  // const chartOptions = {
+  //   scales: {
+  //     yAxes: [
+  //       {
+  //         type: 'linear', // Set the scale type to linear
+  //         position: 'left', // Position of the scale
+  //         ticks: {
+  //           beginAtZero: true, // Start the scale from zero
+  //         },
+  //         scaleLabel: {
+  //           display: true,
+  //           labelString: 'Quantity', // Label for the y-axis
+  //         },
+  //       },
+  //     ],
+  //   },
+  // };
+
+//   // Destroy existing chart
+// if (myChart) {
+//   myChart.destroy();
+// }
+
+// // Create a new chart
+// myChart = new Chart(canvasRef.current, {
+//   type: 'bar',
+//   data: chartData,
+//   options: chartOptions,
+// });
 
   
 
-
-  const [inventories, setInventories] = useState([]);
 
 
   const handleDelete = async (itemId) => {
@@ -371,11 +432,11 @@ const handleDownloadPdf = () => {
   const columns2 = [
     "Quantity",
     "Unit Price",
-    "Total Price",
+    //"Total Price",
     "Manufactured Date",
     "Expiry Date",
     "Reorder Level",
-    "Invoice Number",
+    //"Invoice Number",
     "Vehicle Manufacturing Year"
   ];
 
@@ -398,12 +459,12 @@ const handleDownloadPdf = () => {
   const rows2 = filteredInventories.map((inventory) => [
     inventory.qty,
     inventory.unit_price,
-    inventory.total_price, // Assuming this property exists in your data
+    //inventory.total_price, // Assuming this property exists in your data
     extractDateOnly(inventory.man_date),
     extractDateOnly(inventory.exp_date),
     inventory.reorder_level,
-    inventory.invoice_number,
-    inventory.vehicle_man_year && inventory.vehicle_man_year.value
+    //inventory.invoice_number,
+    inventory.vehicle_man_year //&& inventory.vehicle_man_year.value
   ]);
 
   let y = 30;
@@ -447,12 +508,12 @@ const handleDownloadPdf = () => {
   value={searchTerm}
   onChange={e => setSearchTerm(e.target.value)}
   className="search-input"
-  placeholder="Search Supplier"
-  style={{ width: '200px' }} // Adjust the width as needed
+  placeholder="Search Spare Parts"
+  style={{ width: '300px', height: '40px' }} // Adjust the width as needed
 />
 
 {/* // Search box */}
-<Box
+{/* <Box
           display="flex"
           backgroundColor={colors.primary[400]}
           p={0.2}
@@ -466,7 +527,7 @@ const handleDownloadPdf = () => {
           <IconButton type="button">
             <SearchIcon />
           </IconButton>
-        </Box>
+        </Box> */}
 
         {/* <Box
         m="8px 0 0 0"
@@ -563,6 +624,8 @@ const handleDownloadPdf = () => {
   components={{ Toolbar: GridToolbar }}
 />
 
+{/* // export bar chart */}
+{/* <Bar data={chartData} options={chartOptions} /> */}
 
 
       </Box>

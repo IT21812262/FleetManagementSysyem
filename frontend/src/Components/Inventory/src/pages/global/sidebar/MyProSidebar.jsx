@@ -183,7 +183,7 @@ const MyProSidebar = () => {
             />
             <Item
               title="Release Spare Parts"
-              to="/inventory/release"
+              to="/inventory/release/"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
