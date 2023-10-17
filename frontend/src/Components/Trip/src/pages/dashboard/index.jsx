@@ -6,12 +6,14 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
+import axios from "axios";
 import Grid from "@mui/material/Unstable_Grid2";
-import { tokens } from "../../theme";
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import Header from "../../components/Header";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { tokens } from "../../theme";
 
-const Dashboard = () => {
+const Trips = () => {
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.up("sm"));
   const colors = tokens(theme.palette.mode);
@@ -20,17 +22,101 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Make an API request to fetch trip data from your server
-    fetch("http://your-api-endpoint/trips")
-      .then((response) => response.json())
-      .then((data) => {
-        setTrips(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching trips:", error);
-      });
+    const fetchTrips = async () => {
+      try {
+        const response = await axios.get("http://localhost:8411/trip");
+        setTrips(response.data);
+      } catch (error) {
+        alert("Error fetching trips: " + error.message);
+      }
+    };
+
+    fetchTrips();
   }, []);
+
+  const [filteredTrips, setFilteredTrips] = useState([]);
+
+  const handleDownloadPdf = () => {
+    const doc = new jsPDF({ orientation: "landscape" });
+
+    const centerText = (text, yPosition, fontSize) => {
+      doc.setFontSize(fontSize);
+      const textWidth =
+        (doc.getStringUnitWidth(text) * fontSize) / doc.internal.scaleFactor;
+      const xPosition =
+        (doc.internal.pageSize.width - textWidth) / 2;
+      doc.text(text, xPosition, yPosition);
+    };
+
+    centerText('Logix', 10, 20);
+    centerText('Trip Details', 18, 16);
+
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${formattedDate}`, doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 10);
+
+    const columns1 = [
+      "Trip ID",
+      "Trip Name",
+      "Trip Duration",
+      "Trip Distance",
+      "Vehicle Number",
+      "Driver ID",
+      "Start Point",
+      "Destination"
+    ];
+
+    const columns2 = [
+      "Trip Goods",
+      "Arrival Time",
+      "Departure Time",
+      "Start Fuel",
+      "End Fuel"
+    ];
+
+    const rows1 = filteredTrips.map((trip) => [
+      trip.tripid,
+      trip.tripname,
+      trip.tripduration,
+      trip.tripdistance,
+      trip.vehicleno,
+      trip.driverid,
+      trip.startpoint,
+      trip.destination
+    ]);
+
+    const rows2 = filteredTrips.map((trip) => [
+      trip.tripgoods,
+      trip.arrivaltime,
+      trip.departuretime,
+      trip.startfuel,
+      trip.endfuel,
+    ]);
+
+    let y = 30;
+
+    doc.autoTable({
+      head: [columns1],
+      body: rows1,
+      startY: y
+    });
+
+    doc.addPage();
+
+    centerText('Logix', 10, 20);
+    centerText('Trip Details', 18, 16);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${formattedDate}`, doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 10);
+
+    doc.autoTable({
+      head: [columns2],
+      body: rows2,
+      startY: y
+    });
+
+    doc.save("trips.pdf");
+  };
 
   return (
     <Box m="20px">
@@ -46,20 +132,11 @@ const Dashboard = () => {
           subtitle="Welcome to LogiX Fleet Management System"
         />
 
-        <Box>
-          <Button
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-            }}
-          >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Download Reports
-          </Button>
-        </Box>
+        <div className="buttons">
+          <button onClick={handleDownloadPdf} className="update-button">
+            Download as PDF
+          </button>
+        </div>
       </Box>
 
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
@@ -76,56 +153,8 @@ const Dashboard = () => {
             borderRadius="15px"
           >
             <Typography variant="h4" color="textPrimary">
-              On-Going Trips
+              Welcome!
             </Typography>
-            {isLoading ? (
-              <p>Loading trips...</p>
-            ) : trips.length > 0 ? (
-              <table className="trip-table">
-                <thead>
-                  <tr>
-                    <th>Trip ID</th>
-                    <th>Trip Name</th>
-                    <th>Trip Duration</th>
-                    <th>Trip Distance</th>
-                    <th>Vehicle Number</th>
-                    <th>Driver ID</th>
-                    <th>Starting Point</th>
-                    <th>Destination</th>
-                    <th>Trip Goods</th>
-                    <th>Arrival Time</th>
-                    <th>Departure Time</th>
-                    <th>Starting Fuel</th>
-                    <th>End Fuel</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {trips.map((trip) => (
-                    <tr key={trip.tripid}>
-                      <td>{trip.tripid}</td>
-                      <td>{trip.tripname}</td>
-                      <td>{trip.tripduration}</td>
-                      <td>{trip.tripdistance}</td>
-                      <td>{trip.vehicleno}</td>
-                      <td>{trip.driverid}</td>
-                      <td>{trip.startpoint}</td>
-                      <td>{trip.destination}</td>
-                      <td>{trip.tripgoods}</td>
-                      <td>{trip.arrivaltime}</td>
-                      <td>{trip.departuretime}</td>
-                      <td>{trip.startfuel}</td>
-                      <td>{trip.endfuel}</td>
-                      <td>
-                        {/* Add your action buttons here */}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p>No trips found.</p>
-            )}
           </Box>
         </Grid>
       </Grid>
@@ -133,4 +162,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Trips;

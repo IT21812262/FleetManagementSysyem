@@ -8,6 +8,8 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import AddTrip from './AddTrip';
 import "./index.css";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const Tripdata = () => {
   const theme = useTheme();
@@ -65,6 +67,120 @@ const Tripdata = () => {
     startfuel: parseFloat(trip.startfuel),
     endfuel: parseFloat(trip.endfuel),
   }));
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredTrips, setFilteredTrips] = useState([]);
+
+  useEffect(() => {
+    const filtered = trips.filter((trip) => {
+      const tripIdStr = trip.tripid ? trip.tripid.toString() : '';
+const tripDurationStr = trip.tripduration ? trip.tripduration.toString() : '';
+const tripDistanceStr = trip.tripdistance ? trip.tripdistance.toString() : '';
+const vehicleNoStr = trip.vehicleno ? trip.vehicleno.toString() : '';
+const driverIdStr = trip.driverid ? trip.driverid.toString() : '';
+const startFuelStr = trip.startfuel ? trip.startfuel.toString() : '';
+const endFuelStr = trip.endfuel ? trip.endfuel.toString() : '';
+
+      return (
+        tripIdStr.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        trip.tripname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tripDurationStr.includes(searchTerm) ||
+        tripDistanceStr.includes(searchTerm) ||
+        vehicleNoStr.includes(searchTerm) ||
+        driverIdStr.includes(searchTerm) ||
+        trip.startpoint.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        trip.destination.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        trip.tripgoods.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        trip.arrivaltime.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        trip.departuretime.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        startFuelStr.includes(searchTerm) ||
+        endFuelStr.includes(searchTerm)
+      );
+    });
+    setFilteredTrips(filtered);
+  }, [searchTerm, trips]);
+  
+
+  const handleDownloadPdf = () => {
+    const doc = new jsPDF({ orientation: "landscape" });
+
+    const centerText = (text, yPosition, fontSize) => {
+      doc.setFontSize(fontSize);
+      const textWidth =
+        (doc.getStringUnitWidth(text) * fontSize) / doc.internal.scaleFactor;
+      const xPosition =
+        (doc.internal.pageSize.width - textWidth) / 2;
+      doc.text(text, xPosition, yPosition);
+    };
+
+    centerText('Logix', 10, 20);
+    centerText('Trip Details', 18, 16);
+
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${formattedDate}`, doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 10);
+
+    const columns1 = [
+      "Trip ID",
+      "Trip Name",
+      "Trip Duration",
+      "Trip Distance",
+      "Vehicle Number",
+      "Driver ID",
+      "Start Point",
+      "Destination"
+    ];
+
+    const columns2 = [
+      "Trip Goods",
+      "Arrival Time",
+      "Departure Time",
+      "Start Fuel",
+      "End Fuel"
+    ];
+
+    const rows1 = filteredTrips.map((trip) => [
+      trip.tripid,
+      trip.tripname,
+      trip.tripduration,
+      trip.tripdistance,
+      trip.vehicleno,
+      trip.driverid,
+      trip.startpoint,
+      trip.destination
+    ]);
+
+    const rows2 = filteredTrips.map((trip) => [
+      trip.tripgoods,
+      formatDateTime(trip.arrivaltime),
+      formatDateTime(trip.departuretime),
+      trip.startfuel,
+      trip.endfuel,
+    ]);
+
+    let y = 30;
+
+    doc.autoTable({
+      head: [columns1],
+      body: rows1,
+      startY: y
+    });
+
+    doc.addPage();
+
+    centerText('Logix', 10, 20);
+    centerText('Trip Details', 18, 16);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${formattedDate}`, doc.internal.pageSize.width - 100, doc.internal.pageSize.height - 10);
+
+    doc.autoTable({
+      head: [columns2],
+      body: rows2,
+      startY: y
+    });
+
+    doc.save("trips.pdf");
+  };
 
   const linkStyle = {
     textDecoration: "none",
@@ -287,7 +403,28 @@ const Tripdata = () => {
           <div className="overlay">
             <AddTrip onClose={closePopup} />
           </div>
+
+          
         )}
+
+        <Button 
+          onClick={handleDownloadPdf}
+          sx={{
+            backgroundColor: colors.blueAccent[700],
+            color: colors.grey[100],
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "10px 20px",
+            transition: "background-color 0.3s",
+            "&:hover": {
+              backgroundColor: "#1F2A40",
+            },
+          }}
+        >
+          <DownloadOutlinedIcon sx={{ mr: "10px" }} />
+          Download PDF
+        </Button>
+
       </Box>
       <Box
         m="8px 0 0 0"
