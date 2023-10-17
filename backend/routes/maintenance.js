@@ -13,7 +13,7 @@ router.route("/add").post((req,res)=>{
     const description = req.body.description;
     const parts_used = req.body.parts_used;
     const Date_complete = Date(req.body.Date_complete);
-    console.log("Dname", dname);
+    
 
     const newcorrectiveMaintence = new correctiveMaintence({
     
@@ -101,6 +101,14 @@ router.route("/get/:id").get(async(req,res) =>{
         res.status(500).send({status: "Not Fetched. Error in the job data Fetched!!!!", error: err.message});
     })
 })
+
+router.route("/checkJobID/:id").get(async (req, res) => {
+    const jobID = req.params.id;
+  
+    const jobExists = await correctiveMaintence.findOne({ jobID });
+    res.json({ isInUse: !!jobExists });
+  });
+  
 
 
 module.exports = router;

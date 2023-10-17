@@ -17,6 +17,14 @@ const AddCorrectiveMaintenance = ({ onClose }) => {
   const [longitude, setLongitude] = useState(null);
   const [errors, setErrors] = useState({});
 
+  const generateRandomJobID = () => {
+    // Generate a random alphanumeric sequence
+    const randomSequence = Math.random().toString(36).substr(2, 6).toUpperCase();
+    const jobId = `CJ${randomSequence}`;
+    setJobID(jobId);
+  };
+
+
   const fetchDriverDetails = (eid) => {
     axios
       .get(`http://localhost:8411/employee/get/${eid}`)
@@ -108,12 +116,12 @@ const AddCorrectiveMaintenance = ({ onClose }) => {
   }
 
   return (
-    <Box m="20px" >
+    <Box m="20px">
       <Header title="ADD CORRECTIVE MAINTENANCE" subtitle="Adding new corrective maintenance record" />
       <button className="close-button" onClick={onClose}>
         Close
       </button>
-      <form className="addCorrectiveMaintenanceForm" onSubmit={sendData}>
+      <form className="addCorrectiveMaintenanceForm" onSubmit={sendData}style={{ background: "black", padding: "20px" }}>
       <Box
                   display="grid"
                   gap="30px"
@@ -122,16 +130,16 @@ const AddCorrectiveMaintenance = ({ onClose }) => {
                     "& > div": { undefined : "span 2" },
                   }}
                 >
-          <TextField
+             <TextField
             fullWidth
             variant="filled"
             type="text"
             label="Job ID"
             required
             value={jobID}
-            onChange={(e) => setJobID(e.target.value)}
-            error={errors.jobID}
-            helperText={errors.jobID && "Job ID is required"}
+             // Generate random Job ID when the field is focused
+            onClick={generateRandomJobID} // For better user experience, you can also generate on click
+             // Disable manual input for Job ID
           />
 
           <TextField
