@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Button, TextField, Grid, Paper, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  TextField,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import "./AddRent.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddRent = ({ onClose }) => {
   // State variables for form fields
@@ -17,24 +26,24 @@ const AddRent = ({ onClose }) => {
   const [owner_phone, setOwnerPhone] = useState("");
   const [owner_email, setOwnerEmail] = useState("");
   const [rental, setRental] = useState("");
-  const [total_rent, setTotalRent] = useState(0); // Initialize total_rent to 0
+  const [total_rent, setTotalRent] = useState(0);
 
   // State variable for form validation errors
   const [errors, setErrors] = useState({});
 
-  // State variable to check if the vehicle number is unique
-  const [isVehicleNoUnique, setIsVehicleNoUnique] = useState(true);
-
   // State variable for displaying vehicle number validation error
   const [vehicleNoError, setVehicleNoError] = useState("");
+
+  // State variable to check if the vehicle number is unique
+  const [isVehicleNoUnique, setIsVehicleNoUnique] = useState(true);
 
   // Function to handle input changes and update state
   const handleInputChange = (name, value) => {
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
 
-    // Reset the vehicleNoError when user starts typing
     if (name === "vehicle_no") {
       setVehicleNoError("");
+      checkVehicleNoUniqueness(value); // Check uniqueness as the user types
     }
 
     switch (name) {
@@ -80,32 +89,31 @@ const AddRent = ({ onClose }) => {
   };
 
   // Function to check if the vehicle number already exists
-  const checkIfVehicleNoExists = async (vehicle_no) => {
+  const checkVehicleNoUniqueness = async (value) => {
     try {
-      const response = await axios.get(`http://localhost:8411/rent/check-vehicle-no/${vehicle_no}`);
-      return response.data.exists;
+      const response = await axios.get(
+        `http://localhost:8411/rent/check-vehicle-no/${value}`
+      );
+      setIsVehicleNoUnique(response.data.isUnique);
+
+      if (!response.data.isUnique) {
+        setVehicleNoError("Vehicle Number already exists");
+      } else {
+        setVehicleNoError("");
+      }
     } catch (error) {
-      console.error("Error checking vehicle number:", error);
-      return false;
+      console.error(error);
     }
   };
-  
 
   // Function to perform form validation
-  const validate = async () => {
+  const validate = () => {
     const newErrors = {};
     setErrors({});
 
     if (!vehicle_no.match(/^([A-Z]{2,3}-\d{4})$/)) {
       newErrors.vehicle_no = "Invalid format (e.g., XX-0000 or XXX-0000)";
-    } else {
-      // Check if the vehicle number already exists
-      const exists = await checkIfVehicleNoExists(vehicle_no);
-      if (exists) {
-        setVehicleNoError("Vehicle No already exists");
-      }
     }
-
     if (!brand) {
       newErrors.brand = "Brand is required";
     }
@@ -151,7 +159,8 @@ const AddRent = ({ onClose }) => {
       const rentalAmount = parseFloat(rental);
 
       if (!isNaN(rentalAmount)) {
-        const daysDifference = (returnDateObj - receiveDateObj) / (1000 * 60 * 60 * 24);
+        const daysDifference =
+          (returnDateObj - receiveDateObj) / (1000 * 60 * 60 * 24);
         const totalRentAmount = daysDifference * rentalAmount;
 
         setTotalRent(totalRentAmount.toFixed(2));
@@ -167,19 +176,8 @@ const AddRent = ({ onClose }) => {
   const sendData = (e) => {
     e.preventDefault();
 
-    if (validate() && isVehicleNoUnique) {
-      let totalRentAmount = 0;
-
-      if (return_date && receive_date && rental) {
-        const returnDate = new Date(return_date);
-        const receiveDate = new Date(receive_date);
-        const rentalAmount = parseFloat(rental);
-
-        if (!isNaN(rentalAmount)) {
-          const daysDifference = (returnDate - receiveDate) / (1000 * 60 * 60 * 24);
-          totalRentAmount = daysDifference * rentalAmount;
-        }
-      }
+    if (validate() && !vehicleNoError) {
+      const totalRentAmount = calculateTotalRentAmount();
 
       const newRent = {
         vehicle_no,
@@ -197,24 +195,14 @@ const AddRent = ({ onClose }) => {
         total_rental: totalRentAmount.toFixed(2),
       };
 
-      axios.post("http://localhost:8411/rent/add", newRent)
+      axios
+        .post("http://localhost:8411/rent/add", newRent)
         .then((response) => {
-          alert("Rent Successfully added");
-          setVehicleNo("");
-          setBrand("");
-          setVehicleModel("");
-          setMilage("");
-          setCapacity("");
-          setDescription("");
-          setReceiveDate("");
-          setReturnDate("");
-          setOwnerName("");
-          setOwnerPhone("");
-          setOwnerEmail("");
-          setRental("");
-          setTotalRent(0);
-
-          window.location.reload();
+          clearFormFields();
+          Notify("Rent Vehicle Added Successfully", "success");
+          setTimeout(() => {
+            window.location.reload()
+        }, 2000);
         })
         .catch((err) => {
           console.error("Error while adding rent:", err);
@@ -223,13 +211,80 @@ const AddRent = ({ onClose }) => {
     }
   };
 
+  // Function to calculate total rent amount
+  const calculateTotalRentAmount = () => {
+    let totalRentAmount = 0;
+
+    if (return_date && receive_date && rental) {
+      const returnDate = new Date(return_date);
+      const receiveDate = new Date(receive_date);
+      const rentalAmount = parseFloat(rental);
+
+      if (!isNaN(rentalAmount)) {
+        const daysDifference =
+          (returnDate - receiveDate) / (1000 * 60 * 60 * 24);
+        totalRentAmount = daysDifference * rentalAmount;
+      }
+    }
+
+    return totalRentAmount;
+  };
+
+  // Function to clear form fields
+  const clearFormFields = () => {
+    setVehicleNo("");
+    setBrand("");
+    setVehicleModel("");
+    setMilage("");
+    setCapacity("");
+    setDescription("");
+    setReceiveDate("");
+    setReturnDate("");
+    setOwnerName("");
+    setOwnerPhone("");
+    setOwnerEmail("");
+    setRental("");
+    setTotalRent(0);
+  };
+
+  // Function to show toast notifications
+  function Notify(message, type) {
+    toast[type](message, {
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      position: "top-right",
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      style: {
+        width: "300px",
+        height: "100px",
+        fontSize: "22px",
+        alignItems: "center",
+        fontFamily: "Ropa Sans",
+        display: "flex",
+        justifyContent: "center",
+        color: "white",
+      },
+      bodyClassName: "custom-toast-body",
+    });
+  }
+
   return (
     <Box m={3}>
       <Paper elevation={3} className="addInventoryForm">
         <button className="close-button" onClick={onClose}>
           X
         </button>
-        <Typography variant="h4" component="h2" align="center" color="primary" mt={2}>
+        <Typography
+          variant="h4"
+          component="h2"
+          align="center"
+          color="primary"
+          mt={2}
+        >
           Add Rent
         </Typography>
         <form onSubmit={sendData}>
@@ -239,10 +294,12 @@ const AddRent = ({ onClose }) => {
                 fullWidth
                 label="Vehicle Number"
                 onBlur={() => validate()}
-                onChange={(e) => handleInputChange("vehicle_no", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("vehicle_no", e.target.value)
+                }
                 value={vehicle_no}
-                error={!!(errors.vehicle_no || vehicleNoError)} // Combine errors
-                helperText={errors.vehicle_no || vehicleNoError} // Display the error message
+                error={!!errors.vehicle_no || !!vehicleNoError}
+                helperText={errors.vehicle_no || vehicleNoError}
                 name="vehicle_no"
               />
             </Grid>
@@ -263,7 +320,9 @@ const AddRent = ({ onClose }) => {
                 fullWidth
                 label="Vehicle Model"
                 onBlur={() => validate()}
-                onChange={(e) => handleInputChange("vehicle_model", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("vehicle_model", e.target.value)
+                }
                 value={vehicle_model}
                 error={!!errors.vehicle_model}
                 helperText={errors.vehicle_model}
@@ -287,7 +346,9 @@ const AddRent = ({ onClose }) => {
                 fullWidth
                 label="Capacity"
                 onBlur={() => validate()}
-                onChange={(e) => handleInputChange("capacity", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("capacity", e.target.value)
+                }
                 value={capacity}
                 error={!!errors.capacity}
                 helperText={errors.capacity}
@@ -299,7 +360,9 @@ const AddRent = ({ onClose }) => {
                 fullWidth
                 label="Description"
                 onBlur={() => validate()}
-                onChange={(e) => handleInputChange("description", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
                 value={description}
                 error={!!errors.description}
                 helperText={errors.description}
@@ -312,7 +375,9 @@ const AddRent = ({ onClose }) => {
                 label="Receive Date"
                 type="date"
                 onBlur={() => validate()}
-                onChange={(e) => handleInputChange("receive_date", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("receive_date", e.target.value)
+                }
                 value={receive_date}
                 error={!!errors.receive_date}
                 helperText={errors.receive_date}
@@ -328,7 +393,9 @@ const AddRent = ({ onClose }) => {
                 label="Return Date"
                 type="date"
                 onBlur={() => validate()}
-                onChange={(e) => handleInputChange("return_date", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("return_date", e.target.value)
+                }
                 value={return_date}
                 error={!!errors.return_date}
                 helperText={errors.return_date}
@@ -343,7 +410,9 @@ const AddRent = ({ onClose }) => {
                 fullWidth
                 label="Owner Name"
                 onBlur={() => validate()}
-                onChange={(e) => handleInputChange("owner_name", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("owner_name", e.target.value)
+                }
                 value={owner_name}
                 error={!!errors.owner_name}
                 helperText={errors.owner_name}
@@ -355,7 +424,9 @@ const AddRent = ({ onClose }) => {
                 fullWidth
                 label="Owner Phone"
                 onBlur={() => validate()}
-                onChange={(e) => handleInputChange("owner_phone", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("owner_phone", e.target.value)
+                }
                 value={owner_phone}
                 error={!!errors.owner_phone}
                 helperText={errors.owner_phone}
@@ -367,7 +438,9 @@ const AddRent = ({ onClose }) => {
                 fullWidth
                 label="Owner Email"
                 onBlur={() => validate()}
-                onChange={(e) => handleInputChange("owner_email", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("owner_email", e.target.value)
+                }
                 value={owner_email}
                 error={!!errors.owner_email}
                 helperText={errors.owner_email}
@@ -416,6 +489,7 @@ const AddRent = ({ onClose }) => {
           </center>
         </form>
       </Paper>
+      <ToastContainer />
     </Box>
   );
 };

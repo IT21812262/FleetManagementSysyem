@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   Box,
   useTheme,
@@ -29,6 +31,7 @@ const Rent = () => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+  
 
   const [isPopupVisible, setPopupVisible] = useState(false);
 
@@ -39,6 +42,9 @@ const Rent = () => {
   const closePopup = () => {
     setPopupVisible(false);
   };
+
+  
+  
 
   const [searchKeyword, setSearchKeyword] = useState("");
   const [originalRents, setOriginalRents] = useState([]);
@@ -61,20 +67,24 @@ const Rent = () => {
   const [selectedRow, setSelectedRow] = useState(null);
 
   const handleDelete = async (id) => {
-    const confirmation = window.prompt("To confirm deletion, type 'CONFIRM' (case-sensitive):");
-
-    if (confirmation === "CONFIRM") {
-      try {
-        await axios.delete(`http://localhost:8411/rent/delete/${id}`);
-        alert("Rent record deleted successfully.");
+    const confirmDelete = window.confirm('Are you sure you want to delete this rent record?');
+  
+    if (!confirmDelete) {
+      return; // Do nothing if the user cancels the deletion
+    }
+  
+    try {
+      await axios.delete(`http://localhost:8411/rent/delete/${id}`);
+      Notify('Rent Record Deleted Successfully', 'success');
+      setTimeout(() => {
         window.location.reload();
-      } catch (error) {
-        alert("Error deleting rent record:", error.message);
-      }
-    } else {
-      alert("Deletion cancelled. No changes were made.");
+      }, 2000);
+    } catch (error) {
+      alert("Error deleting rent record:", error.message);
     }
   };
+  
+  
 
   const rows = rents.map((rent) => ({
     id: rent.vehicle_no,
@@ -92,6 +102,30 @@ const Rent = () => {
     rental: rent.rental,
     total_rental: rent.total_rental,
   }));
+
+  function Notify(message, type) {
+    toast[type](message, {
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        position: "top-right",
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        style: {
+            width: '300px',
+            height: '100px',
+            fontSize: '22px',
+            alignItems: 'center',
+            fontFamily: "Ropa Sans",
+            display: 'flex',
+            justifyContent: 'center',
+            color: 'white',
+        },
+        bodyClassName: 'custom-toast-body'
+    });
+}
 
   const linkStyle = {
     textDecoration: "none",
@@ -121,7 +155,7 @@ const Rent = () => {
       align: "center",
       width: 150,
     },
-    {
+    /* {
       field: "milage",
       headerName: "MILEAGE",
       headerAlign: "center",
@@ -143,7 +177,7 @@ const Rent = () => {
       headerAlign: "center",
       align: "center",
       width: 150,
-    },
+    }, */
     {
       field: "receive_date",
       headerName: "RECEIVE DATE",
@@ -172,7 +206,7 @@ const Rent = () => {
       align: "center",
       width: 150,
     },
-    {
+    /* {
       field: "owner_email",
       headerName: "OWNER EMAIL",
       headerAlign: "center",
@@ -186,7 +220,7 @@ const Rent = () => {
       align: "center",
       type: "number",
       width: 150,
-    },
+    }, */
     {
       field: "total_rental",
       headerName: "TOTAL RENTAL",
@@ -293,17 +327,19 @@ const Rent = () => {
   
     // Define styles for table header and cell
     const headerStyles = {
-      fillColor: [100, 100, 255],
-      textColor: [255, 255, 255],
+      fillColor: [41, 128, 185], // Background color
+      textColor: 255, // Text color (white)
       fontStyle: "bold",
-      fontSize: 10,
+      fontSize: 12,
     };
   
     const cellStyles = {
       halign: "center",
       valign: "middle",
-      fontSize: 10,
+      fontSize: 11,
       padding: 8,
+      fillColor: [245, 245, 245], // Background color for cells
+      textColor: 0, // Text color (black)
     };
   
     // Calculate the width for each column based on the available width
@@ -326,6 +362,7 @@ const Rent = () => {
       margin: { top: 30 },
       addPageContent: function (data) {
         doc.setFontSize(18);
+        doc.setTextColor(44, 62, 80); // Title text color
         doc.text("RENT MANAGER - Rent Data", 200, 20, "center");
       },
     });
@@ -333,6 +370,7 @@ const Rent = () => {
     // Save the PDF with a custom file name
     doc.save("rent_data.pdf");
   };
+  
   
   
   
@@ -440,6 +478,7 @@ const Rent = () => {
       >
         <DataGrid rows={rows} columns={columns} components={{ Toolbar: GridToolbar }} />
       </Box>
+      <ToastContainer/>
     </Box>
   );
 };
