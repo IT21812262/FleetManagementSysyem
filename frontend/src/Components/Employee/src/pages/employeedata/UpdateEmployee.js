@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Button, TextField } from "@mui/material";
+import { FormControl, Box, Button, TextField, FormLabel, Select, MenuItem } from '@mui/material';
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
+import { useTheme, ThemeProvider } from '@mui/material';
 import * as yup from "yup";
-import "./UpdateEmployee.css";
+
+
 
 const validationSchema = yup.object().shape({
   ename: yup
@@ -23,6 +23,8 @@ const validationSchema = yup.object().shape({
 });
 
 const UpdateEmployee = () => {
+
+  const theme = useTheme();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -92,6 +94,7 @@ const UpdateEmployee = () => {
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <Box m="20px">
       <Header title={`EDIT EMPLOYEE DATA FOR ${id}`} subtitle="Update Employee Data" />
       <form className="updateEmployeeForm" onSubmit={handleSubmit}>
@@ -115,9 +118,7 @@ const UpdateEmployee = () => {
               error={!!errors.ename}
               helperText={errors.ename}
             />
-          </Box>
-
-          <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+          
             <FormControl component="fieldset" className="form-groupcp">
               <FormLabel component="legend">Gender</FormLabel>
               <div>
@@ -155,9 +156,7 @@ const UpdateEmployee = () => {
               value={employee.address}
               onChange={handleInputChange}
             />
-          </Box>
-
-          <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+          
             <TextField
               fullWidth
               id="employeePhone"
@@ -181,9 +180,7 @@ const UpdateEmployee = () => {
               error={!!errors.email}
               helperText={errors.email}
             />
-          </Box>
-
-          <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+          
             <TextField
               fullWidth
               id="employeeDOB"
@@ -208,9 +205,7 @@ const UpdateEmployee = () => {
               value={employee.jobroll}
               onChange={handleInputChange}
             />
-          </Box>
-
-          <Box display="flex" justifyContent="end" mt="20px" gap="30px">
+          
             <TextField
               fullWidth
               id="employeeDLicense"
@@ -234,31 +229,55 @@ const UpdateEmployee = () => {
             />
           </Box>
         </Box>
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Button type="submit" color="secondary" variant="contained" fullWidth>
-            UPDATE EMPLOYEE
-          </Button>
-        </Box>
-
-        {isSuccess && (
-          <Box display="flex" justifyContent="center" mt="20px" color="green">
-            {message}
+        <Box display="flex" justifyContent="end" mt="20px" >
+<button
+               className="buttonm"
+               type="submit"
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'red',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'red';
+               }}
+             >
+               UPDATE EMPLOYEE
+             </button>
+             <button
+               className="buttonm"
+               onClick={handleButtonClick}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'green',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'green';
+               }}
+             >
+               BACK TO EMPLOYEE DATA
+             </button>
           </Box>
-        )}
-
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Button
-            type="button"
-            color="primary"
-            variant="contained"
-            fullWidth
-            onClick={handleButtonClick}
-          >
-            BACK TO EMPLOYEE DATA
-          </Button>
-        </Box>
       </form>
     </Box>
+    </ThemeProvider>
   );
 };
 

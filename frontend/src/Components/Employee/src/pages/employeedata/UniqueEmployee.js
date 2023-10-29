@@ -7,16 +7,14 @@ import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
 import emailjs from "emailjs-com";
 import { useParams, Link } from "react-router-dom";
+import { useTheme, ThemeProvider } from '@mui/material';
 
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
 
-
-import './UniqueEmployee.css';
-
-
 const UniqueEmployee = () => {
+  const theme = useTheme();
   const { id } = useParams(); // Get the employee ID from the URL
   const [employee, setEmployee] = useState({
     eid: '',
@@ -69,7 +67,20 @@ const UniqueEmployee = () => {
   const handleButtonClick = () => {
     navigate('/employee/employeedata');
   };
+
+  const handleDelete = async (eid) => {
+    try {
+      await axios.delete(`http://localhost:8411/employee/delete/${eid}`);
+      alert('Employee deleted successfully.');
+    
+      window.location.href = "/employee/employeedata";
+    } catch (error) {
+      alert('Error deleting employee:', error.message);
+    }
+  };
+
 return (
+  <ThemeProvider theme={theme}>
   <Box m="20px">
       
       <Formik
@@ -104,11 +115,10 @@ return (
     value={employee.ename}
     onChange={(e) => handleInputChange(e, setEmployee, "ename")}
   />
-</Box>
 
-<Box display="flex" justifyContent="end" mt="20px" gap="30px">
-  <FormControl component="fieldset" className="form-groupcp">
-    <FormLabel component="legend">Gender</FormLabel>
+<FormControl component="fieldset" className="form-groupcp">
+  <FormLabel component="legend">Gender</FormLabel>
+  <div style={{ display: 'flex', alignItems: 'center' }}>
     <div>
       <input
         type="radio"
@@ -121,12 +131,11 @@ return (
       />
       <label htmlFor="male">Male</label>
     </div>
-    <div>
+    <div style={{ marginLeft: '20px' }}>
       <input
         type="radio"
         id="female"
         name="gender"
-        
         disabled
         value="Female"
         checked={employee.gender === 'Female'}
@@ -134,7 +143,9 @@ return (
       />
       <label htmlFor="female">Female</label>
     </div>
-  </FormControl>
+  </div>
+</FormControl>
+
 </Box>
 
 <Box display="flex" justifyContent="end" mt="20px" gap="30px">
@@ -147,9 +158,7 @@ return (
     value={employee.address}
     onChange={(e) => handleInputChange(e, setEmployee, "address")}
   />
-</Box>
 
-<Box display="flex" justifyContent="end" mt="20px" gap="30px">
   <TextField
     fullWidth
     id="employeePhone"
@@ -171,9 +180,7 @@ return (
     value={employee.email}
     onChange={(e) => handleInputChange(e, setEmployee, "email")}
   />
-</Box>
 
-<Box display="flex" justifyContent="end" mt="20px" gap="30px">
   <TextField
     fullWidth
     id="employeeDOB"
@@ -196,9 +203,7 @@ return (
     value={employee.jobroll}
     onChange={(e) => handleInputChange(e, setEmployee, "jobroll")}
   />
-</Box>
 
-<Box display="flex" justifyContent="end" mt="20px" gap="30px">
   <TextField
     fullWidth
     id="employeeBsal"
@@ -213,25 +218,56 @@ return (
 
 </Box>
 <Box display="flex" justifyContent="end" mt="20px">
-            <Button type="submit" color="secondary" variant="contained" fullWidth>
-              UPDATE EMPLOYEE
-            </Button>
-          </Box>
-
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button
-              type="submit"
-              color="btnBack"
-              variant="contained"
-              fullWidth
-              onClick={handleButtonClick}>
-              BACK TO EMPLOYEE DATA
-            </Button>
-          </Box>
+            <button
+               className="buttonm"
+               onClick={() => handleDelete(employee.eid)}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'red',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'red';
+               }}
+             >
+               DELETE FUEL DISPATCH
+             </button>
+             <button
+               className="buttonm"
+               onClick={handleButtonClick}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'green',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'green';
+               }}
+             >
+               BACK FUEL DISPATCH
+             </button>
+            </Box>
         
         </form>
         </Formik>
         </Box>
+        </ThemeProvider>
     
    
        

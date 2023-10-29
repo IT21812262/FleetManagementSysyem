@@ -7,7 +7,7 @@ import { Formik } from "formik";
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
 
-import "./UpdateFuelstock.css";
+
 
 const UpdateFuelstock = () => {
   const theme = useTheme();
