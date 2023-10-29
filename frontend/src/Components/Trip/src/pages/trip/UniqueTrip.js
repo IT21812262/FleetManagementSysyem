@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
+import {ThemeProvider } from '@mui/material';
 import {
   Box,
   Button,
@@ -85,6 +86,7 @@ const UniqueTrip = ({ onClose }) => {
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <Box m="20px">
       <Formik
         initialValues={{ searchQ: "" }}
@@ -194,6 +196,7 @@ const UniqueTrip = ({ onClose }) => {
         )}
       </Formik>
     </Box>
+    </ThemeProvider>
   );
 };
 
