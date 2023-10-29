@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback  } from "react";
 import axios from "axios";
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, TextField, useTheme, ThemeProvider } from '@mui/material';
 import { useLocation } from "react-router-dom";
 import { Formik } from "formik";
 import Header from "../../components/Header";
@@ -14,6 +14,7 @@ import './UpdateInventory.css';
 
 
 const UniqueInventory = () => {
+  const theme = useTheme();
 const location = useLocation();
 
   const { id } = useParams();
@@ -151,6 +152,7 @@ const handleButtonClick = () => {
 
 
 return (
+  <ThemeProvider theme={theme}>
   <Box m="20px">
       
       <Formik
@@ -158,7 +160,7 @@ return (
         
       >
         
-        <form className="updateSupplietrForm" >
+        <form  >
         {pid && (
       <Header
         title={`SPARE PARTS DETAILS FOR ${pid}`}
@@ -420,7 +422,7 @@ return (
         </form>
         </Formik>
         </Box>
-    
+        </ThemeProvider>
    
        
 );

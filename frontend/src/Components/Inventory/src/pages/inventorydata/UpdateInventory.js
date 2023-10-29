@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import emailjs from "emailjs-com";
 import { useParams, Link } from "react-router-dom";
 
+import { useTheme, ThemeProvider } from '@mui/material';
+
 
 import './UpdateInventory.css';
 import './PopUp.css';
@@ -15,6 +17,7 @@ import './PopUp.css';
 emailjs.init("RnzlVKpWiSPUCD2ru");
 
 const UpdateInventory = () => {
+  const theme = useTheme();
   const location = useLocation();
 
   const { id } = useParams();
@@ -547,6 +550,7 @@ const handleButtonClick = () => {
 
 
 return (
+  <ThemeProvider theme={theme}>
   <Box m="20px">
       
       <Formik
@@ -554,7 +558,7 @@ return (
         onSubmit={sentData}
       >
         
-        <form className="updateSupplietrForm" onSubmit={sentData}>
+        <form onSubmit={sentData}>
         {pid && (
       <Header
         title={`EDIT INVENTORY DATA FOR ${pid}`}
@@ -779,27 +783,57 @@ return (
 </Box>
 
 </Box>
-<Box display="flex" justifyContent="end" mt="20px">
-            <Button type="submit" color="secondary" variant="contained" fullWidth>
-              UPDATE PRODUCT
-            </Button>
-          </Box>
-
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button
-              type="submit"
-              color="btnBack"
-              variant="contained"
-              fullWidth
-              onClick={handleButtonClick}>
-              BACK TO INVENTORY DATA
-            </Button>
+<Box display="flex" justifyContent="end" mt="20px" >
+<button
+               className="buttonm"
+               type="submit"
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'red',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'red';
+               }}
+             >
+               UPDATE PRODUCT
+             </button>
+             <button
+               className="buttonm"
+               onClick={handleButtonClick}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'green',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'green';
+               }}
+             >
+               BACK TO INVENTORY DATA
+             </button>
           </Box>
         
         </form>
         </Formik>
         </Box>
-    
+        </ThemeProvider>
    
        
 );
