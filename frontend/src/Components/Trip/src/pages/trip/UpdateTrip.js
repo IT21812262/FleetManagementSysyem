@@ -5,11 +5,13 @@ import { useLocation } from "react-router-dom";
 import { Formik } from "formik";
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
+import { useTheme, ThemeProvider } from '@mui/material';
 
 //import './UpdateSupplier.css';
 
 const UpdateTrip = () => {
   const location = useLocation();
+  const theme = useTheme();
 
   const [tripData, setTripData] = useState(
     location.state?.tripData || {
@@ -190,9 +192,10 @@ const UpdateTrip = () => {
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <Box m="20px">
       <Formik onSubmit={handleSubmit}>
-        <form className="updateSupplierForm" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           {tripData.tripid && (
             <Header
               title={`EDIT TRIP DATA FOR ${tripData.tripid}`}
@@ -364,25 +367,56 @@ const UpdateTrip = () => {
             </Box>
           </Box>
 
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button type="submit" color="secondary" variant="contained" fullWidth>
-              UPDATE TRIP
-            </Button>
-          </Box>
-
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button
-              type="submit"
-              color="btnBack"
-              variant="contained"
-              fullWidth
-              onClick={handleButtonClick}>
-              BACK TO TRIP DATA
-            </Button>
+          <Box display="flex" justifyContent="end" mt="20px" >
+<button
+               className="buttonm"
+               type="submit"
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'red',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'red';
+               }}
+             >
+               UPDATE TRIP DATA
+             </button>
+             <button
+               className="buttonm"
+               onClick={handleButtonClick}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'green',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'green';
+               }}
+             >
+               BACK TO TRIP DATA
+             </button>
           </Box>
         </form>
       </Formik>
     </Box>
+    </ThemeProvider>
   );
 };
 
