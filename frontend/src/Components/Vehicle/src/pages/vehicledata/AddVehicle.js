@@ -15,9 +15,11 @@ import Header from "../../components/Header";
 import { useMediaQuery } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useTheme, ThemeProvider } from '@mui/material';
 import "./AddVehicle.css";
 
 const AddVehicle = ({ onClose }) => {
+  const theme = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const location = useLocation();
 
@@ -111,13 +113,24 @@ const AddVehicle = ({ onClose }) => {
   };
 
   return (
-    <Box m="20px">
-      <button className="close-button" onClick={onClose}>
+    <ThemeProvider theme={theme}>
+    <Box m="20px" sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: isNonMobile ? 600 : '100%', // full width on mobile
+          height: 'auto',
+          bgcolor: 'background.default', // use default background color from theme
+          p: 3, // padding: 35px
+          borderRadius: 2, // border-radius: 15px
+        }}>
+      <button className="addVehicle-close" onClick={onClose}>
         Close
       </button>
       <Formik onSubmit={handleFormSubmit} initialValues={initialValues}>
         {({ values, errors, touched, handleBlur, handleChange }) => (
-          <form className="addVehicleForm" onSubmit={sentData}>
+          <form onSubmit={sentData}>
             <center>
               <Header title="ADD VEHICLE" subtitle="Add a new vehicle" />
             </center>
@@ -368,6 +381,7 @@ const AddVehicle = ({ onClose }) => {
         </DialogActions>
       </Dialog>
     </Box>
+    </ThemeProvider>
   );
 };
 
