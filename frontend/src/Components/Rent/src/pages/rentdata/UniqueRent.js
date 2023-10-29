@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTheme, ThemeProvider } from '@mui/material';
+
 import {
   Typography,
   Box,
@@ -14,6 +16,8 @@ import {
 } from "@mui/material";
 
 const UniqueRent = () => {
+  const theme = useTheme();
+
   const { id } = useParams();
   const [rent, setRent] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -74,6 +78,7 @@ const UniqueRent = () => {
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <Box m="20px">
       <Typography variant="h4" mb={2}>
         Unique Rent
@@ -191,6 +196,7 @@ const UniqueRent = () => {
         </Button>
       </Box>
     </Box>
+    </ThemeProvider>
   );
 };
 
