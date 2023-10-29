@@ -5,11 +5,13 @@ import { useLocation } from "react-router-dom";
 import { Formik } from "formik";
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
+import { useTheme, ThemeProvider } from '@mui/material';
 //import { DatePicker } from '@mui/lab';
 
 import './UpdateSupplier.css';
 
 const UpdateSupplier = () => {
+  const theme = useTheme();
   const location = useLocation();
 
   const [supplierData, setSupplierData] = useState(
@@ -334,6 +336,7 @@ const UpdateSupplier = () => {
   
 
 return (
+  <ThemeProvider theme={theme}>
   <Box m="20px">
       
       <Formik
@@ -341,7 +344,7 @@ return (
         onSubmit={handleSubmit}
       >
         
-        <form className="updateSupplietrForm" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
         {supplierData.supplier_id && (
       <Header
         title={`EDIT SUPPLIER DATA FOR ${supplierData.supplier_id}`}
@@ -592,26 +595,57 @@ return (
 
 </Box>
 </Box>
-<Box display="flex" justifyContent="end" mt="20px">
-            <Button type="submit" color="secondary" variant="contained" fullWidth>
-              UPDATE SUPPLIER
-            </Button>
-          </Box>
-
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button
-              type="submit"
-              color="btnBack"
-              variant="contained"
-              fullWidth
-              onClick={handleButtonClick}>
-              BACK TO SUPPLIER DATA
-            </Button>
+<Box display="flex" justifyContent="end" mt="20px" >
+<button
+               className="buttonm"
+               type="submit"
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'red',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'red';
+               }}
+             >
+               UPDATE SUPPLIER DATA
+             </button>
+             <button
+               className="buttonm"
+               onClick={handleButtonClick}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'green',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'green';
+               }}
+             >
+               BACK TO SUPPLIER DATA
+             </button>
           </Box>
         
         </form>
         </Formik>
         </Box>
+        </ThemeProvider>
     
 
 );

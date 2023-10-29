@@ -6,10 +6,10 @@ import { Formik } from "formik";
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
 import { useParams} from "react-router-dom";
-
-import './UpdateSupplier.css';
+import { useTheme, ThemeProvider } from '@mui/material';
 
 const UniqueSupplier = () => {
+  const theme = useTheme();
   const location = useLocation();
 
   const { id } = useParams();
@@ -156,12 +156,12 @@ const handleButtonClick = () => {
   //await axios.delete(`http://localhost:8411/supplier/delete/${supplierId}`);
   // `http://localhost:8411/supplier/get/${searchQ}`
 
-return (
+return (<ThemeProvider theme={theme}>
   <Box m="20px">
       
       <Formik>
         
-        <form className="updateSupplietrForm" >
+        <form>
         {supplier_id && (
       <Header
         title={` SUPPLIER DETAILS FOR ${supplier_id}`}
@@ -408,6 +408,7 @@ return (
         </form>
         </Formik>
         </Box>
+        </ThemeProvider>
 
 );
 

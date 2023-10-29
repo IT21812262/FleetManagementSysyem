@@ -7,6 +7,7 @@ import Header from "../../components/Header";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { TextField, Select, MenuItem } from '@mui/material';
+import { useTheme, ThemeProvider } from '@mui/material';
 import "./AddSupplier.css";
 
 const generateRandomLetters = (length) => {
@@ -25,6 +26,7 @@ const generateSupplierID = () => {
 };
 
 const AddSupplier = ({ onClose }) => {
+  const theme = useTheme();
 
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const location = useLocation();
@@ -548,13 +550,24 @@ const validateInvoiceNumber = (invoiceNumber) => {
     }; */
 
   return (
-    <Box m="20px">
-      <button className="close-button" onClick={onClose}>
+    <ThemeProvider theme={theme}>
+    <Box m="20px" sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: isNonMobile ? 600 : '100%', // full width on mobile
+          height: 'auto',
+          bgcolor: 'background.default', // use default background color from theme
+          p: 3, // padding: 35px
+          borderRadius: 2, // border-radius: 15px
+        }}>
+      <button className="addSupplier-close" onClick={onClose}>
         Close
       </button>
      <Formik onSubmit={sentData} initialValues={initialValues}>
   {({values, errors, touched, handleBlur, handleChange }) => (
-    <form className="addSupplierForm" onSubmit={sentData}>
+    <form onSubmit={sentData}>
             <center>
               <Header title="ADD SUPPLIER" subtitle="Add a new supplier to the supplier management system" />
             </center>
@@ -1044,6 +1057,7 @@ const validateInvoiceNumber = (invoiceNumber) => {
         )}
       </Formik>
     </Box>
+    </ThemeProvider>
   );
 };
 
