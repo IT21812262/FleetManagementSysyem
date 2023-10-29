@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Box, Button, TextField } from '@mui/material'
 import { Formik } from "formik";
 import * as yup from 'yup';
 import { useMediaQuery } from "@mui/material";
 import Header from "../../components/Header";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import theme from "../../theme"; 
+import { Box, Button, TextField, useTheme, ThemeProvider } from '@mui/material';
 
 import "./AddFuelentry.css";
 
 
 const AddFuelentry = ({onClose}) => {
 
+
+  const theme = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const location = useLocation();
   
@@ -152,15 +155,25 @@ if (currentCapacity.data - fuel_quantity < 0) {
   const navigate = useNavigate();
 
   return (
-    
-    <Box m="20px">
+    <ThemeProvider theme={theme}>
+    <Box m="20px" sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: isNonMobile ? 600 : '100%', // full width on mobile
+          height: 'auto',
+          bgcolor: 'background.default', // use default background color from theme
+          p: 3, // padding: 35px
+          borderRadius: 2, // border-radius: 15px
+        }}>
           
-          <button className="close-button" onClick={onClose}>
+          <button className="addFuelentry-close" onClick={onClose}>
           Close
         </button>
           <Formik onSubmit={sentData} initialValues={initialValues} validationSchema={checkoutSchema}>
             {({ values, errors, touched, handleBlur, handleChange }) => (
-              <form className="addFuelEntryForm" onSubmit={sentData}>
+              <form onSubmit={sentData}>
                 <center><Header title="ADD FUEL DISPATCH" subtitle="Add a new fuel dispatch data to fleet" /></center>
                 <Box
                   display="grid"
@@ -284,6 +297,8 @@ if (currentCapacity.data - fuel_quantity < 0) {
             )}
           </Formik>
         </Box>
+        </ThemeProvider>
+    
   );
 };
 

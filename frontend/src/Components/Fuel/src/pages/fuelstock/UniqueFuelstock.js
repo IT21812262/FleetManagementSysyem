@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useCallback  } from "react";
 import axios from "axios";
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, TextField, useTheme, ThemeProvider } from '@mui/material';
 import { useLocation } from "react-router-dom";
 import { Formik } from "formik";
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
 
-import "./UpdateFuelstock.css";
-
 const UpdateFuelstock = () => {
+  const theme = useTheme();
   const location = useLocation();
 
   const [fuelstockData, setFuelstockData] = useState(
@@ -236,6 +235,7 @@ const UpdateFuelstock = () => {
     }
   };
   return (
+    <ThemeProvider theme={theme}>
     <Box m="20px">
       
       <Formik
@@ -243,7 +243,7 @@ const UpdateFuelstock = () => {
         onSubmit={handleSubmit}
       >
         
-        <form className="updateFuelStockFormm" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
         
         {fuelstockData.invoice_no && (
       <Header
@@ -403,6 +403,7 @@ const UpdateFuelstock = () => {
         </form>
       </Formik>
     </Box>
+    </ThemeProvider>
   );
 };
 

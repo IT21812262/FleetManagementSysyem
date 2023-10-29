@@ -20,8 +20,8 @@ import GeographyChart from "../../components/GeographyChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 
-import DieselTank from "../../components/DieselTank";
-import PetrolTank from "../../components/PetrolTank";
+//import DieselTank from "../../components/DieselTank";
+//import PetrolTank from "../../components/PetrolTank";
 
 
 const Dashboard = () => {
@@ -71,7 +71,7 @@ const Dashboard = () => {
             padding="50px"
             borderRadius= "15px"
           >
-          <DieselTank />
+        
           
           </Box>
         </Grid>
@@ -88,7 +88,7 @@ const Dashboard = () => {
             borderRadius= "15px"
           >
           
-          <PetrolTank />
+          
           </Box>
         </Grid>
         
