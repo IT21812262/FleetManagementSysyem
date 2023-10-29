@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback  } from "react";
 import axios from "axios";
 import { FormControl, Box, Button, TextField, InputLabel, Select, MenuItem } from '@mui/material';
+import { useTheme, ThemeProvider } from '@mui/material';
 import { useLocation } from "react-router-dom";
 import { Formik } from "formik";
 import Header from "../../components/Header";
@@ -9,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import "./UpdateFuelstock.css";
 
 const UpdateFuelstock = () => {
+  const theme = useTheme();
   const location = useLocation();
 
   const [fuelstockData, setFuelstockData] = useState(
@@ -224,6 +226,7 @@ const UpdateFuelstock = () => {
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <Box m="20px">
       
       <Formik
@@ -231,7 +234,7 @@ const UpdateFuelstock = () => {
         onSubmit={handleSubmit}
       >
         
-        <form className="updateFuelStockFormm" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
         
         {fuelstockData.invoice_no && (
       <Header
@@ -344,25 +347,58 @@ const UpdateFuelstock = () => {
             </Box>
 
           </Box>
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button type="submit" color="secondary" variant="contained" fullWidth>
-              UPDATE FUEL STOCK
-            </Button>
-          </Box>
+         
 
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button
-              type="submit"
-              color="btnBack"
-              variant="contained"
-              fullWidth
-              onClick={handleButtonClick}>
-              BACK TO FUEL STOCK 
-            </Button>
+          <Box display="flex" justifyContent="end" mt="20px" >
+<button
+               className="buttonm"
+               type="submit"
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'red',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'red';
+               }}
+             >
+               UPDATE FUEL STOCK
+             </button>
+             <button
+               className="buttonm"
+               onClick={handleButtonClick}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'green',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'green';
+               }}
+             >
+               BACK FUEL STOCK
+             </button>
           </Box>
         </form>
       </Formik>
     </Box>
+    </ThemeProvider>
   );
 };
 

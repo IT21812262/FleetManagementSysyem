@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, TextField, Button } from '@mui/material';
+import { Box, Button, TextField, useTheme, ThemeProvider } from '@mui/material';
 import { Formik } from "formik";
 import * as yup from 'yup';
 import { useMediaQuery } from "@mui/material";
@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import "./AddConsumption.css";
 
 const CalculateFuelConsumtion = ({ onClose }) => {
+  const theme = useTheme();
+
+  
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
 
@@ -68,8 +71,19 @@ useEffect(() => {
   };
 
   return (
-    <Box m="20px">
-      <button className="close-button" onClick={onClose}>
+    <ThemeProvider theme={theme}>
+    <Box m="20px" sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: isNonMobile ? 600 : '100%', // full width on mobile
+          height: 'auto',
+          bgcolor: 'background.default', // use default background color from theme
+          p: 3, // padding: 35px
+          borderRadius: 2, // border-radius: 15px
+        }}>
+      <button className="addFuelconsumption-close" onClick={onClose}>
         Close
       </button>
       <Formik
@@ -78,8 +92,8 @@ useEffect(() => {
         onSubmit={handleFormSubmit}
       >
         {({ values, errors: formikErrors, touched, handleBlur, handleChange, handleSubmit }) => (
-          <form className="addFuelEntryForm" onSubmit={handleSubmit}>
-            <center><Header title="CALCULATE FUEL CONSUMTION" subtitle="Checking vehicle fuel consumption" /></center>
+          <form onSubmit={handleSubmit}>
+            <center><Header title="FUEL CONSUMTION" subtitle="Checking vehicle fuel consumption" /></center>
             <Box
               display="grid"
               gap="30px"
@@ -187,6 +201,7 @@ useEffect(() => {
         )}
       </Formik>
     </Box>
+    </ThemeProvider>
   );
 };
 

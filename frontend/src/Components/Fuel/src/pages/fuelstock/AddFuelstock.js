@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Box, Button} from '@mui/material'; // Import Select and MenuItem from Material-UI
+import { Box, Button, TextField, useTheme, ThemeProvider } from '@mui/material';
 import { Formik } from "formik";
 import * as yup from 'yup';
 import { useMediaQuery } from "@mui/material";
 import Header from "../../components/Header";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
+import theme from "../../theme"; 
 
 import "./AddFuelstock.css";
 
-
 const AddFuelstock = ({onClose}) => {
 
+
+  const theme = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const location = useLocation();
   
@@ -216,13 +217,24 @@ const validateStockedFuelType = (stocked_fuel_type) => {
  
   return (
     
-    <Box m="20px">
-    <button className="close-button" onClick={onClose}>
+    <ThemeProvider theme={theme}>
+    <Box m="20px" sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: isNonMobile ? 600 : '100%', // full width on mobile
+          height: 'auto',
+          bgcolor: 'background.default', // use default background color from theme
+          p: 3, // padding: 35px
+          borderRadius: 2, // border-radius: 15px
+        }}>
+    <button className="addFuelstock-close" onClick={onClose}>
       Close
     </button>
    <Formik onSubmit={sentData} initialValues={initialValues}>
 {({values, errors, touched, handleBlur, handleChange }) => (
-  <form className="addFuelStockForm" onSubmit={sentData}>
+  <form onSubmit={sentData} >
           <center>
             <Header title="ADD FUEL STOCK" subtitle="Add a new fuel seock to the fuel management system" />
           </center>
@@ -384,6 +396,7 @@ const validateStockedFuelType = (stocked_fuel_type) => {
         )}
       </Formik>
     </Box>
+    </ThemeProvider>
   );
 };
 

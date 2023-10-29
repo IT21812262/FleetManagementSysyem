@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Box, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { Box, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, useTheme, ThemeProvider  } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import Header from "../../components/Header";
 import { useMediaQuery } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
+import theme from "../../theme"; 
 
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
@@ -13,9 +14,13 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 import MenuItem from "@mui/material/MenuItem";
+
 import "./AddEmployee.css";
 
+
 const AddEmployee = ({ onClose }) => {
+
+  const theme = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px");
   const location = useLocation();
   const navigate = useNavigate();
@@ -112,9 +117,20 @@ const AddEmployee = ({ onClose }) => {
   });
 
   return (
-    <Box m="20px">
-      <button className="close-button" onClick={onClose}>
-          X
+    <ThemeProvider theme={theme}>
+    <Box m="20px" sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: isNonMobile ? 600 : '100%', // full width on mobile
+          height: 'auto',
+          bgcolor: 'background.default', // use default background color from theme
+          p: 3, // padding: 35px
+          borderRadius: 2, // border-radius: 15px
+        }}>
+      <button className="addEmployee-close" onClick={onClose}>
+          CLOSE
         </button>
       <Formik onSubmit={sendData} validationSchema={validationSchema}>
         {({ errors, touched, handleBlur, handleChange }) => (
@@ -324,6 +340,7 @@ const AddEmployee = ({ onClose }) => {
         </DialogActions>
       </Dialog>
     </Box>
+    </ThemeProvider>
   );
 };
 

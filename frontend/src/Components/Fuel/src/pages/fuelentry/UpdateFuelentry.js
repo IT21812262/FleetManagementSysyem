@@ -6,9 +6,7 @@ import * as yup from 'yup';
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
 import { FormControl, Box, Button, TextField, InputLabel, Select, MenuItem } from '@mui/material';
-
-
-import "./UpdateFuelentry.css";
+import { useTheme, ThemeProvider } from '@mui/material';
 
 const validationSchema = yup.object({
   vehicle_id: yup.string()
@@ -23,6 +21,8 @@ const validationSchema = yup.object({
 });
 
 const UpdateFuelentry = () => {
+
+  const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -36,6 +36,10 @@ const UpdateFuelentry = () => {
       vehicle_milage: "",
     }
   );
+
+  const handleButtonClick = () => {
+    navigate('/fuel/fuelentry');
+  };
 
   const [searchQ, setSearchQ] = useState("");
 
@@ -80,6 +84,7 @@ const UpdateFuelentry = () => {
   }, [searchQ]);
 
   return (
+    <ThemeProvider theme={theme}>
     <Box m="20px">
       <Formik
         initialValues={fuelentryData}
@@ -87,7 +92,7 @@ const UpdateFuelentry = () => {
         onSubmit={handleSubmit}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <form className="updateFuelEntryForm" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             {values.vehicle_id && (
               <Header
                 title={`EDIT FUEL DISPATCH DATA FOR ${values.vehicle_id}`}
@@ -209,25 +214,57 @@ const UpdateFuelentry = () => {
                 helperText={touched.vehicle_milage && errors.vehicle_milage}
               /></Box>
             </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained" fullWidth>
-                UPDATE FUEL ENTRY
-              </Button>
-            </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button
-                type="button"
-                color="btnBack"
-                variant="contained"
-                fullWidth
-                onClick={() => navigate('/fuel/fuelentry')}>
-                BACK TO FUEL DISPATCH
-              </Button>
-            </Box>
+            <Box display="flex" justifyContent="end" mt="20px" >
+<button
+               className="buttonm"
+               type="submit"
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'red',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'red';
+               }}
+             >
+               UPDATE FUEL DISPATCH
+             </button>
+             <button
+               className="buttonm"
+               onClick={handleButtonClick}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'green',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'green';
+               }}
+             >
+               BACK FUEL DISPATCH
+             </button>
+          </Box>
           </form>
         )}
       </Formik>
     </Box>
+    </ThemeProvider>
   );
 };
 

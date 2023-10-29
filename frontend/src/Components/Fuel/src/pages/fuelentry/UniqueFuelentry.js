@@ -6,9 +6,8 @@ import * as yup from 'yup';
 import Header from "../../components/Header";
 import { useNavigate } from 'react-router-dom';
 import { FormControl, Box, Button, TextField, InputLabel, Select, MenuItem } from '@mui/material';
+import { useTheme, ThemeProvider } from '@mui/material';
 
-
-import "./UpdateFuelentry.css";
 
 const validationSchema = yup.object({
   vehicle_id: yup.string()
@@ -22,7 +21,11 @@ const validationSchema = yup.object({
   vehicle_milage: yup.number().required("Vehicle Milage is required"),
 });
 
+
+
 const UpdateFuelentry = () => {
+
+  const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -98,6 +101,7 @@ const UpdateFuelentry = () => {
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <Box m="20px">
       <Formik
         initialValues={fuelentryData}
@@ -105,7 +109,7 @@ const UpdateFuelentry = () => {
         onSubmit={handleSubmit}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <form className="updateFuelEntryForm" onSubmit={handleSubmit}>
+          <form  onSubmit={handleSubmit}>
             {values.vehicle_id && (
               <Header
                 title={`VIEW FUEL DISPATCH DATA FOR ${values.vehicle_id}`}
@@ -274,6 +278,7 @@ const UpdateFuelentry = () => {
         )}
       </Formik>
     </Box>
+    </ThemeProvider>
   );
 };
 
