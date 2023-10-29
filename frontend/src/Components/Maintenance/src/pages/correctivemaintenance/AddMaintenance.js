@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Box, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import {useTheme, ThemeProvider } from '@mui/material';
 import Header from "../../components/Header";
+import { useMediaQuery } from "@mui/material";
+
+import "./AddMaintenance.css";
 
 const AddCorrectiveMaintenance = ({ onClose }) => {
+  const theme = useTheme();
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+
   const [jobID, setJobID] = useState("");
   const [DID, setDID] = useState("");
   const [Dname,setDname] = useState("");
@@ -116,12 +123,23 @@ const AddCorrectiveMaintenance = ({ onClose }) => {
   }
 
   return (
-    <Box m="20px">
+    <ThemeProvider theme={theme}>
+    <Box m="20px" sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: isNonMobile ? 600 : '100%', // full width on mobile
+          height: 'auto',
+          bgcolor: 'background.default', // use default background color from theme
+          p: 5, // padding: 35px
+          borderRadius: 2, // border-radius: 15px
+        }}>
       <Header title="ADD CORRECTIVE MAINTENANCE" subtitle="Adding new corrective maintenance record" />
-      <button className="close-button" onClick={onClose}>
+      <button className="addMaintenance-close" onClick={onClose}>
         Close
       </button>
-      <form className="addCorrectiveMaintenanceForm" onSubmit={sendData}style={{ background: "black", padding: "20px" }}>
+      <form onSubmit={sendData} >
       <Box
                   display="grid"
                   gap="30px"
@@ -228,6 +246,7 @@ const AddCorrectiveMaintenance = ({ onClose }) => {
         </Box>
       </form>
     </Box>
+    </ThemeProvider>
   );
 };
 
