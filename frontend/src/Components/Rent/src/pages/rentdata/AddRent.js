@@ -11,8 +11,13 @@ import {
 import "./AddRent.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Header from "../../components/Header";
+
+import { useTheme, ThemeProvider } from '@mui/material';
 
 const AddRent = ({ onClose }) => {
+  const theme = useTheme();
+
   // State variables for form fields
   const [vehicle_no, setVehicleNo] = useState("");
   const [brand, setBrand] = useState("");
@@ -273,10 +278,21 @@ const AddRent = ({ onClose }) => {
   }
 
   return (
-    <Box m={3}>
-      <Paper elevation={3} className="addInventoryForm">
-        <button className="close-button" onClick={onClose}>
-          X
+    <ThemeProvider theme={theme}>
+    <Box m={3} sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+         
+          height: 'auto',
+          bgcolor: 'background.default', // use default background color from theme
+          p: 3, // padding: 35px
+          borderRadius: 2, // border-radius: 15px
+        }}>
+      
+        <button className="addRent-close" onClick={onClose}>
+          CLOSE
         </button>
         <Typography
           variant="h4"
@@ -288,6 +304,9 @@ const AddRent = ({ onClose }) => {
           Add Rent
         </Typography>
         <form onSubmit={sendData}>
+        <center>
+            <Header title="ADD RENT" subtitle="Add a new rent vehicle to the rent management system" />
+          </center>
           <Grid container spacing={2}>
             <Grid item xs={4}>
               <TextField
@@ -488,9 +507,10 @@ const AddRent = ({ onClose }) => {
             </Box>
           </center>
         </form>
-      </Paper>
+      
       <ToastContainer />
     </Box>
+    </ThemeProvider>
   );
 };
 
