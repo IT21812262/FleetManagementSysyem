@@ -5,11 +5,14 @@ import { useParams } from "react-router-dom";
 import { Formik } from "formik";
 import { format } from 'date-fns'; // Import the format function from date-fns
 import Header from "../../components/Header";
+import { useTheme, ThemeProvider } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export default function UpdateMaintenanceJob() {
   const { id } = useParams();
   const [jobData, setJobData] = useState({});
   const [errors, setErrors] = useState({});
+  const theme = useTheme();
 
   useEffect(() => {
     const fetchJobData = async () => {
@@ -77,11 +80,17 @@ export default function UpdateMaintenanceJob() {
       alert('Error updating job:', error.message);
     }
   };
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    navigate('/maintenance');
+  };
 
   return (
+    <ThemeProvider theme={theme}>
     <Box m="20px">
       <Formik onSubmit={handleSubmit}>
-        <form className="updateMaintenanceForm" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           {jobData.jobID && (
             <Header
               title={`EDIT MAINTENANCE DATA FOR ${jobData.jobID}`}
@@ -209,25 +218,55 @@ export default function UpdateMaintenanceJob() {
 
           </Box>
 
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button type="submit" color="secondary" variant="contained" fullWidth>
-              UPDATE MAINTENANCE
-            </Button>
-          </Box>
-
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button
-              type="submit"
-              color="btnBack"
-              variant="contained"
-              fullWidth
-              onClick={handleSubmit}
-            >
-              BACK TO MAINTENANCE MANAGER
-            </Button>
+          <Box display="flex" justifyContent="end" mt="20px" >
+<button
+               className="buttonm"
+               type="submit"
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'red',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'red';
+               }}
+             >
+               UPDATE JOB
+             </button>
+             <button
+               className="buttonm"
+               onClick={handleButtonClick}
+               fullWidth
+               style={{
+                 width: '100%',
+                 backgroundColor: 'green',
+                 color: 'white',
+                 padding: '10px',
+                 border: 'none',
+                 cursor: 'pointer',
+                 transition: 'background-color 0.3s',
+               }}
+               onMouseEnter={(e) => {
+                 e.target.style.backgroundColor = 'darkred';
+               }}
+               onMouseLeave={(e) => {
+                 e.target.style.backgroundColor = 'green';
+               }}
+             >
+               BACK TO MAINTENANCE MANAGER
+             </button>
           </Box>
         </form>
       </Formik>
     </Box>
+    </ThemeProvider>
   );
 }
